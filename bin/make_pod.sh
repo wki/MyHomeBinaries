@@ -13,22 +13,31 @@
 #
 # some variables to allow customization
 #
-pod_dir=/Library/Perl/5.10.0
+pod_dir=`dirname $(perldoc -l Catalyst)`
 pdf_dir=$HOME/Desktop/CPAN
 
 mkdir -p $pdf_dir
 
 cd $pod_dir
-for i in `find Mojo* SQL Moose* Catalyst* DBIx HTML/Form* PSGI* Plack* -type f`
+for file in `find Mojo* SQL Moose* Catalyst* DBIx HTML/Form* PSGI* Plack* -type f`
 do 
-    j=`dirname $i`
+    dir=`dirname $file`
+    pdf=${file/.*/.pdf}
     
-    if [[ ! -f "$pdf_dir/$i.pdf" || "$pdf_dir/$i.pdf" -ot "$i" ]] ; then
-        echo "generating $i"
-        mkdir -p $pdf_dir/$j
-        pod2pdf $i > $pdf_dir/$i.pdf
+    # echo "file=$file, dir=$dir, pdf=$pdf"
+    
+    if [[ ! -f "$pdf_dir/$pdf" || "$pdf_dir/$pdf" -ot "$file" ]] ; then
+        pod_nr_text_lines=`pod2text $file | wc -l`
+        
+        if (( pod_nr_text_lines == 0 )); then
+            rm -f $pdf_dir/$pdf
+        else
+            echo "generating $file"
+            mkdir -p $pdf_dir/$dir
+            pod2pdf $file > $pdf_dir/$pdf
+        fi
     else
-        echo "nothing to do for $i"
+        echo "nothing to do for $file"
     fi
 done
 
