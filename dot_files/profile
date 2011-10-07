@@ -1,0 +1,46 @@
+#
+# a simple .profile file
+#
+
+current_perl_version () {
+    version=`perl -e 'print $^V'`
+    path=`which perl`
+    abbr='?'
+    
+    case $path in
+        (/usr/bin/*)
+            abbr='sys'
+            ;;
+        
+        (/usr/local/bin/*)
+            abbr='local'
+            ;;
+        
+        (/opt/local/bin/*)
+            abbr='port'
+            ;;
+        
+        (*/perlbrew/*)
+            abbr='brew'
+            ;;
+    esac
+    
+    echo "$abbr ${version/v/}"
+}
+
+# Setting the path for MacPorts.
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
+export PS1='[`current_perl_version`] \h:\W \u\$ '
+
+#
+# Aliasse
+#
+alias ls='ls -F'
+alias ll='ls -lF'
+alias la='ls -alF'
+
+#
+# Projekt Einstellungen
+#
+export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
+

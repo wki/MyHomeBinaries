@@ -19,10 +19,13 @@ for m in Bundle::CPAN \
          Catalyst::View::ByCode Catalyst::View::Email Catalyst::View::JSON \
          Catalyst::Model::DBIC::Schema Catalyst::Model::Adaptor \
          Catalyst::Controller::Combine Catalyst::Controller::Imager Catalyst::View::ByCode \
-         HTML::FormFu HTML::FormFu::Model::DBIC Catalyst::Congroller::HTML::FormFu \
+         HTML::FormFu HTML::FormFu::Model::DBIC Catalyst::Controller::HTML::FormFu \
          Dancer \
+         Web::Simple \
+         Mojolicious \
          Plack \
-         Dist::Zilla 
+         Dist::Zilla \
+         Test::More Test::Most Test::Exception Test::DBIx::Class
 do
     cpan $m
 done

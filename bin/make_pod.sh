@@ -19,7 +19,7 @@ pdf_dir=$HOME/Desktop/CPAN
 mkdir -p $pdf_dir
 
 cd $pod_dir
-for file in `find Mojo* SQL Moose* Catalyst* DBIx HTML/Form* PSGI* Plack* -type f`
+for file in `find Mojo* SQL Moose* Catalyst* DBIx HTML/Form* PSGI* Plack* Web* XML* -type f`
 do 
     dir=`dirname $file`
     pdf=${file/.*/.pdf}
