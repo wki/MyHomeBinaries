@@ -28,6 +28,15 @@ current_perl_version () {
     echo "$abbr ${version/v/}"
 }
 
+p () {
+    perl=''
+    for i in `perlbrew list| grep perl- | cut -b 3-`; do
+        case $i in (perl-$1*) perl=$i ;; esac
+    done
+    
+    perlbrew use $perl
+}
+
 # Setting the path for MacPorts.
 export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
 export PS1='[`current_perl_version`] \h:\W \u\$ '
@@ -44,3 +53,7 @@ alias la='ls -alF'
 #
 export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
 
+#
+# initiate perlbrew
+#
+. ~/perl5/perlbrew/etc/bashrc
