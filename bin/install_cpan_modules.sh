@@ -7,7 +7,7 @@
 for m in Bundle::CPAN \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
          Class::Trigger \
-         DBD::Pg \
+         DBD::Pg DateTime::Format::Pg \
          DBIx::Class DBIx::Class::Schema::Loader DBIx::Class::Candy DBIx::Class::Helpers \
          Moose MooseX::Types MooseX::NonMoose \
          Catalyst::Runtime Catalyst::Devel \
