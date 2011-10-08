@@ -6,6 +6,7 @@
 #
 for m in Bundle::CPAN \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
+         Class::Trigger \
          DBD::Pg \
          DBIx::Class DBIx::Class::Schema::Loader DBIx::Class::Candy DBIx::Class::Helpers \
          Moose MooseX::Types MooseX::NonMoose \
@@ -25,7 +26,8 @@ for m in Bundle::CPAN \
          Mojolicious \
          Plack \
          Dist::Zilla \
-         Test::More Test::Most Test::Exception Test::DBIx::Class
+         Test::More Test::Most Test::Exception Test::DBIx::Class \
+         JONALLEN/pod2pdf-0.42.tar.gz
 do
     cpan $m
 done

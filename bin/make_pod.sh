@@ -14,7 +14,7 @@
 # some variables to allow customization
 #
 pod_dir=`dirname $(perldoc -l Catalyst)`
-pdf_dir=$HOME/Desktop/CPAN
+pdf_dir=~/Desktop/CPAN
 
 mkdir -p $pdf_dir
 
