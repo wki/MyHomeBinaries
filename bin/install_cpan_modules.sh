@@ -20,6 +20,7 @@ for m in Bundle::CPAN \
          Catalyst::View::ByCode Catalyst::View::Email Catalyst::View::JSON \
          Catalyst::Model::DBIC::Schema Catalyst::Model::Adaptor \
          Catalyst::Controller::Combine Catalyst::Controller::Imager Catalyst::View::ByCode \
+         Catalyst::Controller::REST \
          HTML::FormFu HTML::FormFu::Model::DBIC Catalyst::Controller::HTML::FormFu \
          Dancer \
          Web::Simple \
