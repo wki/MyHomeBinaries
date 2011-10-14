@@ -18,26 +18,27 @@ pdf_dir=~/Desktop/CPAN
 
 mkdir -p $pdf_dir
 
-cd $pod_dir
-for file in `find Mojo* SQL Moose* Catalyst* DateTime* DBIx HTML/Form* PSGI* Plack* Web* XML* -type f | grep -v DateTime/Locale/`
-do 
-    dir=`dirname $file`
-    pdf=${file/.*/.pdf}
-    
-    # echo "file=$file, dir=$dir, pdf=$pdf"
-    
-    if [[ ! -f "$pdf_dir/$pdf" || "$pdf_dir/$pdf" -ot "$file" ]] ; then
-        pod_nr_text_lines=`pod2text $file | wc -l`
+for dir in $pod_dir/darwin-2level $pod_dir; do
+    cd $dir
+    for file in `find Mojo* SQL Moose* Catalyst* DateTime* DBIx HTML/Form* PSGI* Plack* Web* XML* -type f | grep -v DateTime/Locale/`
+    do 
+        dir=`dirname $file`
+        pdf=${file/.*/.pdf}
         
-        if (( pod_nr_text_lines == 0 )); then
-            rm -f $pdf_dir/$pdf
+        # echo "file=$file, dir=$dir, pdf=$pdf"
+        
+        if [[ ! -f "$pdf_dir/$pdf" || "$pdf_dir/$pdf" -ot "$file" ]] ; then
+            pod_nr_text_lines=`pod2text $file | wc -l`
+            
+            if (( pod_nr_text_lines == 0 )); then
+                rm -f $pdf_dir/$pdf
+            else
+                echo "generating $file"
+                mkdir -p $pdf_dir/$dir
+                pod2pdf $file > $pdf_dir/$pdf
+            fi
         else
-            echo "generating $file"
-            mkdir -p $pdf_dir/$dir
-            pod2pdf $file > $pdf_dir/$pdf
+            echo "nothing to do for $file"
         fi
-    else
-        echo "nothing to do for $file"
-    fi
+    done
 done
-

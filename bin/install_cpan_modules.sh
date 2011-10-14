@@ -4,6 +4,10 @@
 # path to `cpan` is not fully quoted to get the current binary 
 #   especially when using perlbrew
 #
+
+# DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql90
+# XML::LibXML might need  $ENV{XMLPREFIX} = /opt/local
+
 for m in Bundle::CPAN \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
          Class::Trigger \
@@ -28,6 +32,7 @@ for m in Bundle::CPAN \
          Plack \
          Dist::Zilla \
          Test::More Test::Most Test::Exception Test::DBIx::Class \
+         XML::LibXML \
          JONALLEN/pod2pdf-0.42.tar.gz
 do
     cpan $m
