@@ -48,6 +48,8 @@ alias ls='ls -F'
 alias ll='ls -lF'
 alias la='ls -alF'
 
+alias minicpanm='cpanm --mirror ~/minicpan --mirror-only'
+
 #
 # Projekt Einstellungen
 #
