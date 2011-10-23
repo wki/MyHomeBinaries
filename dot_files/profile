@@ -42,7 +42,7 @@ export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
 export PS1='[`current_perl_version`] \h:\W \u\$ '
 
 #
-# Aliasse
+# Aliases
 #
 alias ls='ls -F'
 alias ll='ls -lF'
@@ -50,8 +50,12 @@ alias la='ls -alF'
 
 alias minicpanm='cpanm --mirror ~/minicpan --mirror-only'
 
+# ensure we get our executables even if otheres have precedence
+alias cpanm=~/bin/cpanm
+alias perlbrew=~/bin/perlbrew
+
 #
-# Projekt Einstellungen
+# Project Settings
 #
 export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
 
