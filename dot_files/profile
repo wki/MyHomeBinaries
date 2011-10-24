@@ -39,7 +39,7 @@ p () {
 
 # Setting the path for MacPorts.
 export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
-export PS1='[`current_perl_version`] \h:\W \u\$ '
+export PS1='[`current_perl_version 2>/dev/null || echo 'unknown'`] \h:\W \u\$ '
 
 #
 # Aliases
@@ -50,9 +50,12 @@ alias la='ls -alF'
 
 alias minicpanm='cpanm --mirror ~/minicpan --mirror-only'
 
-# ensure we get our executables even if otheres have precedence
+# ensure we get our executables even if an other one is occuring earlier in $PATH
 alias cpanm=~/bin/cpanm
 alias perlbrew=~/bin/perlbrew
+
+# allow easy DBIC-Traces
+alias dt='DBIC_TRACE=1 DBIC_TRACE_PROFILE=console'
 
 #
 # Project Settings
