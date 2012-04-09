@@ -76,16 +76,6 @@ sub run {
     $self->save_or_print_pdf;
 }
 
-sub save_or_print_pdf {
-    my $self = shift;
-
-    if (scalar @{$self->extra_argv}) {
-        $self->pdf->saveas($self->extra_argv->[0]);
-    } else {
-        $self->parser->output;
-    }
-}
-
 sub collect_modules {
     my $self = shift;
 
@@ -111,6 +101,16 @@ sub create_pdfs {
 
         $self->create_pdfs($node, $current_path)
             if grep { !m{\A _}xms } keys %$node;
+    }
+}
+
+sub save_or_print_pdf {
+    my $self = shift;
+
+    if (scalar @{$self->extra_argv}) {
+        $self->pdf->saveas($self->extra_argv->[0]);
+    } else {
+        $self->parser->output;
     }
 }
 
