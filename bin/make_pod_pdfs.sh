@@ -8,7 +8,7 @@ echo "--- Moose ---"
 rm -f ~/Desktop/moose.pdf
 convert_pod2pdf.pl -v -p Moose -p MooseX -p Class::MOP -f ~/Desktop/moose.pdf
 
-echo "--- Dbix::Class ---"
+echo "--- DBIC ---"
 rm -f ~/Desktop/dbix_class.pdf
 convert_pod2pdf.pl -v -p DBIx::Class -p SQL::Abstract -p SQL::Translator -f ~/Desktop/dbix_class.pdf
 
