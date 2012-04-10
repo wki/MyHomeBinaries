@@ -81,6 +81,8 @@ sub run {
 sub collect_modules {
     my $self = shift;
 
+    $self->log('Collecting Modules...');
+
     if ($self->has_directory) {
         $self->search_modules_in($self->directory);
     } else {
@@ -90,18 +92,25 @@ sub collect_modules {
 
 sub create_pdf {
     my $self = shift;
-    my $structure = shift // $self->module_structure;
-    my $module_path = shift // [];
+
+    $self->log('creating PDF...');
+    $self->process_structure($self->module_structure, []);
+}
+
+sub process_structure {
+    my $self = shift;
+    my $structure = shift;
+    my $module_path = shift;
 
     foreach my $name (sort grep { !m{\A _}xms } keys %$structure) {
         my $node = $structure->{$name};
         my $current_path = [@$module_path, $name];
-        $self->log('processing ' . join('::', @$current_path));
+        $self->log_debug('processing ' . join('::', @$current_path));
 
         $self->add_file_to_pdf($node->{_file}, $current_path)
             if exists($node->{_file});
 
-        $self->create_pdf($node, $current_path)
+        $self->process_structure($node, $current_path)
             if grep { !m{\A _}xms } keys %$node;
     }
 }
@@ -109,6 +118,7 @@ sub create_pdf {
 sub save_or_print_pdf {
     my $self = shift;
 
+    $self->log('Saving...');
     if ($self->has_target_file) {
         $self->pdf->saveas($self->target_file->stringify);
     } else {
@@ -174,7 +184,7 @@ sub dir_wanted {
     my $module_path = shift;
 
     return 1 if $self->no_package_filter;
-    
+
     my $module_name = join('::', @$module_path);
     return grep { index($_, $module_name) == 0 || index($module_name, $_) == 0 }
            $self->all_filter_packages;
