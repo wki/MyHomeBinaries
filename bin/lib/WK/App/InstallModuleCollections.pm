@@ -16,6 +16,7 @@ has temp_dir => (
     lazy => 1,
     coerce => 1,
     default => "$ENV{HOME}/tmp/modules",
+    documentation => 'a temp directory to install things to [$HOME/tmp/modules]',
 );
 
 has cpanm => (
@@ -26,6 +27,7 @@ has cpanm => (
     lazy => 1,
     coerce => 1,
     default => "$ENV{HOME}/bin/cpanm",
+    documentation => 'path to the cpanm binary [$HOME/bin/cpanm]',
 );
 
 has collection => (
@@ -59,6 +61,8 @@ has cpanm_options => (
 sub run {
     my $self = shift;
 
+    $self->prepare_temp_dir;
+    
     foreach my $module (@{$self->modules}) {
         $self->install_module($module);
         $self->find_and_save_module_info($module);
@@ -68,6 +72,18 @@ sub run {
     #     Name, creation date
     #     List of Distributions and Version
     # fire pdf-generation script
+}
+
+sub prepare_temp_dir {
+    my $self = shift;
+    
+    if (!-d $self->temp_dir) {
+        $self->temp_dir->mkpath;
+    } else {
+        # we must delete the directory
+        # however, this could be dangerous if a user specifies a
+        # wrong directory!!!
+    }
 }
 
 sub install_module {
