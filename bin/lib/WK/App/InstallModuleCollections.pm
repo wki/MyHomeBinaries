@@ -28,34 +28,83 @@ has cpanm => (
     default => "$ENV{HOME}/bin/cpanm",
 );
 
+has collection => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => 'Str',
+    required => 1,
+    cmd_aliases => 'c',
+    documentation => 'the collection of modules to generate documentation for. ' .
+                     'One of catalyst, moose, dbic',
+);
+
+has modules => (
+    traits => ['NoGetopt'],
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    required => 1,
+    lazy_build => 1,
+);
+
 has cpanm_options => (
     traits => ['Getopt'],
     is => 'ro',
     isa => 'ArrayRef[Str]',
     required => 1,
     lazy => 1,
-    coerce => 1,
     default => sub { ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only'] },
 );
 
 
 sub run {
     my $self = shift;
+
+    foreach my $module (@{$self->modules}) {
+        $self->install_module($module);
+        $self->find_and_save_module_info($module);
+    }
     
-    # for every module in list of modules
-    #     install every single module
-    #     find temp_dir/lib/perl5/*/<<distribution_name>>/MYMETA.json
-    #     read json file and add distribution + Version to list of modules
     # create Table-Of-Contents File
     #     Name, creation date
     #     List of Distributions and Version
     # fire pdf-generation script
 }
 
+sub install_module {
+    my $self = shift;
+    my $module = shift;
+    
+    $self->log("Installing module $module");
+    
+    # cpanm -n $module
+}
+
+sub find_and_save_module_info {
+    my $self = shift;
+    my $module = shift;
+    
+    #     find temp_dir/lib/perl5/*/<<distribution_name>>/MYMETA.json
+    #     read json file and add distribution + Version to list of modules
+}
+
+sub _build_modules {
+    my $self = shift;
+
+    [
+        grep { !m{\A (\[.* | \s*) \z}xms }
+        grep { m{\A \[ \Q${\$self->collection}\E \] \s* \z}ixms
+               ...
+               m{\A \[}xms }
+        map { chomp; $_ }
+        <DATA>
+    ]
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
-__END__
+__DATA__
+[catalyst]
 
 Catalyst::Action::REST
 Catalyst::Action::RenderView
@@ -112,6 +161,7 @@ HTML::FormFu::Model::DBIC
 
 
 
+[dbic]
 
 DBIx::Class
 DBIx::Class::Candy
@@ -130,6 +180,7 @@ Test::DBIx::Class
 
 
 
+[moose]
 
 Moose
 Moose::Autobox
