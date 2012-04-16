@@ -3,20 +3,21 @@ use Modern::Perl;
 use Moose;
 use MooseX::Types::Path::Class qw(File Dir);
 use JSON;
+use File::Temp ();
+use Config;
+use autodie ':all';
 use namespace::autoclean;
 
 extends 'WK::App';
 with 'MooseX::Getopt';
 
 has temp_dir => (
-    traits => ['Getopt'],
+    traits => ['NoGetopt'],
     is => 'ro',
     isa => Dir,
     required => 1,
-    lazy => 1,
+    lazy_build => 1,
     coerce => 1,
-    default => "$ENV{HOME}/tmp/modules",
-    documentation => 'a temp directory to install things to [$HOME/tmp/modules]',
 );
 
 has cpanm => (
@@ -54,53 +55,34 @@ has cpanm_options => (
     isa => 'ArrayRef[Str]',
     required => 1,
     lazy => 1,
+    cmd_aliases => 'o',
     default => sub { ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only'] },
+);
+
+has installed_modules => (
+    traits => ['NoGetopt', 'Hash'],
+    is => 'rw',
+    isa => 'HashRef[Str]', # module => version
+    required => 1,
+    default => sub { {} },
+    handles => {
+        add_module => 'set',
+    },
 );
 
 
 sub run {
     my $self = shift;
 
-    $self->prepare_temp_dir;
+    $self->log_debug('Temp Dir:', $self->temp_dir);
     
-    foreach my $module (@{$self->modules}) {
-        $self->install_module($module);
-        $self->find_and_save_module_info($module);
-    }
-    
+    $self->install_module($_) for @{$self->modules};
+    $self->collect_installed_modules;
+    $self->create_toc;
     # create Table-Of-Contents File
     #     Name, creation date
     #     List of Distributions and Version
     # fire pdf-generation script
-}
-
-sub prepare_temp_dir {
-    my $self = shift;
-    
-    if (!-d $self->temp_dir) {
-        $self->temp_dir->mkpath;
-    } else {
-        # we must delete the directory
-        # however, this could be dangerous if a user specifies a
-        # wrong directory!!!
-    }
-}
-
-sub install_module {
-    my $self = shift;
-    my $module = shift;
-    
-    $self->log("Installing module $module");
-    
-    # cpanm -n $module
-}
-
-sub find_and_save_module_info {
-    my $self = shift;
-    my $module = shift;
-    
-    #     find temp_dir/lib/perl5/*/<<distribution_name>>/MYMETA.json
-    #     read json file and add distribution + Version to list of modules
 }
 
 sub _build_modules {
@@ -114,6 +96,74 @@ sub _build_modules {
         map { chomp; $_ }
         <DATA>
     ]
+}
+
+sub _build_temp_dir {
+    my $self = shift;
+    
+    File::Temp::tempdir(CLEANUP => 1);
+}
+
+sub install_module {
+    my $self = shift;
+    my $module = shift;
+    
+    $self->log_dryrun("would install $module") and return;
+    $self->log("Installing $module");
+    
+    # cpanm still generates some output. Currently we just ignore this fact...
+    system $self->cpanm,
+           @{$self->cpanm_options},
+           '-n',
+           '-q',
+           '-L' => $self->temp_dir,
+           $module;
+}
+
+sub collect_installed_modules {
+    my $self = shift;
+    
+    my $meta_dir = $self->temp_dir->subdir("lib/perl5/$Config{archname}/.meta");
+    foreach my $dist_dir (grep { -d } $meta_dir->children) {
+        $self->log_debug("checking dist-dir $dist_dir");
+        
+        my $module_info = decode_json(scalar $dist_dir->file('install.json')->slurp);
+        
+        $self->log("Module: $module_info->{name}, Version: $module_info->{version}");
+        
+        $self->add_module($module_info->{name} => $module_info->{version});
+    }
+}
+
+sub create_toc {
+    my $self = shift;
+    
+    my $toc = <<POD;
+=head1 TABLE OF CONTENTS
+
+TODO: name of thing generated
+
+=head1 CREATED
+
+TODO: date of creation
+
+=head1 MODULES
+
+=over
+
+POD
+
+    ### TODO: filter!!!
+    $toc .= "=item $_ (${\$self->installed_modules->{$_}})\n\n" for keys %{$self->installed_modules};
+
+    $toc .= <<POD;
+
+=back
+
+=cut
+POD
+
+    return $toc;
 }
 
 __PACKAGE__->meta->make_immutable;
