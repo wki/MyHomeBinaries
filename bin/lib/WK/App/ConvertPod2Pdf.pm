@@ -94,7 +94,17 @@ sub create_pdf {
     my $self = shift;
 
     $self->log('creating PDF...');
+    $self->create_toc;
     $self->process_structure($self->module_structure, []);
+}
+
+sub create_toc {
+    my $self = shift;
+    
+    return if !$self->has_directory;
+    
+    my $toc_file = $self->directory->file('toc.pod');
+    $self->add_file_to_pdf($toc_file, ['Table Of Contents']) if -f $toc_file;
 }
 
 sub process_structure {
