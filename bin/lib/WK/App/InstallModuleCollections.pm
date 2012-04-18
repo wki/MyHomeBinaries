@@ -281,7 +281,6 @@ sub _info_for_collection {
                            Catalyst::Plugin::XSendFile
                            Catalyst::Runtime
                            Catalyst::View::ByCode
-                           Catalyst::View::CSV
                            Catalyst::View::Download
                            Catalyst::View::Email
                            Catalyst::View::JSON

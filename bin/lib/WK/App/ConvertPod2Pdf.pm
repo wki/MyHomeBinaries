@@ -4,6 +4,7 @@ use Moose;
 use MooseX::Types::Path::Class qw(File Dir);
 use Path::Class;
 use Pod::Simple;
+use Config;
 use App::pod2pdf;
 use YAML;
 use namespace::autoclean;
@@ -160,6 +161,13 @@ sub add_file_to_pdf {
 # $structure points to the current position inside module_structure
 # $module_path holds the parts of a module, eg [qw(MooseX Getopt)]
 sub search_modules_in {
+    my ($self, $dir) = @_;
+    
+    $self->_search_modules_in($dir);
+    $self->_search_modules_in($dir->subdir($Config{archname}));
+}
+
+sub _search_modules_in {
     my $self        = shift;
     my $dir         = shift;
     my $structure   = shift // $self->module_structure;
@@ -169,12 +177,14 @@ sub search_modules_in {
 
     foreach my $child ($dir->children) {
         my $name         = $child->basename; $name =~ s{\.\w+ \z}{}xms;
+        next if $name =~ m{\A \.}xms;
+        
         my $substructure = $structure->{$name} ||= {};
         my $current_path = [@$module_path, $name];
 
         if ($child->is_dir) {
             if ($self->dir_wanted($current_path)) {
-                $self->search_modules_in($child, $substructure, $current_path);
+                $self->_search_modules_in($child, $substructure, $current_path);
             } else {
                 $self->log_debug("bailing out at $child");
             }
