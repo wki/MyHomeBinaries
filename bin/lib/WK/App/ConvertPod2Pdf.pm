@@ -14,7 +14,7 @@ with 'MooseX::Getopt';
 has filter_packages => (
     traits => ['Getopt', 'Array'],
     is => 'rw',
-    isa => 'ArrayRef',
+    isa => 'ArrayRef[Str]',
     default => sub { [] },
     handles => {
         all_filter_packages => 'elements',
@@ -176,7 +176,7 @@ sub search_modules_in {
             if ($self->dir_wanted($current_path)) {
                 $self->search_modules_in($child, $substructure, $current_path);
             } else {
-                $self->log_debug("bailing out at $dir/$child");
+                $self->log_debug("bailing out at $child");
             }
         } else {
             my $parser = Pod::Simple->new;
