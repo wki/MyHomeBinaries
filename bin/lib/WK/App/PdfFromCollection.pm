@@ -474,7 +474,9 @@ sub __info {
         },
 
         plack => {
-            filter => [qw(Plack PSGI Starman Test::WWW::Mechanize::PSGI)],
+            filter => [qw(Plack PSGI 
+                          Starman Starlet Server::Starter
+                          Test::WWW::Mechanize::PSGI)],
             modules => [qw(PSGI
                            Plack
                            Plack::Middleware::ForceEnv
@@ -483,6 +485,8 @@ sub __info {
                            Plack::Test::ExternalServer
                            Test::WWW::Mechanize::PSGI
                            Starman
+                           Starlet
+                           Server::Starter
             )]
         }
     }
