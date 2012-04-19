@@ -85,7 +85,8 @@ has cpanm_options => (
             ? ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only']
             : [],
     },
-    documentation => 'Typical options for cpanm. Uses a minicpan mirror dir at $HOME/minicpan if present',
+    documentation => 'Typical options for cpanm. ' . 
+                     'Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
 has installed_modules => (
@@ -213,7 +214,8 @@ ${\$now->dmy} ${\$now->hms} by $ENV{USER}
 
 POD
 
-    $toc .= "=item $_ (${\$self->installed_modules->{$_}})\n\n" for sort @{$self->modules};
+    $toc .= "=item $_ (${\$self->installed_modules->{$_}})\n\n"
+        for sort @{$self->modules};
 
     $toc .= <<POD;
 
@@ -240,7 +242,8 @@ sub _info_for_collection {
     my $collection = shift;
 
     my $info = __info()->{$collection}
-        or die "Collection '$collection' not found. Available are: " . join(', ', keys %{__info()});
+        or die "Collection '$collection' not found. Available are: " . 
+               join(', ', keys %{__info()});
     return $info;
 }
 
