@@ -1,4 +1,4 @@
-package WK::App::InstallModuleCollections;
+package WK::App::PdfFromCollection;
 use Modern::Perl;
 use Moose;
 use MooseX::Types::Path::Class qw(File Dir);
@@ -284,7 +284,6 @@ sub _info_for_collection {
                            Catalyst::View::Download
                            Catalyst::View::Email
                            Catalyst::View::JSON
-                           Catalyst::View::SVG::TT::Graph
                            Catalyst::View::TT
                            CatalystX::Component::Traits
                            CatalystX::REPL
