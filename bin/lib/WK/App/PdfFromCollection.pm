@@ -54,7 +54,7 @@ has collection => (
     required => 1,
     cmd_aliases => 'c',
     documentation => 'the collection of modules to generate documentation for. ' .
-                     'One of catalyst, moose, dbic',
+                     'One of ' . join(', ', keys %{__info()}),
 );
 
 has modules => (
@@ -80,7 +80,12 @@ has cpanm_options => (
     required => 1,
     lazy => 1,
     cmd_aliases => 'o',
-    default => sub { ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only'] },
+    default => sub {
+        -d "$ENV{HOME}/minicpan"
+            ? ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only']
+            : [],
+    },
+    documentation => 'Typical options for cpanm. Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
 has installed_modules => (
@@ -234,10 +239,15 @@ sub create_pdf {
 sub _info_for_collection {
     my $collection = shift;
 
-    my %info = (
+    my $info = __info()->{$collection}
+        or die "Collection '$collection' not found. Available are: " . join(', ', keys %{__info()});
+    return $info;
+}
+
+sub __info {
+    {
         catalyst => {
             filter => [qw(Catalyst CatalystX
-                          PSGI Plack Starman
                           Test::WWW
                           HTML::FormFu)],
             modules => [qw(Catalyst::Action::REST
@@ -288,21 +298,95 @@ sub _info_for_collection {
                            CatalystX::Component::Traits
                            CatalystX::REPL
 
-                           PSGI
-                           Plack
-                           Plack::Middleware::ForceEnv
-                           Plack::Middleware::ReverseProxy
-                           Plack::Middleware::ServerStatus::Lite
-                           Plack::Test::ExternalServer
-                           Starman
                            Test::WWW::Mechanize
                            Test::WWW::Mechanize::Catalyst
-                           Test::WWW::Mechanize::PSGI
 
                            HTML::FormFu
                            HTML::FormFu::Model::DBIC)],
         },
 
+        dancer => {
+            filter => [qw(Dancer)],
+            modules => [qw(Dancer::Template::Alloy
+                           Dancer::Template::Haml
+                           Dancer::Template::HtmlTemplate
+                           Dancer::Template::MicroTemplate
+                           Dancer::Template::MojoTemplate
+                           Dancer::Template::TemplateFlute
+                           Dancer::Template::TemplateSandbox
+                           Dancer::Template::Tenjin
+                           Dancer::Template::Tiny
+                           Dancer::Template::Xslate
+                           Dancer::Logger::ColorConsole
+                           Dancer::Logger::Log4perl
+                           Dancer::Logger::LogHandler
+                           Dancer::Logger::Pipe
+                           Dancer::Logger::PSGI
+                           Dancer::Logger::Syslog
+                           Dancer::Serializer::UUEncode
+                           Dancer::Session::CHI
+                           Dancer::Session::Cookie
+                           Dancer::Session::KiokuDB
+                           Dancer::Session::Memcached
+                           Dancer::Session::MongoDB
+                           Dancer::Session::PSGI
+                           Dancer::Session::Storable
+                           Dancer::Plugin::Async
+                           Dancer::Plugin::Auth::Htpasswd
+                           Dancer::Plugin::Auth::RBAC
+                           Dancer::Plugin::Auth::Twitter
+                           Dancer::Plugin::Bcrypt
+                           Dancer::Plugin::Browser
+                           Dancer::Plugin::Cache::CHI
+                           Dancer::Plugin::Captcha::SecurityImage
+                           Dancer::Plugin::Database
+                           Dancer::Plugin::DBIC
+                           Dancer::Plugin::DebugDump
+                           Dancer::Plugin::DebugToolbar
+                           Dancer::Plugin::DirectoryView
+                           Dancer::Plugin::Dispatcher
+                           Dancer::Plugin::ElasticSearch
+                           Dancer::Plugin::Email
+                           Dancer::Plugin::EncodeID
+                           Dancer::Plugin::EscapeHTML
+                           Dancer::Plugin::Facebook
+                           Dancer::Plugin::Fake::Response
+                           Dancer::Plugin::FlashMessage
+                           Dancer::Plugin::FlashNote
+                           Dancer::Plugin::FormattedOutput
+                           Dancer::Plugin::FormValidator
+                           Dancer::Plugin::Hosts
+                           Dancer::Plugin::LibraryThing
+                           Dancer::Plugin::Memcached
+                           Dancer::Plugin::MemcachedFast
+                           Dancer::Plugin::MobileDevice
+                           Dancer::Plugin::Mongo
+                           Dancer::Plugin::Mongoose
+                           Dancer::Plugin::MPD
+                           Dancer::Plugin::Nitesi
+                           Dancer::Plugin::NYTProf
+                           Dancer::Plugin::ORMesque
+                           Dancer::Plugin::Params::Normalization
+                           Dancer::Plugin::Passphrase
+                           Dancer::Plugin::Preprocess::Sass
+                           Dancer::Plugin::Progress
+                           Dancer::Plugin::ProxyPath
+                           Dancer::Plugin::Redis
+                           Dancer::Plugin::REST
+                           Dancer::Plugin::SimpleCRUD
+                           Dancer::Plugin::SiteMap
+                           Dancer::Plugin::SMS
+                           Dancer::Plugin::Stomp
+                           Dancer::Plugin::Thumbnail
+                           Dancer::Plugin::ValidateTiny
+                           Dancer::Plugin::ValidationClass
+                           Dancer::Plugin::WebSocket
+                           Dancer::Plugin::XML::RSS
+                           Dancer::Middleware::Rebase
+                           Dancer::Debug
+            )]
+        },
+        
         dbic => {
             filter => [qw(DBIx::Class SQL Test::DBIx)],
             modules => [qw(DBIx::Class
@@ -328,6 +412,11 @@ sub _info_for_collection {
                            Test::DBIx::Class)]
         },
 
+        mojo => {
+            filter => [qw(Mojo Mojolicious)],
+            modules => [qw(Mojolicious)],
+        },
+        
         moose => {
             filter => [qw(Moose MooseX Class::MOP)],
             modules => [qw(Moose
@@ -383,9 +472,20 @@ sub _info_for_collection {
                            MooseX::Workers
                            )]
         },
-    );
 
-    return $info{$collection};
+        plack => {
+            filter => [qw(Plack PSGI Starman Test::WWW::Mechanize::PSGI)],
+            modules => [qw(PSGI
+                           Plack
+                           Plack::Middleware::ForceEnv
+                           Plack::Middleware::ReverseProxy
+                           Plack::Middleware::ServerStatus::Lite
+                           Plack::Test::ExternalServer
+                           Test::WWW::Mechanize::PSGI
+                           Starman
+            )]
+        }
+    }
 }
 
 __PACKAGE__->meta->make_immutable;
