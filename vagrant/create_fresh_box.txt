@@ -1,0 +1,57 @@
+Alternative to Vagrant - manually manage boxes
+----------------------------------------------
+
+
+1) prepare a basic box
+   - create a new VM
+   - mount CD-ROM and boot to install Ubuntu Server
+   - hostname: vagrant -- see [1]
+   - user: vagrant
+   - password: vagrant
+   - SSH Daemon required.
+   - sudo visudo (required???)
+     %admin ALL=NOPASSWD: ALL
+     sudo service sudo restart
+   - Install VirtualBox Guest Addition
+   - install all dpkg-packages
+   - set port forwarding rules
+   - set shared folders
+   --> export appliance (*.ova Format)
+
+
+2) For every setup needed
+   - Import appliance
+   - name correctly
+   - change port forwards
+   --> export again
+
+
+3) Start and Stop VBox
+   $ VBoxManage startvm testserver --type headless
+   $ VBoxManage controlvm testserver poweroff
+
+
+4) TBD
+   - User for installing perl modules
+   - User for deploying
+   - how to restore a DB Backup easily
+   - how to deploy sources to Box
+   - how to add needed modules
+   - which Port-Forwards are needed (must be different for projects)
+     2022 ->   22 (ssh)
+     2080 ->   80 (http)
+     2443 ->  443 (https)
+     2432 -> 5432 (Pg)
+
+
+--- Hints:
+manually importing a Box fails:
+ $ VBoxManage import shell_exported_appliance.ova --vsys 0 --vmname shell_cloned
+   (wait for network w/o success)
+
+manually setting NAT Rules fails:
+ $ VBoxManage modifyvm --natpf1 "ssh,tcp,,2222,10.0.2.15,22"
+   (eth0 cannot successfully start)
+
+--- Links:
+[1] http://www.yodi.me/blog/2011/10/26/build-base-box-vagrant-ubuntu-oneiric-11.10-server
