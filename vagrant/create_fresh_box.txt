@@ -43,14 +43,25 @@ Alternative to Vagrant - manually manage boxes
      2443 ->  443 (https)
      2432 -> 5432 (Pg)
 
+5) ssh key exchange
+   - Host:
+     cd ~/.ssh
+     curl -O -L http://github.com/mitchellh/vagrant/raw/master/keys/vagrant
+     curl -O -L http://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub
+   - VM:
+     cd ~/.ssh
+     wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant
+     wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub
+     mv vagrant.pub authorized_keys
 
 --- Hints:
 manually importing a Box fails:
- $ VBoxManage import shell_exported_appliance.ova --vsys 0 --vmname shell_cloned
+ $ VBoxManage import shell_exported_appliance.ova --vsys 0 --vmname <<name>>
    (wait for network w/o success)
 
-manually setting NAT Rules fails:
- $ VBoxManage modifyvm --natpf1 "ssh,tcp,,2222,10.0.2.15,22"
+manually setting NAT Rules fails on an empty port-forwarding list
+however, it works to add more port-forwarding rules.
+ $ VBoxManage modifyvm <<name>> --natpf1 "ssh,tcp,,2222,10.0.2.15,22"
    (eth0 cannot successfully start)
 
 --- Links:
