@@ -16,6 +16,10 @@ Alternative to Vagrant - manually manage boxes
    - install all dpkg-packages
    - set port forwarding rules
    - set shared folders
+   - change /etc/postgresql/9.1/pg_hba.conf
+     local all all trust
+     host all all 127.0.0.1/32 trust
+     host all all ::1/128 trust
    --> export appliance (*.ova Format)
 
 
@@ -28,7 +32,7 @@ Alternative to Vagrant - manually manage boxes
 
 3) Start and Stop VBox
    $ VBoxManage startvm testserver --type headless
-   $ VBoxManage controlvm testserver poweroff
+   $ VBoxManage controlvm testserver acpipowerbutton
 
 
 4) TBD
