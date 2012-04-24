@@ -105,15 +105,6 @@ has file_search => (
     builder => '_build_file_search',
 );
 
-sub _build_file_search {
-    my $self = shift;
-
-    return WK::App::Easy::FileSearch->new(
-        app => $self,
-        search_dirs => [ $self->search_dirs ],
-    );
-}
-
 sub _build_app_directory {
     my $self = shift;
 
@@ -130,6 +121,17 @@ sub _build_app_directory {
     }
 
     die 'no Makefile.PL found, cannot guess app_directory';
+}
+
+sub _build_lib_directory {
+    my $self = shift;
+
+    my ($dir) = grep { -d $_ }
+                map { $self->app_directory->subdir($_) }
+                qw(local perl5lib)
+        or die 'neither "local" nor "perl5lib" dir found in app_directory';
+    
+    return $dir;
 }
 
 sub _check_app_name {
@@ -156,15 +158,13 @@ sub _build_app_name {
     return $app_name;
 }
 
-sub _build_lib_directory {
+sub _build_file_search {
     my $self = shift;
 
-    my ($dir) = grep { -d $_ }
-                map { $self->app_directory->subdir($_) }
-                qw(local perl5lib)
-        or die 'neither "local" nor "perl5lib" dir found in app_directory';
-    
-    return $dir;
+    return WK::App::Easy::FileSearch->new(
+        app => $self,
+        search_dirs => [ $self->search_dirs ],
+    );
 }
 
 sub run {
@@ -268,7 +268,7 @@ sub search_dirs {
 
     my @app_binary_dirs =
         map { $self->app_directory->subdir($_) }
-        'script', 'bin';
+        qw(script bin);
 
     my @search_path_dirs;
     if ($self->use_search_path) {
