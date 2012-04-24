@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+use Modern::Perl;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use WK::App::PdfFromCollection;
