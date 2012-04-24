@@ -126,7 +126,7 @@ sub _build_app_directory {
 sub _build_lib_directory {
     my $self = shift;
 
-    my ($dir) = grep { -d $_ }
+    my ($dir) = grep { -d }
                 map { $self->app_directory->subdir($_) }
                 qw(local perl5lib)
         or die 'neither "local" nor "perl5lib" dir found in app_directory';
@@ -226,7 +226,7 @@ sub find_and_execute_binary {
     $self->log_debug("Trying to find command for '$command_name'");
 
     my $executable_and_matching = sub {
-        -x $_ &&
+        -x &&
         $_->basename =~ m{\A
                           (?: \L${\$self->app_name}\E _)?  # prefix: optional app name
                           \Q$command_name\E                # the requested command
@@ -278,7 +278,7 @@ sub search_dirs {
     }
 
     return
-        grep { -d $_ }
+        grep { -d }
             @app_binary_dirs,
             $self->lib_directory->subdir('bin'),
             $self->app_directory,
