@@ -2,6 +2,7 @@
 use Modern::Perl;
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use WK::App::ConvertPod2Pdf;
+use WK::App::Easy;
 
-WK::App::ConvertPod2Pdf->new_with_options->run;
+WK::App::Easy->new_with_options()->run();
+
