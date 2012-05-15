@@ -33,7 +33,7 @@ has target_file => (
     coerce => 1,
     cmd_flag => 'save_to',
     cmd_aliases => 'f',
-    documentation => 'A File to save to ',
+    documentation => 'A File to save to [$HOME/Desktop/<<collection>>.pdf]',
 );
 
 has cpanm => (
@@ -85,7 +85,7 @@ has cpanm_options => (
             ? ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only']
             : [],
     },
-    documentation => 'Typical options for cpanm. ' . 
+    documentation => 'Typical options for cpanm. ' .
                      'Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
@@ -100,6 +100,13 @@ has installed_modules => (
     },
 );
 
+has toc_file => (
+    traits => ['NoGetopt'],
+    is => 'rw',
+    isa => File,
+    lazy_build => 1,
+);
+
 has pdf_converter => (
     traits => ['NoGetopt'],
     is => 'rw',
@@ -107,10 +114,12 @@ has pdf_converter => (
     lazy_build => 1,
 );
 
+sub lib_directory { $_[0]->directory->subdir('lib/perl5') }
+
 sub run {
     my $self = shift;
 
-    $self->log_debug('Temp Dir:', $self->directory);
+    $self->log_debug('(Temp) Dir:', $self->directory);
 
     $self->install_module($_) for @{$self->modules};
     $self->collect_installed_modules;
@@ -138,8 +147,15 @@ sub _build_directory {
 
 sub _build_target_file {
     my $self = shift;
-    
+
     "$ENV{HOME}/Desktop/${\$self->collection}.pdf"
+}
+
+sub _build_toc_file {
+    my $self = shift;
+
+    $self->lib_directory
+         ->file($self->collection . '.pod');
 }
 
 sub _build_pdf_converter {
@@ -147,10 +163,11 @@ sub _build_pdf_converter {
 
     WK::App::ConvertPod2Pdf->new(
         filter_packages => $self->filter_packages,
-        directory       => $self->directory->subdir('lib/perl5'),
+        directory       => $self->lib_directory,
         target_file     => $self->target_file,
+        toc_file        => $self->toc_file,
         verbose         => $self->verbose,
-      # debug           => 1,
+        debug           => $self->debug,
     );
 }
 
@@ -179,7 +196,7 @@ sub collect_installed_modules {
     $self->log_dryrun("would collect module versions") and return;
     $self->log('collecting module versions');
 
-    my $meta_dir = $self->directory->subdir("lib/perl5/$Config{archname}/.meta");
+    my $meta_dir = $self->lib_directory->subdir("$Config{archname}/.meta");
     foreach my $dist_dir (grep { -d } $meta_dir->children) {
         $self->log_debug("checking dist-dir $dist_dir");
 
@@ -224,14 +241,14 @@ POD
 =cut
 POD
 
-    my $toc_file = $self->directory->subdir('lib/perl5')->file('toc.pod')->openw;
-    print $toc_file $toc;
-    $toc_file->close;
+    my $toc_fh = $self->toc_file->openw;
+    print $toc_fh $toc;
+    $toc_fh->close;
 }
 
 sub create_pdf {
     my $self = shift;
-    
+
     $self->log_dryrun('would create pdf') and return;
     $self->log('creating pdf');
 
@@ -242,7 +259,7 @@ sub _info_for_collection {
     my $collection = shift;
 
     my $info = __info()->{$collection}
-        or die "Collection '$collection' not found. Available are: " . 
+        or die "Collection '$collection' not found. Available are: " .
                join(', ', keys %{__info()});
     return $info;
 }
@@ -389,7 +406,7 @@ sub __info {
                            Dancer::Debug
             )]
         },
-        
+
         dbic => {
             filter => [qw(DBIx::Class SQL Test::DBIx)],
             modules => [qw(DBIx::Class
@@ -419,7 +436,7 @@ sub __info {
             filter => [qw(Mojo Mojolicious)],
             modules => [qw(Mojolicious)],
         },
-        
+
         moose => {
             filter => [qw(Moose MooseX Class::MOP)],
             modules => [qw(Moose
@@ -477,7 +494,7 @@ sub __info {
         },
 
         plack => {
-            filter => [qw(Plack PSGI 
+            filter => [qw(Plack PSGI
                           Starman Starlet Server::Starter
                           Test::WWW::Mechanize::PSGI)],
             modules => [qw(PSGI

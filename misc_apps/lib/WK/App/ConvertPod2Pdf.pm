@@ -31,10 +31,21 @@ has directory => (
     is => 'rw',
     isa => Dir,
     coerce => 1,
-    trigger => sub { -d $_[1] or die "dir $_[1] does not exist " },
+    trigger => sub { -d $_[1] or die "directory $_[1] does not exist " },
     predicate => 'has_directory',
     cmd_aliases => 'd',
     documentation => 'A Directory to use instead of @INC',
+);
+
+has toc_file => (
+    traits => ['Getopt'],
+    is => 'rw',
+    isa => File,
+    coerce => 1,
+    trigger => sub { -f $_[1] or die "toc file $_[1] does not exist " },
+    predicate => 'has_toc_file',
+    cmd_aliases => 't',
+    documentation => 'an optional file containing a Table of contents',
 );
 
 has target_file => (
@@ -102,10 +113,9 @@ sub create_pdf {
 sub create_toc {
     my $self = shift;
     
-    return if !$self->has_directory;
+    return if !$self->has_toc_file;
     
-    my $toc_file = $self->directory->file('toc.pod');
-    $self->add_file_to_pdf($toc_file, ['Table Of Contents']) if -f $toc_file;
+    $self->add_file_to_pdf($self->toc_file, ['Table Of Contents']);
 }
 
 sub process_structure {

@@ -9,7 +9,7 @@ WK::App - Base class for applications
 
 =head1 SYNOPSIS
 
-    package Xxx::App::Foo;
+    package WK::App::Foo;
     use Moose;
     extends 'WK::App';
     
@@ -22,8 +22,6 @@ WK::App - Base class for applications
         
         $self->log_dryrun('would delete files') and return;
         $files->delete;
-        
-        ...
     }
 
 =head1 DESCRIPTION
@@ -84,9 +82,9 @@ has dryrun => (
 
 =head2 log ( @messages )
 
-if verbose mode is on, @message is printed to STDOUT
+if verbose mode is on, @message is printed to STDERR
 
-returns true of verbose mode is on
+returns true if verbose mode is on
 
 =cut
 
@@ -97,9 +95,9 @@ sub log {
 
 =head2 log_debug ( @messages )
 
-if debug mode is on, @message is printed to STDOUT
+if debug mode is on, @message is printed to STDERR
 
-returns true of debug mode is on
+returns true if debug mode is on
 
 =cut
 
@@ -110,9 +108,9 @@ sub log_debug {
 
 =head2 log_dryrun ( @messages )
 
-if dryrun mode is on, @message is printed to STDOUT
+if dryrun mode is on, @message is printed to STDERR
 
-returns true of dryrun mode is on
+returns true if dryrun mode is on
 
 =cut
 
@@ -125,7 +123,7 @@ sub _log_if {
     my $self = shift;
     my $condition = shift;
 
-    say join(' ', @_) if $condition;
+    say STDERR join(' ', @_) if $condition;
 
     return $condition;
 }
