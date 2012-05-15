@@ -43,8 +43,8 @@ has cpanm => (
     required => 1,
     lazy => 1,
     coerce => 1,
-    default => "$ENV{HOME}/bin/cpanm",
-    documentation => 'path to the cpanm binary [$HOME/bin/cpanm]',
+    default => "cpanm",
+    documentation => 'path to the cpanm binary [cpanm]',
 );
 
 has collection => (

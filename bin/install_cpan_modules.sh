@@ -35,7 +35,8 @@ for m in Bundle::CPAN \
          Dist::Zilla \
          Test::More Test::Most Test::Exception Test::DBIx::Class \
          XML::LibXML \
-         JONALLEN/pod2pdf-0.42.tar.gz
+         JONALLEN/pod2pdf-0.42.tar.gz \
+         IPC::System::Simple
 do
     cpanm --mirror ~/minicpan --mirror-only $m $*
 done
