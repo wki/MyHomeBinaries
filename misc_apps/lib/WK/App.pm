@@ -134,10 +134,6 @@ __PACKAGE__->meta->make_immutable;
 
 1;
 
-=head1 SEE ALSO
-
-L<StatisticsCollector>
-
 =head1 AUTHOR
 
 Wolfgang Kinkeldei

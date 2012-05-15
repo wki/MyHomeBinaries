@@ -1,7 +1,6 @@
 #
 # a simple .profile file
 #
-
 current_perl_version () {
     version=`perl -e 'print $^V'`
     path=`which perl`
@@ -22,6 +21,7 @@ current_perl_version () {
         
         (*/perlbrew/*)
             abbr='brew'
+            version=`perlbrew list | grep '*' | sed -e 's/^.*perl-//'`
             ;;
     esac
     
@@ -49,10 +49,6 @@ alias ll='ls -lF'
 alias la='ls -alF'
 
 alias minicpanm='cpanm --mirror ~/minicpan --mirror-only'
-
-# ensure we get our executables even if an other one is occuring earlier in $PATH
-alias cpanm=~/bin/cpanm
-alias perlbrew=~/bin/perlbrew
 
 # allow easy DBIC-Traces
 alias dt='DBIC_TRACE=1 DBIC_TRACE_PROFILE=console'

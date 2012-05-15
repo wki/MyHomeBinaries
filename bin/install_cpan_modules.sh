@@ -1,19 +1,21 @@
 #!/bin/bash
 #
 # install a well-known set of modules I often need
-# path to `cpan` is not fully quoted to get the current binary 
+# path to `cpanm` is not fully quoted to get the current binary
 #   especially when using perlbrew
 #
 
-# DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql90
+# DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql9x
 # XML::LibXML might need  $ENV{XMLPREFIX} = /opt/local
 
 for m in Bundle::CPAN \
+         Modern::Perl \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
          Class::Trigger \
          DBD::Pg DateTime::Format::Pg \
          DBIx::Class DBIx::Class::Schema::Loader DBIx::Class::Candy DBIx::Class::Helpers \
          Moose MooseX::Types MooseX::NonMoose \
+         MooseX::Getopt MooseX::Types::Path::Class \
          Catalyst::Runtime Catalyst::Devel \
          Catalyst::Plugin::ConfigLoader \
          Catalyst::Plugin::Unicode Catalyst::Plugin::I18N \
@@ -35,5 +37,5 @@ for m in Bundle::CPAN \
          XML::LibXML \
          JONALLEN/pod2pdf-0.42.tar.gz
 do
-    cpan $m
+    cpanm --mirror ~/minicpan --mirror-only $m $*
 done
