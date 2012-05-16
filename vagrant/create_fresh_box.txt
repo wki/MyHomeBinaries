@@ -56,7 +56,7 @@ Alternative to Vagrant - manually manage boxes
      cd ~/.ssh
      wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant
      wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub
-     mv vagrant.pub authorized_keys
+     cp vagrant.pub authorized_keys
 
 --- Hints:
 manually importing a Box fails:

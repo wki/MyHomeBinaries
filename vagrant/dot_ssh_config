@@ -1,0 +1,10 @@
+#
+# add these lines to your $HOME/.ssh/config
+#
+Host box
+Hostname 127.0.0.1
+Port 2222
+IdentityFile ~/.ssh/vagrant
+User vagrant
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null

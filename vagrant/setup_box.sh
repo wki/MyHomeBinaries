@@ -2,6 +2,8 @@
 #
 # initially setup a new Ubuntu box
 # must run as root
+#
+# 
 
 echo "Setting Time Zone..."
 echo "Europe/Berlin" > /etc/timezone
@@ -15,5 +17,6 @@ echo "installing some daemons..."
 apt-get -y install nginx-full postgresql-9.1 postgresql-client-9.1 redis-server \
                    libgif-dev libgif4 libjpeg8 libjpeg8-dev \
                    libpng12-0 libpng12-dev \
-                   libxml2 libxml2-dev
+                   libxml2 libxml2-dev \
+                   curl
 

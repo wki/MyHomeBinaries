@@ -3,6 +3,12 @@
 # install perlbrew and some essential tools
 # runs as user 'vagrant'
 
+echo "installing ssh keys"
+mkdir ~/.ssh
+wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant > ~/.ssh/vagrant
+wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub > ~/.ssh/vagrant.pub
+cp ~/.ssh/vagrant.pub ~/.ssh/authorized_keys
+
 echo "install perlbrew..."
 curl -skL http://install.perlbrew.pl | bash
 
@@ -14,7 +20,10 @@ echo ". ~/perl5/perlbrew/etc/bashrc" >> ~/.profile
 perlbrew install-cpanm
 
 echo "build perl-5.14.2..."
-perlbrew install perl-5.14.2
+# uname -i ???
+# 32 bit: -Dplibpth=/usr/lib/i386-linux-gnu
+# 64 bit: -Dplibpth=/usr/lib/x86_64-linux-gnu
+perlbrew install perl-5.14.2 -Dplibpth=/usr/lib/i386-linux-gnu
 perlbrew switch perl-5.14.2
 
 echo "installing carton..."
