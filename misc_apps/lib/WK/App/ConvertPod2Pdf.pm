@@ -174,7 +174,9 @@ sub search_modules_in {
     my ($self, $dir) = @_;
     
     $self->_search_modules_in($dir);
-    $self->_search_modules_in($dir->subdir($Config{archname}));
+    
+    my $arch_subdir = $dir->subdir($Config{archname});
+    $self->_search_modules_in($arch_subdir) if -d $arch_subdir;
 }
 
 sub _search_modules_in {
