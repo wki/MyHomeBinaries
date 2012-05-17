@@ -15,11 +15,13 @@ Alternative to Vagrant - manually manage boxes
    - Install VirtualBox Guest Addition
    - install all dpkg-packages
    - set port forwarding rules
-   - set shared folders
+   - set shared folders -- needed???
    - change /etc/postgresql/9.1/pg_hba.conf
      local all all trust
      host all all 127.0.0.1/32 trust
      host all all ::1/128 trust
+   - add user "sites"
+   - add vagrant ssh keys for users vagrant, sites, root
    --> export appliance (*.ova Format)
 
 

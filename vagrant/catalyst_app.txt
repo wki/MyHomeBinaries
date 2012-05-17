@@ -1,5 +1,9 @@
-Install a Catalyst App
-----------------------
+Install a Catalyst App to a Linux box
+-------------------------------------
 
-/home/vagrant/sites/Xxx
+User: sites
+Deployment to: /home/sites/Xxx
+Daemon: /etc/init.d/xxx_*   z.B. xxx_starman
+Start: /etc/rc2.d/S90_xxx_*
+
 
