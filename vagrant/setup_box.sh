@@ -13,7 +13,9 @@ echo "removing motd..."
 echo "Vagrant Box: Welcome" > /etc/motd
 
 echo "installing some packages..."
-apt-get -y install nginx-full postgresql-9.1 postgresql-client-9.1 redis-server \
+apt-get -y install nginx-full \
+                   postgresql-9.1 postgresql-client-9.1 libpq5 libpq-dev \
+                   redis-server \
                    libgif-dev libgif4 libjpeg8 libjpeg8-dev \
                    libpng12-0 libpng12-dev \
                    libxml2 libxml2-dev \
