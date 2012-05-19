@@ -12,7 +12,7 @@ use Path::Class;
 use WK::App::Easy::FileSearch;
 
 extends 'WK::App';
-with 'MooseX::Getopt';
+# with 'MooseX::Getopt';
 
 #
 # very bad but necessary hack.

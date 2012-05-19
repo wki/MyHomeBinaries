@@ -1,0 +1,4 @@
+#!/usr/bin/env perl
+use WK::App::ProcessTemplate;
+
+WK::App::ProcessTemplate->new_with_options->run;
