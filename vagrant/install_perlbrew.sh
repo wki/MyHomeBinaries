@@ -1,13 +1,7 @@
 #!/bin/bash
 #
 # install perlbrew and some essential tools
-# runs as user 'vagrant'
-
-echo "installing ssh keys"
-mkdir ~/.ssh
-wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant > ~/.ssh/vagrant
-wget http://github.com/mitchellh/vagrant/raw/master/keys/vagrant.pub > ~/.ssh/vagrant.pub
-cp ~/.ssh/vagrant.pub ~/.ssh/authorized_keys
+# runs as user 'sites'
 
 echo "install perlbrew..."
 curl -skL http://install.perlbrew.pl | bash
