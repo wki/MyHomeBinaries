@@ -1,9 +1,8 @@
 package WK::App::PdfFromCollection;
 use Modern::Perl;
 use Moose;
-use MooseX::Types::Path::Class qw(File Dir);
+use MooseX::Types::Path::Class 'File';
 use JSON;
-use File::Temp ();
 use Config;
 use DateTime;
 use WK::App::ConvertPod2Pdf;
@@ -11,18 +10,8 @@ use autodie ':all';
 use namespace::autoclean;
 
 extends 'WK::App';
-with 'MooseX::Getopt';
-
-has directory => (
-    traits => ['Getopt'],
-    is => 'ro',
-    isa => Dir,
-    required => 1,
-    lazy_build => 1,
-    coerce => 1,
-    cmd_aliases => 'd',
-    documentation => 'directory to build into, defaults to a temp dir',
-);
+with 'MooseX::Getopt',
+     'WK::App::Role::LibDirectory';
 
 has target_file => (
     traits => ['Getopt'],
@@ -114,8 +103,6 @@ has pdf_converter => (
     lazy_build => 1,
 );
 
-sub lib_directory { $_[0]->directory->subdir('lib/perl5') }
-
 sub run {
     my $self = shift;
 
@@ -137,12 +124,6 @@ sub _build_filter_packages {
     my $self = shift;
 
     _info_for_collection($self->collection)->{filter}
-}
-
-sub _build_directory {
-    my $self = shift;
-
-    File::Temp::tempdir(CLEANUP => 1);
 }
 
 sub _build_target_file {

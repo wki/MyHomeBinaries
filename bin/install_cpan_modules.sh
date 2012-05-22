@@ -8,7 +8,7 @@
 # DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql9x
 # XML::LibXML might need  $ENV{XMLPREFIX} = /opt/local
 
-for m in Bundle::CPAN \
+for m in Bundle::CPAN CPAN::Mini \
          Modern::Perl \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
          Class::Trigger \
