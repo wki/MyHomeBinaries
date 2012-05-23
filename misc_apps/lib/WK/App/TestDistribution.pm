@@ -1,7 +1,8 @@
 package WK::App::TestDistribution;
 use Modern::Perl;
 use Moose;
-use MooseX::Types::Path::Class qw(File Dir);
+# use MooseX::Types::Path::Class qw(File Dir);
+use WK::Types::PathClass qw(DistributionDir);
 use File::Temp ();
 use autodie ':all';
 use namespace::autoclean;
@@ -13,7 +14,7 @@ with 'MooseX::Getopt',
 has distribution_dir => (
     traits => ['Getopt'],
     is => 'ro',
-    isa => Dir,
+    isa => DistributionDir,
     coerce => 1,
     required => 1,
     cmd_aliases => 'D',
@@ -32,11 +33,15 @@ has perl_version => (
 sub run {
     my $self = shift;
     
+    $self->log("Installing modules into ${\$self->directory} using perl version ${\$self->perl_version}");
+    
+    
+    # deferred to another script...
     # -- only if DIST-ZILLA:
     # chdir $self->distribution_dir
     # dzil clean
     # dzil build
-    #
+    # 
     # new shell, perlbrew use $self->perl_version
     # chdir $self->distribution_dir->subdir(dist_name . version);
     # cpanm -L $self->directory --installdeps .

@@ -1,14 +1,14 @@
 package WK::App::Role::LibDirectory;
 use Moose::Role;
 use File::Temp ();
-use MooseX::Types::Path::Class qw(Dir);
+use WK::Types::PathClass 'ExistingDir';
 
 with 'MooseX::Getopt';
 
 has directory => (
     traits => ['Getopt'],
     is => 'ro',
-    isa => Dir,
+    isa => ExistingDir,
     required => 1,
     lazy_build => 1,
     coerce => 1,
@@ -23,6 +23,7 @@ sub _build_directory {
 }
 
 sub lib_directory { $_[0]->directory->subdir('lib/perl5') }
+sub bin_directory { $_[0]->directory->subdir('bin') }
 
 no Moose::Role;
 1;
