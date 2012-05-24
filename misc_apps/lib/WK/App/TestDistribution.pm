@@ -88,7 +88,7 @@ sub run {
 
     $self->log('Status', $status >> 8);
 
-    exit $status >> 8;
+    die 'FAIL' if $status>>8;
 }
 
 __PACKAGE__->meta->make_immutable;
