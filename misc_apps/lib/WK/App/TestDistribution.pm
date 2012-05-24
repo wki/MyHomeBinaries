@@ -1,10 +1,8 @@
 package WK::App::TestDistribution;
 use Modern::Perl;
 use Moose;
-# use MooseX::Types::Path::Class qw(File Dir);
-use WK::Types::PathClass qw(DistributionDir);
+use WK::Types::PathClass qw(DistributionDir ExecutableFile);
 use File::Temp ();
-use autodie ':all';
 use namespace::autoclean;
 
 extends 'WK::App';
@@ -21,32 +19,76 @@ has distribution_dir => (
     documentation => 'Directory of the distribution to test',
 );
 
-has perl_version => (
+has perl => (
     traits => ['Getopt'],
     is => 'ro',
-    isa => 'Str',
+    isa => ExecutableFile,
+    coerce => 1,
     required => 1,
-    cmd_aliases => 'p',
-    documentation => 'Perl version to use for testing',
+    lazy_build => 1,
+    documentation => 'Perl binary to use for testing [$PATH]',
 );
 
+has cpanm => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => ExecutableFile,
+    coerce => 1,
+    required => 1,
+    lazy_build => 1,
+    documentation => 'cpanm binary to use for testing [$PATH]',
+);
+
+has shell => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => ExecutableFile,
+    coerce => 1,
+    required => 1,
+    lazy_build => 1,
+    documentation => 'Shell to use [$ENV{SHELL}]',
+);
+
+sub _build_perl  { __search_in_path('perl') }
+sub _build_cpanm { __search_in_path('cpanm') }
+sub _build_shell { $ENV{SHELL} }
+
+sub __search_in_path {
+    my $executable = shift;
+
+    my ($bin) =
+        map { my $bin = "$_/$executable"; -x $bin ? $bin : () }
+        split ':', $ENV{PATH};
+
+    return $bin;
+}
+
+# for performance start with:
+# PERL_CPANM_OPT="--mirror /path/to/minicpan --mirror-only"
+#
 sub run {
     my $self = shift;
-    
-    $self->log("Installing modules into ${\$self->directory} using perl version ${\$self->perl_version}");
-    
-    
-    # deferred to another script...
-    # -- only if DIST-ZILLA:
-    # chdir $self->distribution_dir
-    # dzil clean
-    # dzil build
-    # 
-    # new shell, perlbrew use $self->perl_version
-    # chdir $self->distribution_dir->subdir(dist_name . version);
-    # cpanm -L $self->directory --installdeps .
-    # PERL5LIB=$self->lib_directory make test
-    # die on non-zero exit status
+
+    $self->log("Installing modules into ${\$self->directory}",
+               "using perl ${\$self->perl}",
+               "and cpanm ${\$self->cpanm}");
+
+    my @commands = (
+        "export PATH='${\$self->perl->dir}:$ENV{PATH}'",
+        "export PERL5LIB='${\$self->lib_directory}'",
+        "cd '${\$self->distribution_dir}' ",
+        "${\$self->cpanm} -L '${\$self->directory}' -q -n --installdeps . ",
+        "${\$self->perl} Makefile.PL",
+        "make test",
+    );
+
+    my $status =
+        system $self->shell,
+            -c => join(' && ', @commands) . ' 2>&1';
+
+    $self->log('Status', $status >> 8);
+
+    exit $status >> 8;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -8,7 +8,7 @@ use MooseX::Types -declare => [qw(ExistingFile ExecutableFile ExistingDir Distri
 subtype ExistingFile,
     as MooseX::Types::Path::Class::File,
     where { -f $_ },
-    message { "File $_ does not exist" };
+    message { "File '$_' does not exist" };
 
 coerce ExistingFile,
     (
@@ -26,7 +26,7 @@ coerce ExistingFile,
 subtype ExecutableFile,
     as ExistingFile,
     where { -x $_ },
-    message { "File $_ is not executable" };
+    message { "File '$_' is not executable" };
 
 coerce ExecutableFile,
     @{ ExistingFile->coercion->type_coercion_map };
@@ -35,7 +35,7 @@ coerce ExecutableFile,
 subtype ExistingDir,
     as MooseX::Types::Path::Class::Dir,
     where { -d $_ },
-    message { "Directory $_ does not exist" };
+    message { "Directory '$_' does not exist" };
 
 coerce ExistingDir,
     (
