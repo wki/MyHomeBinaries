@@ -1,7 +1,10 @@
 package WK::App;
 use Modern::Perl;
 use Moose;
-with 'MooseX::Getopt';
+use FindBin;
+use Path::Class ();
+with 'MooseX::SimpleConfig',
+     'MooseX::Getopt';
 
 =head1 NAME
 
@@ -12,25 +15,68 @@ WK::App - Base class for applications
     package WK::App::Foo;
     use Moose;
     extends 'WK::App';
-    
+
     sub whatever {
         my $self = shift;
-        
+
         $self->log('some message printed if verbose');
-        
+
         $self->log_debug('seen in debug mode');
-        
+
         $self->log_dryrun('would delete files') and return;
+        
+        # do something dangerous, eg:
         $files->delete;
     }
 
 =head1 DESCRIPTION
 
-handles the common part of all applications
+handles the common part of all applications.
 
 =head1 ATTRIBUTES
 
 =cut
+
+=head2 configfile
+
+overriden attribute definition from MooseX::SimpleConfig Role. 
+
+The optional configfile is named "." + <name of the script> . "ext" and
+resides directly in your home directory. The file extension is required in
+order to recognize the format of the file.
+
+=cut
+
+{
+    my $basename = $FindBin::Script;
+    $basename =~ s{[.]\w+ \z}{}xms;
+        
+    has '+configfile' => (
+        traits => ['Getopt'],
+        cmd_aliases => 'C',
+        documentation => "Config file [\$ENV{HOME}/$basename.*]"
+    );
+    
+    if (my $config_file = _find_config_file()) {
+        has '+configfile' => (
+            default => sub { $config_file },
+        );
+    }
+    
+    sub _find_config_file {
+        my $home = Path::Class::Dir->new($ENV{HOME})
+            or return;
+    
+        while (my $config_file = $home->next) {
+            next if $config_file->is_dir;
+            next if $config_file->basename !~ m{\A [.] \Q$basename\E [.] \w+ \z}xms;
+            
+            return $config_file;
+        }
+        
+        return;
+    }
+}
 
 =head2 verbose
 

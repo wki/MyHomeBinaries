@@ -15,7 +15,8 @@ for m in Bundle::CPAN CPAN::Mini \
          DBD::Pg DateTime::Format::Pg \
          DBIx::Class DBIx::Class::Schema::Loader DBIx::Class::Candy DBIx::Class::Helpers \
          Moose MooseX::Types MooseX::NonMoose \
-         MooseX::Getopt MooseX::Types::Path::Class MooseX::Types::Stringlike \
+         MooseX::Getopt MooseX::SimpleConfig \
+         MooseX::Types::Path::Class MooseX::Types::Stringlike \
          MooseX::Types::Path::Class::MoreCoercions \
          Catalyst::Runtime Catalyst::Devel \
          Catalyst::Plugin::ConfigLoader \

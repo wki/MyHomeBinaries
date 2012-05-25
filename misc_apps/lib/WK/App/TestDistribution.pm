@@ -7,7 +7,7 @@ use namespace::autoclean;
 
 extends 'WK::App';
 with 'MooseX::Getopt',
-     'WK::App::Role::LibDirectory';
+     'WK::App::Role::InstallBase';
 
 has distribution_dir => (
     traits => ['Getopt'],
@@ -26,7 +26,7 @@ has perl => (
     coerce => 1,
     required => 1,
     lazy_build => 1,
-    documentation => 'Perl binary to use for testing [$PATH]',
+    documentation => "Perl binary to use for testing [${\(__search_in_path('perl') || 'unknown')}]",
 );
 
 has cpanm => (
@@ -36,7 +36,7 @@ has cpanm => (
     coerce => 1,
     required => 1,
     lazy_build => 1,
-    documentation => 'cpanm binary to use for testing [$PATH]',
+    documentation => "cpanm binary to use for testing [${\(__search_in_path('cpanm') || 'unknown')}]",
 );
 
 has shell => (
@@ -46,7 +46,14 @@ has shell => (
     coerce => 1,
     required => 1,
     lazy_build => 1,
-    documentation => 'Shell to use [$ENV{SHELL}]',
+    documentation => "Shell to use [$ENV{SHELL}]",
+);
+
+has env => (
+    traits => ['Getopt'],
+    is => 'ro',
+    isa => 'HashRef',
+    default => sub { {} },
 );
 
 sub _build_perl  { __search_in_path('perl') }
@@ -65,19 +72,26 @@ sub __search_in_path {
 
 # for performance start with:
 # PERL_CPANM_OPT="--mirror /path/to/minicpan --mirror-only"
+# or define in env
 #
 sub run {
     my $self = shift;
 
-    $self->log("Installing modules into ${\$self->directory}",
-               "using perl ${\$self->perl}",
-               "and cpanm ${\$self->cpanm}");
+    $self->log("Installing modules into ${\$self->install_base}");
+    $self->log("using perl ${\$self->perl}");
+    $self->log("and cpanm ${\$self->cpanm}");
+
+    $self->log('ENV:',
+               map { "$_='${\$self->env->{$_}}'" }
+               keys %{$self->env})
+        if scalar keys %{$self->env};
 
     my @commands = (
+        ( map { "export $_='${\$self->env->{$_}}'"} keys %{$self->env} ),
         "export PATH='${\$self->perl->dir}:$ENV{PATH}'",
         "export PERL5LIB='${\$self->lib_directory}'",
         "cd '${\$self->distribution_dir}' ",
-        "${\$self->cpanm} -L '${\$self->directory}' -q -n --installdeps . ",
+        "${\$self->cpanm} -L '${\$self->install_base}' -q -n --installdeps . ",
         "${\$self->perl} Makefile.PL",
         "make test",
     );

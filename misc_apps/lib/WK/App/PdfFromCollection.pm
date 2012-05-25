@@ -11,7 +11,7 @@ use namespace::autoclean;
 
 extends 'WK::App';
 with 'MooseX::Getopt',
-     'WK::App::Role::LibDirectory';
+     'WK::App::Role::InstallBase';
 
 has target_file => (
     traits => ['Getopt'],
@@ -106,7 +106,7 @@ has pdf_converter => (
 sub run {
     my $self = shift;
 
-    $self->log_debug('(Temp) Dir:', $self->directory);
+    $self->log_debug('(Temp) Install Base:', $self->install_base);
 
     $self->install_module($_) for @{$self->modules};
     $self->collect_installed_modules;
@@ -165,7 +165,7 @@ sub install_module {
                 @{$self->cpanm_options},
                 '-n',
                 '-q',
-                '-L' => $self->directory,
+                '-L' => $self->install_base,
                 $module,
                 ($self->debug ? () : '>/dev/null 2>/dev/null'),
                 ;
