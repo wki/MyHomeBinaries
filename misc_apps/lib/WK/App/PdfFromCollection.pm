@@ -465,11 +465,20 @@ sub __info {
                            MooseX::Types
                            MooseX::Types::Common
                            MooseX::Types::DateTime
+                           MooseX::Types::DateTime::ButMaintained
+                           MooseX::Types::DateTime::MoreCoercions
+                           MooseX::Types::DateTimeX
+                           MooseX::Types::DBIx::Class
+                           MooseX::Types::Email
                            MooseX::Types::LoadableClass
+                           MooseX::Types::Parameterizable
                            MooseX::Types::Path::Class
+                           MooseX::Types::Path::Class::MoreCoercions
                            MooseX::Types::Perl
                            MooseX::Types::Set::Object
+                           MooseX::Types::Stringlike
                            MooseX::Types::Structured
+                           MooseX::Types::XMLSchema
                            MooseX::Workers
                            )]
         },
