@@ -3,8 +3,7 @@ use Modern::Perl;
 use Moose;
 use FindBin;
 use Path::Class ();
-with 'MooseX::SimpleConfig',
-     'MooseX::Getopt';
+with 'MooseX::Getopt';
 
 =head1 NAME
 
@@ -36,47 +35,6 @@ handles the common part of all applications.
 =head1 ATTRIBUTES
 
 =cut
-
-=head2 configfile
-
-overriden attribute definition from MooseX::SimpleConfig Role. 
-
-The optional configfile is named "." + <name of the script> . "ext" and
-resides directly in your home directory. The file extension is required in
-order to recognize the format of the file.
-
-=cut
-
-{
-    my $basename = $FindBin::Script;
-    $basename =~ s{[.]\w+ \z}{}xms;
-        
-    has '+configfile' => (
-        traits => ['Getopt'],
-        cmd_aliases => 'C',
-        documentation => "Config file [\$ENV{HOME}/$basename.*]"
-    );
-    
-    if (my $config_file = _find_config_file()) {
-        has '+configfile' => (
-            default => sub { $config_file },
-        );
-    }
-    
-    sub _find_config_file {
-        my $home = Path::Class::Dir->new($ENV{HOME})
-            or return;
-    
-        while (my $config_file = $home->next) {
-            next if $config_file->is_dir;
-            next if $config_file->basename !~ m{\A [.] \Q$basename\E [.] \w+ \z}xms;
-            
-            return $config_file;
-        }
-        
-        return;
-    }
-}
 
 =head2 verbose
 
