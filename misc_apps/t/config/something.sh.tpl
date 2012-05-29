@@ -1,0 +1,1 @@
+Something [% name %] - Info: [% info.bar %]

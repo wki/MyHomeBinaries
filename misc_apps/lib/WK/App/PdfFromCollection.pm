@@ -11,7 +11,7 @@ use namespace::autoclean;
 
 extends 'WK::App';
 with 'MooseX::Getopt',
-     'WK::App::Role::InstallBase';
+     'WK::App::Role::Cpanm';
 
 has target_file => (
     traits => ['Getopt'],
@@ -23,17 +23,6 @@ has target_file => (
     cmd_flag => 'save_to',
     cmd_aliases => 'f',
     documentation => 'A File to save to [$HOME/Desktop/<<collection>>.pdf]',
-);
-
-has cpanm => (
-    traits => ['Getopt'],
-    is => 'ro',
-    isa => File,
-    required => 1,
-    lazy => 1,
-    coerce => 1,
-    default => "cpanm",
-    documentation => 'path to the cpanm binary [cpanm]',
 );
 
 has collection => (
@@ -60,22 +49,6 @@ has filter_packages => (
     isa => 'ArrayRef[Str]',
     required => 1,
     lazy_build => 1,
-);
-
-has cpanm_options => (
-    traits => ['Getopt'],
-    is => 'ro',
-    isa => 'ArrayRef[Str]',
-    required => 1,
-    lazy => 1,
-    cmd_aliases => 'o',
-    default => sub {
-        -d "$ENV{HOME}/minicpan"
-            ? ['--mirror', "$ENV{HOME}/minicpan", '--mirror-only']
-            : [],
-    },
-    documentation => 'Typical options for cpanm. ' .
-                     'Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
 has installed_modules => (
@@ -159,16 +132,10 @@ sub install_module {
     $self->log_dryrun("would install $module") and return;
     $self->log("Installing $module");
 
-    # cpanm still generates some output. Currently we just ignore this fact...
-    system join ' ',
-                $self->cpanm,
-                @{$self->cpanm_options},
-                '-n',
-                '-q',
-                '-L' => $self->install_base,
-                $module,
-                ($self->debug ? () : '>/dev/null 2>/dev/null'),
-                ;
+    $self->run_cpanm(
+        $module,
+        ($self->debug ? () : '>/dev/null 2>/dev/null'),
+    );
 }
 
 sub collect_installed_modules {

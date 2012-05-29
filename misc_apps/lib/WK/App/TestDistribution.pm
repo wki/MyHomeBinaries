@@ -7,7 +7,8 @@ use namespace::autoclean;
 
 extends 'WK::App';
 with 'MooseX::Getopt',
-     'WK::App::Role::InstallBase';
+     'WK::App::Role::Cpanm',
+     'WK::App::Role::LocateBinary';
 
 has distribution_dir => (
     traits => ['Getopt'],
@@ -26,17 +27,7 @@ has perl => (
     coerce => 1,
     required => 1,
     lazy_build => 1,
-    documentation => "Perl binary to use for testing [${\(__search_in_path('perl') || 'unknown')}]",
-);
-
-has cpanm => (
-    traits => ['Getopt'],
-    is => 'ro',
-    isa => ExecutableFile,
-    coerce => 1,
-    required => 1,
-    lazy_build => 1,
-    documentation => "cpanm binary to use for testing [${\(__search_in_path('cpanm') || 'unknown')}]",
+    documentation => 'Perl binary to use for testing [$PATH/perl]',
 );
 
 has shell => (
@@ -54,21 +45,11 @@ has env => (
     is => 'ro',
     isa => 'HashRef',
     default => sub { {} },
+    documentation => 'additional environment variables to set',
 );
 
-sub _build_perl  { __search_in_path('perl') }
-sub _build_cpanm { __search_in_path('cpanm') }
+sub _build_perl  { $_[0]->locate_binary('perl') }
 sub _build_shell { $ENV{SHELL} }
-
-sub __search_in_path {
-    my $executable = shift;
-
-    my ($bin) =
-        map { my $bin = "$_/$executable"; -x $bin ? $bin : () }
-        split ':', $ENV{PATH};
-
-    return $bin;
-}
 
 # for performance start with:
 # PERL_CPANM_OPT="--mirror /path/to/minicpan --mirror-only"
@@ -91,10 +72,12 @@ sub run {
         "export PATH='${\$self->perl->dir}:$ENV{PATH}'",
         "export PERL5LIB='${\$self->lib_directory}'",
         "cd '${\$self->distribution_dir}' ",
-        "${\$self->cpanm} -L '${\$self->install_base}' -q -n --installdeps . ",
+        "${\$self->get_cpanm_commandline} --installdeps .",
         "${\$self->perl} Makefile.PL",
         "make test",
     );
+    
+    $self->log_dryrun(join "\n", 'would execute:', @commands) and return;
 
     my $status =
         system $self->shell,
