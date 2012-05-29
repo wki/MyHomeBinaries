@@ -87,6 +87,7 @@ sub config_vars {
     );
     $self->log_debug('RAW CONFIG:', Dumper $config);
 
+    # TODO: what happens if we have > 2 hashes to merge???
     my $merged_config = merge(map { values %$_ } @$config);
 
     $self->interpolate($merged_config);
