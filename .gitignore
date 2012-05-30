@@ -2,3 +2,9 @@ WK-App-*/
 WK-App-*.tar.gz
 .build/
 pod2htm?.tmp
+META.yml
+MYMETA.*
+Makefile
+blib/
+inc/
+pm_to_blib

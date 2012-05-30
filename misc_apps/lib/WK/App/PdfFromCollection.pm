@@ -132,10 +132,7 @@ sub install_module {
     $self->log_dryrun("would install $module") and return;
     $self->log("Installing $module");
 
-    $self->run_cpanm(
-        $module,
-        ($self->debug ? () : '>/dev/null 2>/dev/null'),
-    );
+    $self->run_cpanm($module);
 }
 
 sub collect_installed_modules {

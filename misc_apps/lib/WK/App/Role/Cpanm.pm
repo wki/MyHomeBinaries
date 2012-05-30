@@ -6,6 +6,8 @@ use WK::Types::PathClass qw(ExistingDir ExecutableFile);
 with 'MooseX::Getopt',
      'WK::App::Role::LocateBinary';
 
+sub DEMOLISH;
+
 has install_base => (
     traits => ['Getopt'],
     is => 'ro',
@@ -38,6 +40,11 @@ has cpanm_options => (
                      'Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
+# ensure we demolish early to allow testing
+before DEMOLISH => sub {
+    File::Temp::cleanup();
+};
+
 sub _build_install_base  { File::Temp::tempdir(CLEANUP => 1) }
 sub _build_cpanm         { $_[0]->locate_binary('cpanm') }
 sub _build_cpanm_options { -d "$ENV{HOME}/minicpan"
@@ -63,6 +70,7 @@ sub get_cpanm_commandline {
              '-n',
              '-q',
              '-L' => "'${\$self->install_base}'",
+             ($self->debug ? () : '>/dev/null 2>/dev/null'),
              @_;
 }
 
