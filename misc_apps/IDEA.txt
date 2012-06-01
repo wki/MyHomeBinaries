@@ -1,0 +1,53 @@
+--------[ Ideas for expanding easy
+
+- easy sync [-n] [-v] [--git-status]
+    * find "sync.ext" config file in config-dir or app-dir
+    * check sync status between this app's repository and all others
+    * sync files being different to this repository
+
+- easy migration ...
+    * DBIx::Class::Migration::Script
+    * use model named 'DB' (unless explicitly given)
+      alternative: search for a model that has a 'connect_info' key
+                   in CONFIG_LOCAL_SUFFIX config-file
+
+- easy deploy <system> [-n] [-v] [--status]
+    * find "deploy_<system>.ext" config file in config-dir or app-dir
+    * follow deploy instructions for every machine listed
+    * TBD
+
+- easy overview
+    * sync overview + git status
+    * db migration status
+    * deployment status for every system
+
+
+--------[ Tests needed
+
+- unit tests (running on dev machine)
+- integration/component tests (running on CI server or dev machine)
+- acceptance tests (running on CI server or dev machine)
+- deployment tests (running on deployment machines)
+
+
+--------[ Scripts needed
+
+?
+
+
+--------[ Provisioning
+
+- how to install/setup needed daemons? Puppet
+- how to install perl modules? carton bundle
+
+
+--------[ Order of deployment
+
+- set "out of service page"
+- maybe stop daemons (except web server)
+- sync everything
+- provisioning, perl modules
+- run scripts, db migration, etc.
+- deployment test
+- stop "out of service page"
+

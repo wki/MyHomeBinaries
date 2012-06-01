@@ -8,12 +8,13 @@
 # DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql9x
 # XML::LibXML might need  $ENV{XMLPREFIX} = /opt/local
 
-for m in Bundle::CPAN CPAN::Mini \
+for m in Bundle::CPAN CPAN::Mini Carton \
          Modern::Perl \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
          Class::Trigger \
          DBD::Pg DateTime::Format::Pg \
          DBIx::Class DBIx::Class::Schema::Loader DBIx::Class::Candy DBIx::Class::Helpers \
+         DBIx::Class::DeploymentHandler DBIx::Class::Migration \
          Moose MooseX::Types MooseX::NonMoose \
          MooseX::Getopt MooseX::SimpleConfig \
          MooseX::Types::Path::Class MooseX::Types::Stringlike \

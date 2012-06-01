@@ -8,11 +8,9 @@ use Module::Pluggable
 use MooseX::Types::Path::Class 'Dir';
 use List::Util 'first';
 use Path::Class;
-# use Try::Tiny;
 use WK::App::Easy::FileSearch;
 
 extends 'WK::App';
-# with 'MooseX::Getopt';
 
 #
 # very bad but necessary hack.
