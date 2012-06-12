@@ -24,10 +24,15 @@
 
 --------[ Tests needed
 
-- unit tests (running on dev machine)
-- integration/component tests (running on CI server or dev machine)
-- acceptance tests (running on CI server or dev machine)
-- deployment tests (running on deployment machines)
+- unit tests        (running on dev machine)
+  dir: t
+- component tests   (running on CI server or dev machine)
+  dir: t -OR- xt/component
+- acceptance tests  (running on CI server or dev machine)
+  dir: t -OR- xt/acceptance
+- deployment tests  (running on deployment machines)
+  dir: xt/deployment
+
 
 
 --------[ Scripts needed

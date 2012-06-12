@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # initially setup a new Ubuntu box
-# must run as user 'root'
+# must run as user 'root' immediately after a fresh OS install
 #
 
 echo "Setting Time Zone..."
