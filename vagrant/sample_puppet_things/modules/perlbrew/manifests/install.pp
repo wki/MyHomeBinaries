@@ -1,8 +1,8 @@
 class perlbrew::install($user='vagrant', $version='5.14.2') {
-  exec { 'install':
+  exec { 'install_perl':
     command => "/home/$user/perl5/perlbrew/bin/perlbrew install $version",
     timeout => 0,
     creates => "/home/$user/perl5/perlbrew/perls/perl-$version/bin/perl",
-    require => package['build-essential'],
+    require => Exec['install_perlbrew'],
   }
 }
