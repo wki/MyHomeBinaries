@@ -1,10 +1,17 @@
 class perlbrew($user = 'vagrant') {
 
+  $home_dir     = "/home/$user"
+  $perlbrew_dir = "$home_dir/perl5/perlbrew"
+  $bin_dir      = "$perlbrew_dir/bin"
+  
+  $perlbrew     = "$bin_dir/perlbrew"
+  $cpanm        = "$bin_dir/cpanm"
+  
   ### FIXME: can we ensure user is present?
 
   exec { 'install_perlbrew':
     command => '/usr/bin/wget -q -O - http://install.perlbrew.pl | /bin/bash',
-    creates => "/home/$user/perl5/perlbrew/bin/perlbrew",
+    creates => $perlbrew,
     cwd => "/home/$user",
     # group => $user,
     user => $user,
@@ -16,14 +23,14 @@ class perlbrew($user = 'vagrant') {
   }
 
   exec { 'init_perlbrew':
-    command => "/home/$user/perl5/perlbrew/bin/perlbrew init",
-    creates => "/home/$user/perl5/perlbrew/perls",
+    command => "$perlbrew init",
+    creates => "$perlbrew_dir/perls",
     require => Exec['install_perlbrew'],
   }
 
   exec { 'install_cpanm':
-    command => "/home/$user/perl5/perlbrew/bin/perlbrew install-cpanm",
-    creates => "/home/$user/perl5/perlbrew/bin/cpanm",
+    command => "$perlbrew install-cpanm",
+    creates => $cpanm,
     require => Exec['init_perlbrew'],
   }
 

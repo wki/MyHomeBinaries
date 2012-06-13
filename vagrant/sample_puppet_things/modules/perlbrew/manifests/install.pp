@@ -1,8 +1,9 @@
-class perlbrew::install($user='vagrant', $version='5.14.2') {
+class perlbrew::install($version='5.14.2') {
+  
   exec { 'install_perl':
-    command => "/home/$user/perl5/perlbrew/bin/perlbrew install $version",
+    command => "$perlbrew::perlbrew install $version",
     timeout => 0,
-    creates => "/home/$user/perl5/perlbrew/perls/perl-$version/bin/perl",
+    creates => "$perlbrew::perlbrew_dir/perls/perl-$version/bin/perl",
     require => Exec['install_perlbrew'],
   }
 }

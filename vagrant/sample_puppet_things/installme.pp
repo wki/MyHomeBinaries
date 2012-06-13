@@ -12,7 +12,7 @@ node default {
   class { 'motd': }
   class { 'nginx': }
   class { 'perlbrew': }
-  class { 'perlbrew::install': 
+  class { 'perlbrew::install':
     version => '5.14.2'
   }
 

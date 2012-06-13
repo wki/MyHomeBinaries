@@ -3,7 +3,6 @@ class sudo {
     ensure => installed,
   }
   service { 'sudo':
-    ensure => running,
     enable => true,
     require => Package['sudo'],
     subscribe => File['sudoers'],
