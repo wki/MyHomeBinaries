@@ -8,6 +8,8 @@
 # DBD::Pg might need      $ENV{POSTGRES_HOME} = /opt/local/lib/postgresql9x
 # XML::LibXML might need  $ENV{XMLPREFIX} = /opt/local
 
+# curl -L http://smartcd.org/install | bash
+
 for m in Bundle::CPAN CPAN::Mini Carton \
          Modern::Perl \
          Imager Imager::File::GIF Imager::File::JPEG Imager::File::PNG \
@@ -39,7 +41,8 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          Test::More Test::Most Test::Exception Test::DBIx::Class \
          XML::LibXML \
          JONALLEN/pod2pdf-0.42.tar.gz \
-         IPC::System::Simple
+         IPC::System::Simple \
+         App::Ack
 do
     cpanm --mirror ~/minicpan --mirror-only $m $*
 done
