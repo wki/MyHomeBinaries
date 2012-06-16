@@ -17,6 +17,7 @@ apt-get install puppet
 ###
 ###  - nginx        -- server + base config
 ###    https://github.com/example42/puppet-nginx
+###    https://github.com/BenoitCattie/puppet-nginx
 ###
 ###  - perlbrew as user 'sites'
 ###    https://github.com/rafl/puppet-module-perlbrew

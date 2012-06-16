@@ -7,5 +7,10 @@ class nginx {
     ensure => running,
     enable => true,
     require => Package['nginx'],
+    subscribe => File['nginx_config'],
+  }
+  
+  file { 'nginx_config':
+    path => '/etc/nginx/nginx.conf',
   }
 }

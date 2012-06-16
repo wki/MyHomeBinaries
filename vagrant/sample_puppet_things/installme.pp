@@ -15,6 +15,9 @@ node default {
   #   perl_version => '5.14.2'
   # }
   
-  perlbrew { 'vagrant_perlbrew': }
+  perlbrew { 'perlbrew_vagrant':
+    user         => 'vagrant',
+    perl_version => '5.14.2',
+  }
 
 }
