@@ -6,6 +6,8 @@
 #  $ rsync -vcr sample_puppet_things box:
 #  $ ssh box 'cd sample_puppet_things; sudo puppet apply --modulepath=modules installme.pp'
 #
+# syntaxcheck: add --noop option
+#
 node default {
   class { 'sudo': }
   class { 'timezone': }
