@@ -1,3 +1,7 @@
+# = Class: sudo
+#
+# expand sudo and ensure we have installed a prepared sudoers file
+#
 class sudo {
   package { 'sudo':
     ensure => installed,

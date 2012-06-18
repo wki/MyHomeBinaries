@@ -13,13 +13,9 @@ node default {
   class { 'timezone': }
   class { 'motd': }
   class { 'nginx': }
-  # class { 'perlbrew':
-  #   perl_version => '5.14.2'
-  # }
   
   perlbrew { 'perlbrew_vagrant':
     user         => 'vagrant',
-    perl_version => '5.14.2',
+    perl_version => '5.16.0',
   }
-
 }

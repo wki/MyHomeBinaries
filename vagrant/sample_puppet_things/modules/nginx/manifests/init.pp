@@ -1,3 +1,9 @@
+# = Class: nginx
+#
+# ensures package nginx is installed
+#
+# TODO: add site support etc.
+#
 class nginx {
   package { 'nginx':
     name => 'nginx-full',
