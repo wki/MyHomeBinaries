@@ -14,8 +14,15 @@ node default {
   class { 'motd': }
   class { 'nginx': }
   
-  perlbrew { 'perlbrew_vagrant':
+  # TODO: must create a class 'perlbrew_vagrant'
+  class { 'perlbrew':
     user         => 'vagrant',
     perl_version => '5.16.0',
   }
+  
+  
+  # catalyst { 'sample_site': 
+  #   user => 'vagrant',
+  #   perl_version => '5.16.0',
+  # }
 }
