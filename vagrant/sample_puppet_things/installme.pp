@@ -6,14 +6,23 @@
 #  $ rsync -vcr sample_puppet_things box:
 #  $ ssh box 'cd sample_puppet_things; sudo puppet apply --modulepath=modules installme.pp'
 #
+# syntaxcheck: add --noop option
+#
 node default {
   class { 'sudo': }
   class { 'timezone': }
   class { 'motd': }
   class { 'nginx': }
-  class { 'perlbrew': }
-  class { 'perlbrew::install':
-    version => '5.14.2'
+  
+  # TODO: must create a class 'perlbrew_vagrant'
+  class { 'perlbrew':
+    user         => 'vagrant',
+    perl_version => '5.16.0',
   }
-
+  
+  
+  # catalyst { 'sample_site': 
+  #   user => 'vagrant',
+  #   perl_version => '5.16.0',
+  # }
 }
