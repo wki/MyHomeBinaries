@@ -61,6 +61,8 @@ sub execute {
     } else {
         $self->log_debug("is_present ${\$self->type} (${\$self->name})");
     }
+    
+    return $self;
 }
 
 sub is_present { 0 }

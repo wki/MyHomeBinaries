@@ -8,8 +8,8 @@ Example:
     #!/usr/bin/env perl
     use Provision;
     
-    Pack 'wget';
-    Pack 'build-essential';
+    Package 'wget';
+    Package 'build-essential';
     User 'vagrant', 
         uid => 501, 
         gid => 501, 
@@ -25,4 +25,24 @@ Provision           -- enthält Befehlsworte pro package
   Provision::Entity::File
   Provision::Entity::Dir
   Provision::Entity::Tree
-  
+
+
+structure of files for applying:
+
+/
+  bin/
+    apply.pl
+  lib/
+    ... all perl modules needed
+  files/
+    ... all files needed
+
+
+order:
+ - pack everything into a .tar.gz
+ - copy .tar.gz to /tmp
+ - unpack .tar.gz
+ - PERL5LIB=/tmp/lib perl /tmp/bin/apply.pl [options]
+ - done.
+
+

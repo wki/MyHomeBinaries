@@ -1,7 +1,23 @@
 package Provision::Entity::User;
 use Moose;
+use MooseX::Types::Path::Class 'Dir';
 use namespace::autoclean;
 extends 'Provision::Entity';
+
+has uid => (
+    is => 'rw',
+    isa => 'Int',
+);
+
+has gid => (
+    is => 'rw',
+    isa => 'Int',
+);
+
+has home_directory => (
+    is => 'rw',
+    isa => Dir,
+);
 
 sub is_present {
     my $self = shift;
