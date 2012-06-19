@@ -2,8 +2,15 @@
 #
 # install a catalyst website with all dependencies
 #
-class catalyst($user = 'vagrant') {
+class catalyst($user = 'vagrant', $group = 'vagrant', $root_dir) {
   need::user { $user: }
+  
+  file { "$root_dir":
+    ensure => directory,
+    owner => $user,
+    group => $group,
+    mode => 0755
+  }
   
   # prepare directories -- according to file/list ???
   
