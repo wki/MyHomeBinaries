@@ -30,19 +30,23 @@ Provision           -- enthält Befehlsworte pro package
 structure of files for applying:
 
 /
+  Makefile.PL
   bin/
     apply.pl
   lib/
     ... all perl modules needed
+  local/
+    ... cpanm provided stuff
   files/
     ... all files needed
 
 
 order:
  - pack everything into a .tar.gz
- - copy .tar.gz to /tmp
+ - copy .tar.gz to /root/provision
  - unpack .tar.gz
- - PERL5LIB=/tmp/lib perl /tmp/bin/apply.pl [options]
+ - PERL5LIB=/root/provision/lib:/root/provision/local/lib/perl5 \
+   perl /root/provision/bin/apply.pl [options]
  - done.
 
 
