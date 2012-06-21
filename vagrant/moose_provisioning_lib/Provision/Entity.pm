@@ -15,10 +15,8 @@ has app => (
     is => 'ro',
     isa => 'Provision::App',
     required => 1,
-    handles => {
-        verbose => 'verbose',
-        dryrun  => 'dryrun',
-    },
+    handles => [qw(verbose dryrun
+                   log log_dryrun log_debug)],
 );
 
 has call_on_create => (
@@ -44,30 +42,6 @@ sub type {
     return $type;
 }
 
-sub log {
-    my $self = shift;
-    $self->_log_if($self->app->verbose || $self->app->debug, @_);
-}
-
-sub log_debug {
-    my $self = shift;
-    $self->_log_if($self->app->debug, 'DEBUG: ', @_);
-}
-
-sub log_dryrun {
-    my $self = shift;
-    $self->_log_if($self->app->dryrun, @_);
-}
-
-sub _log_if {
-    my $self = shift;
-    my $condition = shift;
-
-    say STDERR join(' ', @_) if $condition;
-
-    return $condition;
-}
-
 sub execute {
     my $self = shift;
 
@@ -77,9 +51,9 @@ sub execute {
         $self->log("create: ${\$self->type} '${\$self->name}'");
 
         $self->create;
-
-        $self->call_on_create() if $self->has_create_callback && $was_present_before_create;
-        $self->call_on_change() if $self->has_change_callback;
+        
+        $self->call_on_create->() if $self->has_create_callback && !$was_present_before_create;
+        $self->call_on_change->() if $self->has_change_callback;
     } else {
         $self->log_debug("is_present: ${\$self->type} (${\$self->name})");
     }
@@ -89,23 +63,32 @@ sub execute {
 
 sub system_command {
     my $self = shift;
-    my @system_args = @_;
 
+    $self->pipe_into_command('', @_);
+}
+
+sub pipe_into_command {
+    my $self = shift;
+    my $input_text = shift;
+    my @system_args = @_;
+    
     $self->log_dryrun('would execute:', @system_args) and return;
     $self->log_debug('execute:', @system_args);
     
     my $pid = open3(my $in, my $out, my $err, @system_args);
+    print $in $input_text // ();
     close $in;
 
     my $text = join '', <$out>;
     waitpid $pid, 0;
     
-    $self->log('Status:', $? >> 8);
+    my $status = $? >> 8;
+    die "command '$system_args[0]' failed. status: $status" if $status;
 }
 
 ### these are typically overloaded:
 sub is_present { 0 }
-sub is_current { 0 }
+sub is_current { 1 }
 sub create { }
 
 __PACKAGE__->meta->make_immutable;

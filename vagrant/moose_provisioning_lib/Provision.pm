@@ -35,6 +35,8 @@ sub import {
         };
     }
     
+    $app->_resource_class_for( \%class_for );
+    
     foreach my $export (@EXPORT) {
         no strict 'refs';
         *{"${package}::${export}"} = *{"Provision::$export"};
@@ -45,7 +47,7 @@ sub os {
     if ($^O eq 'darwin') {
         return 'OSX';
     } else {
-        return 'Ubuntu'; ### FIXME: wrong!
+        return 'Ubuntu'; ### FIXME: maybe wrong!
     }
 }
 

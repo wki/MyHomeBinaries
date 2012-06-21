@@ -9,7 +9,8 @@ my $SITE_DIR = "/web/data/$DOMAIN";
 User 'sites', (
     uid => 513,
     gid => 513,
-    on_create => sub { }, 
+    # on_create => sub { },
+    # on_change => sub { },
 );
 
 User 'wolfgang';
@@ -17,8 +18,12 @@ User 'wolfgang';
 Package 'automake';
 Package 'wget';
 
-# on OS-X:
-# Port 'wget';
+Perlbrew sites => (
+    # user_name      => 'sites', # guessed from name
+    install_cpanm  => 1,
+    install_perl   => '5.14.2', # or an array
+    switch_to_perl => '5.14.2',
+);
 
 done;
 
@@ -46,11 +51,12 @@ Nginx('nginx',
     root => "$SITE_DIR/htdocs",
 );
 
-Perlbrew 'sites',
-    user => 'sites',
-    cpanm => 1,
-    perl_version => '5.14.2', # or an array
-    switch => '5.14.2';
+Perlbrew sites => (
+    user           => 'sites', # guessed from name
+    install_cpanm  => 1,
+    install_perl   => '5.14.2', # or an array
+    switch_to_perl => '5.14.2',
+);
 
 Files 'www.mysite.de',
     user => 'sites',

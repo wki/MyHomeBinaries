@@ -26,39 +26,31 @@ has dryrun => (
     cmd_aliases => 'n',
 );
 
-=head2 log ( @messages )
+has _resource_class_for => (
+    is => 'rw',
+    isa => 'HashRef',
+);
 
-if verbose mode is on, @message is printed to STDERR
-
-returns true if verbose mode is on
-
-=cut
+sub resource {
+    my $self = shift;
+    my $resource = shift;
+    my $name = shift;
+    
+    my $class = $self->_resource_class_for->{$resource}
+        or die "no class for resource '$resource' found";
+    
+    return $class->new( { app => $self, name => $name, @_ } );
+}
 
 sub log {
     my $self = shift;
     $self->_log_if($self->verbose || $self->debug, @_);
 }
 
-=head2 log_debug ( @messages )
-
-if debug mode is on, @message is printed to STDERR
-
-returns true if debug mode is on
-
-=cut
-
 sub log_debug {
     my $self = shift;
     $self->_log_if($self->debug, 'DEBUG:', @_);
 }
-
-=head2 log_dryrun ( @messages )
-
-if dryrun mode is on, @message is printed to STDERR
-
-returns true if dryrun mode is on
-
-=cut
 
 sub log_dryrun {
     my $self = shift;
@@ -73,20 +65,6 @@ sub _log_if {
 
     return $condition;
 }
-
-# has info_for_package => (
-#     is => 'rw',
-#     isa => 'HashRef',
-# );
-# 
-# sub get_info_for_package {
-#     my ($self, $package) = @_;
-#     
-#     return $self->info_for_package->{$package}
-#            //= $self->_get_info_for_package($package);
-# }
-# 
-# sub _get_info_for_package { die '_get_info_for_package unimplemented' }
 
 __PACKAGE__->meta->make_immutable;
 1;
