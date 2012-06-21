@@ -3,11 +3,11 @@ use Moose;
 use namespace::autoclean;
 extends 'Provision::Entity';
 
-sub is_present {
-    my $self = shift;
-    
-    # check if we have package x installed
-}
+has installed_version => (
+    is => 'rw',
+    isa => 'Str',
+    predicate => 'is_present',
+);
 
 sub create {
     my $self = shift;

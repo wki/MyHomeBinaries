@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use feature ':5.10';
 use Module::Pluggable require => 1, search_path => 'Provision::Entity';
-use Provision::App;
+# use Provision::App;
 
 our @EXPORT = qw(done os);
 
@@ -13,8 +13,10 @@ sub import {
     warnings->import();
     strict->import();
     
-    my $app = Provision::App->new_with_options;
     my $os = os();
+    my $app_class = "Provision::App::$os";
+    eval "use $app_class";
+    my $app = $app_class->new_with_options;
     
     my %class_for;
     foreach my $plugin_class (__PACKAGE__->plugins) {
@@ -40,6 +42,7 @@ sub import {
 }
 
 sub os {
+    return 'OSX'; ### FIXME: wrong!
     return 'Ubuntu'; ### FIXME: wrong!
 }
 
