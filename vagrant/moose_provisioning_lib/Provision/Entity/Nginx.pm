@@ -5,7 +5,7 @@ extends 'Provision::Entity';
 
 # has package 'nginx';
 
-# has sercice 'nginx';
+# has service 'nginx';
 
 
 
@@ -24,6 +24,12 @@ sub site {
     # ensure site is as required
     
     return $self;
+}
+
+sub reload {
+    my $self = shift;
+    
+    return sub { $self->_service->reload };
 }
 
 __PACKAGE__->meta->make_immutable;

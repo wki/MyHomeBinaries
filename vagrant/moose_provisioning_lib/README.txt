@@ -21,6 +21,8 @@ Example:
 Provision           -- enthält Befehlsworte pro package
   Provision::Entity -- Basisklasse
   Provision::Entity::Package
+  Provision::Entity::Package::Ubuntu  -- ubuntu specific
+  Provision::Entity::Package::OSX     -- os-x specific
   Provision::Entity::User
   Provision::Entity::File
   Provision::Entity::Dir

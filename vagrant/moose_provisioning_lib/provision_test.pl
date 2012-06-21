@@ -6,9 +6,10 @@ use Provision;
 my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";
 
-User 'sites' => (
-     uid => 513,
-     gid => 513,
+User 'sites', (
+    uid => 513,
+    gid => 513,
+    on_create => sub { }, 
 );
 
 User 'wolfgang';
@@ -25,9 +26,21 @@ __END__
 Nginx nginx => (
     service => 'running',
     runlevel => [1..5],
+    # site => (name => ..., ... ),
 );
 
 Nginx_Site 'www.mysite.de' => (
+    listen => 80,
+    root => "$SITE_DIR/htdocs",
+    on_change => Nginx('nginx')->reload, # or ->service->reload
+);
+
+### alternativ:
+
+Nginx('nginx',
+    service => 'running',
+    runlevel => [1..5],
+)->Site('www.mysite.de',
     listen => 80,
     root => "$SITE_DIR/htdocs",
 );
@@ -51,7 +64,7 @@ Files 'www.mysite.de',
     files => [ 'xxx', 'yyy' ];
 
 Catalyst 'www.mysite.de',
-    install_directory => "$SITE_DIR/MySite",
+    directory => "$SITE_DIR/MySite",
     copy_from => Resource('/tmp/xxx'),
     user => 'sites',
     perl => Perlbrew('sites')->perl;
