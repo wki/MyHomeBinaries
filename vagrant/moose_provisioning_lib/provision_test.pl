@@ -14,6 +14,7 @@ User 'sites', (
 
 User 'wolfgang';
 
+Package 'automake';
 Package 'wget';
 
 # on OS-X:

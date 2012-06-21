@@ -9,10 +9,18 @@ has installed_version => (
     predicate => 'is_present',
 );
 
-sub create {
+has latest_version => (
+    is => 'rw',
+    isa => 'Str',
+    lazy_build => 1,
+);
+
+sub is_current {
     my $self = shift;
     
-    # install package x
+    return 0 if !$self->is_present;
+    
+    return $self->latest_version eq $self->installed_version;
 }
 
 __PACKAGE__->meta->make_immutable;

@@ -42,8 +42,11 @@ sub import {
 }
 
 sub os {
-    return 'OSX'; ### FIXME: wrong!
-    return 'Ubuntu'; ### FIXME: wrong!
+    if ($^O eq 'darwin') {
+        return 'OSX';
+    } else {
+        return 'Ubuntu'; ### FIXME: wrong!
+    }
 }
 
 sub done {
