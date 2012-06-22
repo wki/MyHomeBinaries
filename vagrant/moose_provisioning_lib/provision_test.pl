@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use FindBin;
-use lib $FindBin::Bin; # or "$FindBin::Bin/../lib";
+use lib "$FindBin::Bin/lib";
 use Provision;
 
 my $DOMAIN   = "www.mysite.de";
