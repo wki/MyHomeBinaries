@@ -2,8 +2,18 @@ package Provision;
 use strict;
 use warnings;
 use feature ':5.10';
+
+#
+# up to this point, nothing bad happens.
+# Provision::Prepare will ensure that everything requested to continue
+# is there or dies otherwise.
+#
+use Provision::Prepare;
+
+#
+# starting here, we are in good shape and can use everything we need.
+#
 use Module::Pluggable require => 1, search_path => 'Provision::Entity';
-# use Provision::App;
 
 our @EXPORT = qw(done os);
 
