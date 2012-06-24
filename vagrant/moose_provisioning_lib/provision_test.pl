@@ -61,14 +61,18 @@ Perlbrew sites => (
 Files 'www.mysite.de',
     user => 'sites',
     group => 'sites',
+    permission => 0755,
     directory => "$SITE_DIR:755",
     directories => [
         "$SITE_DIR/bla:755",
         "$SITE_DIR/foo:777",
-        { path => '/foo/bar', perm => 0755, content => 'sdf' },
+        { path => '/foo/bar', permission => 0755 },
     ],
     file => 'asdf',
-    files => [ 'xxx', 'yyy' ];
+    files => [ 
+        'xxx:644',
+        { path => 'baz', ... }
+    ];
 
 Catalyst 'www.mysite.de',
     directory => "$SITE_DIR/MySite",
