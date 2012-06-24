@@ -58,31 +58,43 @@ Perlbrew sites => (
     switch_to_perl => '5.14.2',
 );
 
-Files 'www.mysite.de',
-    user => 'sites',
+Tree 'www.mysite.de' => (
+    user => 'sites',        # or 'sites:sites'
     group => 'sites',
     permission => 0755,
-    directory => "$SITE_DIR:755",
-    directories => [
-        "$SITE_DIR/bla:755",
-        "$SITE_DIR/foo:777",
-        { path => '/foo/bar', permission => 0755 },
+    base_path => '/web/data/www.mysite.de',
+    create => [
+        'logs',
+        'htdocs:750',
+        { path => 'Mysite', permission => 0750, user => '...', group => ... },
     ],
-    file => 'asdf',
-    files => [ 
-        'xxx:644',
-        { path => 'baz', ... }
-    ];
+    remove => [
+    ],
+);
 
-Catalyst 'www.mysite.de',
+File 'mysite_js' => (
+    user => 'sites',        # or 'sites:sites',
+    group => 'sites',
+    permission => 0644,
+    # alternative path definitions
+    path => '/web/data/www.mysite.de/Mysite/root/static/_js/site.js',
+    path => Tree('www.mysite.de')->base_path->file('Mysite/root/static/_js/site.js'),
+    # filling the file
+    content => 'asdfsdf',
+    content => Resource('/js/site.js'),
+);
+
+Catalyst 'www.mysite.de' => (
     directory => "$SITE_DIR/MySite",
     copy_from => Resource('/tmp/xxx'),
     user => 'sites',
-    perl => Perlbrew('sites')->perl;
+    perl => Perlbrew('sites')->perl,
+);
 
-Exec 'deploy www.mysite.de',
+Exec 'deploy www.mysite.de' => (
     path => '/path/to/executable',
     args => { '--foo' => 'bar' },
-    env  => { PERL5LIB => '/path/to/lib' };
+    env  => { PERL5LIB => '/path/to/lib' },
+);
 
 done;

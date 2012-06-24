@@ -1,8 +1,17 @@
 package Provision::Entity::User;
 use Moose;
 use MooseX::Types::Path::Class 'Dir';
+use MooseX::Types -declare => [ 'UserEntity' ];
+use MooseX::Types::Moose qw(Str HashRef);
 use namespace::autoclean;
 extends 'Provision::Entity';
+
+class_type UserEntity,
+    as 'Provision::Entity::User';
+
+coerce UserEntity,
+    from Str,
+    via { Provision::Entity::User->new( { name => $_ } ) };
 
 our $START_UID = 1000;
 our $START_GID = 1000;
@@ -30,10 +39,32 @@ has home_directory => (
     lazy_build => 1,
 );
 
+# around BUILDARGS => sub {
+#     my $orig = shift;
+#     my $class = shift;
+#     
+#     my %args = ref $_ eq 'HASH' ? %{$_[0]} : @_;
+#     
+#     if ($args{name}) {
+#         my ($name, $passwd, $uid, $gid,
+#             $quota,$comment,$gcos,
+#             $dir,$shell,$expire) = getpwnam($args{name});
+#         $args{uid} //= $uid if $uid;
+#         $args{gid} //= $gid if $gid;
+#         $args{home_directory} //= $dir if $dir;
+#         # $args{shell} //= $shell if $shell;
+#     }
+#     
+#     return $class->$orig(%args);
+# };
+
 sub _build_uid {
     my $self = shift;
     
-    my $uid = $START_UID;
+    my $uid = (getpwnam($self->name))[2]
+        and return $uid;
+    
+    $uid = $START_UID;
     while (++$uid < $MAX_ID) {
         next if defined getpwuid($uid);
         
@@ -47,12 +78,15 @@ sub _build_uid {
 sub _build_gid {
     my $self = shift;
     
+    my $gid = (getpwnam($self->name))[3]
+        and return $gid;
+    
     if (!defined getgtgid($self->uid)) {
         $self->log_debug("Auto-created GID from UID: ${\$self->uid}");
         return $self->uid;
     }
     
-    my $gid = $START_GID;
+    $gid = $START_GID;
     while (++$gid < $MAX_ID) {
         next if defined getgrgid($gid);
 
