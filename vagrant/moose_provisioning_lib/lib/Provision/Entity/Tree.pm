@@ -1,7 +1,8 @@
 package Provision::Entity::Tree;
 use Moose;
 use namespace::autoclean;
-use Provision::Entry::User 'UserEntity';
+use Provision::Types 'UserEntity';
+
 extends 'Provision::Entity';
 
 has user => (
@@ -15,7 +16,7 @@ has group => (
     is => 'rw',
     isa => 'Str', # TODO: GroupEntity,
     required => 1,
-    coerce => 1,
+    # coerce => 1,
 );
 
 has permission => (
@@ -24,7 +25,7 @@ has permission => (
     default => '755',
 );
 
-has create => (
+has provide => (
     is => 'rw',
     isa => 'ArrayRef',
     default => sub { [] },
@@ -85,7 +86,6 @@ sub _path_is_ok {
     
 }
 
-sub _
 sub _path_has_requested_permission {
     
 }
@@ -99,7 +99,6 @@ sub create {
     
     
 }
-
 
 __PACKAGE__->meta->make_immutable;
 1;

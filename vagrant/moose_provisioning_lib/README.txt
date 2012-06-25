@@ -20,35 +20,74 @@ Example:
 
 Provision           -- enthält Befehlsworte pro package
   Provision::Entity -- Basisklasse
+    * name
   Provision::Entity::Package
   Provision::Entity::Package::Ubuntu  -- ubuntu specific
   Provision::Entity::Package::OSX     -- os-x specific
+  Provision::Entity::Perlbrew
+    * user
+    * install_cpanm
+    * install_perl
+    * switch_to_perl
   Provision::Entity::User
+    * uid
+    * gid
+    * home_directory
   Provision::Entity::File
-  Provision::Entity::Dir
+    * user
+    * group
+    * permission
+    * path
+    * content => ...
   Provision::Entity::Tree
+    * user
+    * group
+    * permission
+    * provide => list of paths
+    * remove => list of paths
+  Provision::Entity::Exec
+    * user
+    * group
+    * env
+    * path
+    * args
 
-
-structure of files for applying:
+structure of files for applying (packed into a .tar.gz):
 
 /
-  Makefile.PL
+  apply.pl                  -- default provision file
   bin/
-    apply.pl
+    cpanm
+    perlbrew
+  etc/
+    dependencies.txt        -- all needed CPAN modules
+    ... more config files
   lib/
-    ... all perl modules needed
+    ... provision modules
   local/
-    ... cpanm provided stuff
-  files/
+    ... cpanm installed, empty in .tar.gz
+  resources/
     ... all files needed
 
 
+structure in the root of a project as a cache:
+
+.provision/
+  bin/
+    cpanm           -- cached versions, mirror-checked if older 1 day
+    perlbrew
+  (everything else gets directly into .tar.gz)
+
+
 order:
- - pack everything into a .tar.gz
- - copy .tar.gz to /root/provision
- - unpack .tar.gz
- - PERL5LIB=/root/provision/lib:/root/provision/local/lib/perl5 \
-   perl /root/provision/bin/apply.pl [options]
+ - provision_prepare.pl \
+        --provision xxx.pl \
+        --resource relative_dir=/path/to/whatever \
+        --resource another_dir=/path/to/something_else \
+        --save_to xxx.tar.gz
+ - scp xxx.tar.gz server:/whatever
+ - unpack .tar.gz to /root/provision/
+ - /path/to/perl /root/provision/apply.pl
  - done.
 
 

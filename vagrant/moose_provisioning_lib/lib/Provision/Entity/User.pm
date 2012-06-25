@@ -1,17 +1,11 @@
 package Provision::Entity::User;
 use Moose;
 use MooseX::Types::Path::Class 'Dir';
-use MooseX::Types -declare => [ 'UserEntity' ];
 use MooseX::Types::Moose qw(Str HashRef);
 use namespace::autoclean;
+
 extends 'Provision::Entity';
 
-class_type UserEntity,
-    as 'Provision::Entity::User';
-
-coerce UserEntity,
-    from Str,
-    via { Provision::Entity::User->new( { name => $_ } ) };
 
 our $START_UID = 1000;
 our $START_GID = 1000;
@@ -61,8 +55,8 @@ has home_directory => (
 sub _build_uid {
     my $self = shift;
     
-    my $uid = (getpwnam($self->name))[2]
-        and return $uid;
+    my $uid = (getpwnam($self->name))[2];
+    return $uid if $uid;
     
     $uid = $START_UID;
     while (++$uid < $MAX_ID) {
@@ -78,8 +72,8 @@ sub _build_uid {
 sub _build_gid {
     my $self = shift;
     
-    my $gid = (getpwnam($self->name))[3]
-        and return $gid;
+    my $gid = (getpwnam($self->name))[3];
+    return $gid if $gid;
     
     if (!defined getgtgid($self->uid)) {
         $self->log_debug("Auto-created GID from UID: ${\$self->uid}");
