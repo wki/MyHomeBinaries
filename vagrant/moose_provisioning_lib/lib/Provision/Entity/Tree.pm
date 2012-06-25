@@ -71,11 +71,27 @@ sub is_present {
     my $self = shift;
     
     return if grep { -d $_->{path} } @{$self->remove};
+    return if grep { !$_->_path_is_ok($_) } @{$self->create};
     
-    foreach my $path (@{$self->create}) {
-        return if !-d $path->{path};
-        return if 
-    }
+    return 1;
+}
+
+sub _path_is_ok {
+    my ($self, $path) = @_;
+    
+    return if !-d $path->{path};
+    return if !$self->_path_has_requested_permission($path->{path});
+    return if !$self->_path_has_requested_owner($path->{path});
+    
+}
+
+sub _
+sub _path_has_requested_permission {
+    
+}
+
+sub _path_has_requested_owner {
+    
 }
 
 sub create {
