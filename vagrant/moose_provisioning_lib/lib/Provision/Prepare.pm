@@ -47,11 +47,12 @@ our $packages;
 sub import {
     say "Provision::Prepare, root_dir=$root_dir" if $debug;
 
-    create_local_dir()  if !-d $local_dir;
-    install_cpanm()     if !-x $cpanm;
-    install_missing_modules();
+    # FIXME: find a better way
+    # create_local_dir()  if !-d $local_dir;
+    # install_cpanm()     if !-x $cpanm;
+    # install_missing_modules();
 
-    eval "use lib '$local_lib_dir'";
+    eval "use lib '$perl_lib_dir'";
 
     say "Provision::Prepare done" if $debug;
 }

@@ -18,6 +18,10 @@ sub _build_latest_version {
     return $latest_version;
 }
 
+sub must_be_executable {
+    die 'MacPorts not installed' if !-x $PORT;
+}
+
 before execute => sub {
     my $self = shift;
 

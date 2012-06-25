@@ -44,6 +44,8 @@ sub type {
 
 sub execute {
     my $self = shift;
+    
+    $self->must_be_executable;
 
     if (!$self->is_present || !$self->is_current) {
         my $was_present_before_create = $self->is_present;
@@ -87,9 +89,10 @@ sub pipe_into_command {
 }
 
 ### these are typically overloaded:
+sub must_be_executable {}
 sub is_present { 0 }
 sub is_current { 1 }
-sub create { }
+sub create {}
 
 __PACKAGE__->meta->make_immutable;
 1;

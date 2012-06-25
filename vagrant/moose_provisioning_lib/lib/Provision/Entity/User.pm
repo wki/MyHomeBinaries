@@ -1,14 +1,12 @@
 package Provision::Entity::User;
 use Moose;
 use MooseX::Types::Path::Class 'Dir';
-use MooseX::Types::Moose qw(Str HashRef);
 use namespace::autoclean;
 
 extends 'Provision::Entity';
-
+with 'Provision::Entity::Group';
 
 our $START_UID = 1000;
-our $START_GID = 1000;
 our $MAX_ID    = 2000;
 
 has uid => (
@@ -18,6 +16,7 @@ has uid => (
     lazy_build => 1,
 );
 
+### FIXME: can we remove this?
 has gid => (
     is => 'rw',
     isa => 'Int',
@@ -33,24 +32,10 @@ has home_directory => (
     lazy_build => 1,
 );
 
-# around BUILDARGS => sub {
-#     my $orig = shift;
-#     my $class = shift;
-#     
-#     my %args = ref $_ eq 'HASH' ? %{$_[0]} : @_;
-#     
-#     if ($args{name}) {
-#         my ($name, $passwd, $uid, $gid,
-#             $quota,$comment,$gcos,
-#             $dir,$shell,$expire) = getpwnam($args{name});
-#         $args{uid} //= $uid if $uid;
-#         $args{gid} //= $gid if $gid;
-#         $args{home_directory} //= $dir if $dir;
-#         # $args{shell} //= $shell if $shell;
-#     }
-#     
-#     return $class->$orig(%args);
-# };
+sub _build_group {
+    # TBD
+}
+
 
 sub _build_uid {
     my $self = shift;
@@ -69,6 +54,7 @@ sub _build_uid {
     die 'could not create a unique UID';
 }
 
+### FIXME: also remove this
 sub _build_gid {
     my $self = shift;
     

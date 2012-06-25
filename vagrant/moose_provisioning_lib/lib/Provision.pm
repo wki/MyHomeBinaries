@@ -2,6 +2,7 @@ package Provision;
 use strict;
 use warnings;
 use feature ':5.10';
+use FindBin;
 
 #
 # up to this point, nothing bad happens.
@@ -13,9 +14,10 @@ use Provision::Prepare;
 #
 # starting here, we are in good shape and can use everything we need.
 #
-use Module::Pluggable require => 1, search_path => 'Provision::Entity';
+use Path::Class;
+use Module::Pluggable search_path => 'Provision::Entity';
 
-our @EXPORT = qw(done os);
+our @EXPORT = qw(done os resource);
 
 sub import {
     my $package = caller;
@@ -29,6 +31,7 @@ sub import {
     my $app = $app_class->new_with_options;
     
     my %class_for;
+    my %required;
     foreach my $plugin_class (__PACKAGE__->plugins) {
         my $name = $plugin_class;
         $name =~ s{\A Provision::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
@@ -41,6 +44,7 @@ sub import {
         no strict 'refs';
         no warnings 'redefine';
         *{"${package}::${name}"} = sub {
+            $required{$plugin_class}++ or eval "use $plugin_class";
             $plugin_class->new(app => $app, name => @_)->execute;
         };
     }
@@ -59,6 +63,18 @@ sub os {
     } else {
         return 'Ubuntu'; ### FIXME: maybe wrong!
     }
+}
+
+sub resource {
+    my $path = shift;
+    
+    my $resource_dir = dir("$FindBin::Bin/resources");
+    die 'resource dir not found' if !-d $resource_dir;
+    
+    my $dir = $resource_dir->subdir($path);
+    return -d $dir
+        ? $dir
+        : $resource_dir->file($path);
 }
 
 sub done {

@@ -22,6 +22,7 @@ Provision           -- enthält Befehlsworte pro package
   Provision::Entity -- Basisklasse
     * name
   Provision::Entity::Package
+    * name
   Provision::Entity::Package::Ubuntu  -- ubuntu specific
   Provision::Entity::Package::OSX     -- os-x specific
   Provision::Entity::Perlbrew
@@ -33,6 +34,8 @@ Provision           -- enthält Befehlsworte pro package
     * uid
     * gid
     * home_directory
+  Provision::Entity::Group
+    * gid
   Provision::Entity::File
     * user
     * group

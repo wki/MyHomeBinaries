@@ -6,7 +6,7 @@ use Provision;
 my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";
 
-User 'sites', (
+User sites => (
     uid => 513,
     gid => 513,
     # on_create => sub { },
@@ -19,7 +19,7 @@ Package 'automake';
 Package 'wget';
 
 Perlbrew sites => (
-    # user_name      => 'sites', # guessed from name
+    # user => User('sites'),
     install_cpanm  => 1,
     install_perl   => '5.14.2', # or an array
     switch_to_perl => '5.14.2',
@@ -29,17 +29,17 @@ done;
 
 __END__
 
-Nginx nginx => (
+Nginx {
     service => 'running',
     runlevel => [1..5],
     # site => (name => ..., ... ),
-);
+};
 
-Nginx_Site 'www.mysite.de' => (
+Nginx_Site 'www.mysite.de' => {
     listen => 80,
     root => "$SITE_DIR/htdocs",
     on_change => Nginx('nginx')->reload, # or ->service->reload
-);
+};
 
 ### alternativ:
 
@@ -50,6 +50,8 @@ Nginx('nginx',
     listen => 80,
     root => "$SITE_DIR/htdocs",
 );
+
+Nginx->Site('www.xxx', ...);
 
 Perlbrew sites => (
     user           => 'sites', # guessed from name
@@ -81,12 +83,12 @@ File 'mysite_js' => (
     path => Tree('www.mysite.de')->base_path->file('Mysite/root/static/_js/site.js'),
     # filling the file
     content => 'asdfsdf',
-    content => Resource('/js/site.js'),
+    content => resource('js/site.js'),
 );
 
 Catalyst 'www.mysite.de' => (
     directory => "$SITE_DIR/MySite",
-    copy_from => Resource('/tmp/xxx'),
+    copy_from => resource('/tmp/xxx'),
     user => 'sites',
     perl => Perlbrew('sites')->perl,
 );

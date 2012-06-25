@@ -1,4 +1,4 @@
-package Provision::Entity::Tree;
+package Provision::Entity::File;
 use Moose;
 use namespace::autoclean;
 use Provision::Types;
