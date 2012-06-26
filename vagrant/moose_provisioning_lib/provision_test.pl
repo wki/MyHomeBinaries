@@ -117,22 +117,21 @@ Catalyst 'www.mysite.de' => (
     # alternate directory specifications
     directory => "$SITE_DIR/MySite",
     directory => Tree($DOMAIN)->dir('MySite');
-    copy_from => resource('/tmp/xxx'),
+    copy      => resource('/tmp/xxx'),
     perl      => Perlbrew('sites')->perl,
 );
 
-# finds the same
-Service '/Library/LaunchDaemons/org.macports.postgresql91-server.plist';
+# label is the identification
 Service 'org.macports.postgresql91-server';
-Service 'postgresql91-server';
 
-Service 'mysite_pdf_generator' => {
+Service 'mysite_pdf_generator' => (
     # user/group are optional
-    user  => 'sites',
-    group => 'sites',
+    user    => 'sites',
+    group   => 'sites',
     # more things needed
     running => 1,  # default: 1
-};
+    copy    => resource('/plist/pdf.plist'),
+);
 
 Exec 'deploy mysite' => (
     path => '/path/to/executable',

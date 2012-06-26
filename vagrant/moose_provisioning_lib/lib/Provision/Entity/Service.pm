@@ -2,6 +2,7 @@ package Provision::Entity::Service;
 use Moose;
 use namespace::autoclean;
 extends 'Provision::Entity';
+with 'Provision::Role::Copy';
 
 has running => (
     is => 'ro',
