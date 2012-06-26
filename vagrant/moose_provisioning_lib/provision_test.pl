@@ -8,7 +8,6 @@ my $SITE_DIR = "/web/data/$DOMAIN";
 
 User sites => (
     uid => 513,
-    gid => 513,
     # on_create => sub { },
     # on_change => sub { },
 );
@@ -29,7 +28,23 @@ done;
 
 __END__
 
-# changed Syntax example:
+# changed Syntax examples
+# -----------------------
+
+# generic attributes:
+  on_create => sub {}
+  on_change => sub {}
+
+
+# creating a user: 
+
+User 'sites';                   # uid read or guessed, group 'sites' [123]
+User sites => ( uid => 123 );   # group read or 'sites' [123]
+User sites => ( uid => 123, group => 'xxx' );
+User sites => ( uid => 123, group => Group('xxx') );
+User sites => ( uid => 123, group => Group('xxx', gid => 111) );
+### TODO: add "groups => [ ... ]"
+
 
 Nginx {
     service => 'running',

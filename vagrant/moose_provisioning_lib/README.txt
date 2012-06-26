@@ -26,34 +26,66 @@ Provision           -- enthält Befehlsworte pro package
   Provision::Entity::Package::Ubuntu  -- ubuntu specific
   Provision::Entity::Package::OSX     -- os-x specific
   Provision::Entity::Perlbrew
-    * user
+    * user <-- name
     * install_cpanm
     * install_perl
     * switch_to_perl
   Provision::Entity::User
     * uid
-    * gid
+    * group
     * home_directory
   Provision::Entity::Group
     * gid
   Provision::Entity::File
+    * path <-- name
     * user
     * group
     * permission
-    * path
     * content => ...
-  Provision::Entity::Tree
+  Provision::Entity::Dir
+    * path <-- name
     * user
     * group
     * permission
-    * provide => list of paths
+  Provision::Entity::Tree
+    * path <-- name
+    * user
+    * group
+    * permission
+    * provide => list of paths relative to path
     * remove => list of paths
   Provision::Entity::Exec
+    * path <-- name
     * user
     * group
     * env
-    * path
     * args
+
+
+Class Hierarchiy (P = Provision, E = Entity)
+=> too complicated and inflexible, use roles instead!
+
+Provision::Entity
+    Package
+        OSX
+        Ubuntu
+    Group (gid)
+        OSX
+        Ubuntu
+    User (uid, group)
+        OSX
+        Ubuntu
+    Perlbrew (install_cpanm, install_perl, switch_to_perl)
+    Identity (abstract :: user, group)
+        Path (abstract :: path <-- name)
+            Permission (abstract :: permission)
+                Dir
+                Tree
+                File
+            Exec (env, args)
+        
+
+
 
 structure of files for applying (packed into a .tar.gz):
 

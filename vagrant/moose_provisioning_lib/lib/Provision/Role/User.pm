@@ -1,6 +1,6 @@
 package Provision::Role::User;
 use Moose::Role;
-use Provision::Types; # 'UserEntity';
+use Provision::Types;
 
 has user => (
     is => 'ro',
@@ -10,6 +10,7 @@ has user => (
     lazy_build => 1,
 );
 
+# allow overloading in role-consuming class
 sub _build_user {
     die 'no builder for user present.';
 }
