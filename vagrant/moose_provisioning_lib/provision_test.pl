@@ -62,12 +62,11 @@ Perlbrew sites => (
     switch_to_perl => '5.14.2',
 );
 
-Tree 'www.mysite.de' => (
+Tree '/web/data/www.mysite.de' => (
     user       => 'sites',
     group      => 'sites',
     permission => 0755,
-    base_dir   => $SITE_DIR,
-    remove     => [],
+    remove     => [],  # remove => '.' to remove dir
     create     => [
         'logs',
         'htdocs:750',
@@ -80,35 +79,31 @@ Tree 'www.mysite.de' => (
     ],
 );
 
-Dir 'mysite' => (
+Dir '/path/to/directory' => (
     user       => 'sites',
     group      => 'sites',
     permission => 0644,
-    # alternative path definitions
-    path => '/web/data/www.mysite.de/Mysite/root/static/_js/site.js',
-    path => Tree('www.mysite.de')->file('Mysite/root/static/_js/site.js'),
+    create     => 1,    # is default
+  # remove     => 1,    # to remove
 );
 
-File 'mysite_js' => (
+File '/path/to/mysite_js' => (
     user       => 'sites',
     group      => 'sites',
     permission => 0644,
-    # alternative path definitions
-    path => '/web/data/www.mysite.de/Mysite/root/static/_js/site.js',
-    path => Tree('www.mysite.de')->file('Mysite/root/static/_js/site.js'),
-    # filling the file
-    content => 'asdfsdf',
-    content => resource('js/site.js'),
+    content    => 'asdfsdf', # or resource('js/site.js'),
+  # remove     => 1,    # to remove
 );
 
+# or a more generic name "WebApp" ???
 Catalyst 'www.mysite.de' => (
-    user  => 'sites',
-    group => 'sites',
+    user      => 'sites',
+    group     => 'sites',
     # alternate directory specifications
     directory => "$SITE_DIR/MySite",
     directory => Tree($DOMAIN)->dir('MySite');
     copy_from => resource('/tmp/xxx'),
-    perl => Perlbrew('sites')->perl,
+    perl      => Perlbrew('sites')->perl,
 );
 
 Service 'mysite_pdf_generator' => {
