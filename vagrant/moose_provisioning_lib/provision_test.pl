@@ -29,6 +29,8 @@ done;
 
 __END__
 
+# changed Syntax example:
+
 Nginx {
     service => 'running',
     runlevel => [1..5],
@@ -61,39 +63,61 @@ Perlbrew sites => (
 );
 
 Tree 'www.mysite.de' => (
-    user => 'sites',        # or 'sites:sites'
-    group => 'sites',
+    user       => 'sites',
+    group      => 'sites',
     permission => 0755,
-    base_path => '/web/data/www.mysite.de',
-    create => [
+    base_dir   => $SITE_DIR,
+    remove     => [],
+    create     => [
         'logs',
         'htdocs:750',
-        { path => 'Mysite', permission => 0750, user => '...', group => ... },
-    ],
-    remove => [
+        { 
+            path => 'Mysite', 
+            permission => 0750, 
+            user => '...',
+            group => '...',
+        },
     ],
 );
 
-File 'mysite_js' => (
-    user => 'sites',        # or 'sites:sites',
-    group => 'sites',
+Dir 'mysite' => (
+    user       => 'sites',
+    group      => 'sites',
     permission => 0644,
     # alternative path definitions
     path => '/web/data/www.mysite.de/Mysite/root/static/_js/site.js',
-    path => Tree('www.mysite.de')->base_path->file('Mysite/root/static/_js/site.js'),
+    path => Tree('www.mysite.de')->file('Mysite/root/static/_js/site.js'),
+);
+
+File 'mysite_js' => (
+    user       => 'sites',
+    group      => 'sites',
+    permission => 0644,
+    # alternative path definitions
+    path => '/web/data/www.mysite.de/Mysite/root/static/_js/site.js',
+    path => Tree('www.mysite.de')->file('Mysite/root/static/_js/site.js'),
     # filling the file
     content => 'asdfsdf',
     content => resource('js/site.js'),
 );
 
 Catalyst 'www.mysite.de' => (
+    user  => 'sites',
+    group => 'sites',
+    # alternate directory specifications
     directory => "$SITE_DIR/MySite",
+    directory => Tree($DOMAIN)->dir('MySite');
     copy_from => resource('/tmp/xxx'),
-    user => 'sites',
     perl => Perlbrew('sites')->perl,
 );
 
-Exec 'deploy www.mysite.de' => (
+Service 'mysite_pdf_generator' => {
+    user  => 'sites',
+    group => 'sites',
+    # more things needed
+};
+
+Exec 'deploy mysite' => (
     path => '/path/to/executable',
     args => { '--foo' => 'bar' },
     env  => { PERL5LIB => '/path/to/lib' },
