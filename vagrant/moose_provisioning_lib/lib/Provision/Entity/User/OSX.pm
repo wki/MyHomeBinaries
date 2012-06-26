@@ -9,7 +9,7 @@ our $DSCL = '/usr/bin/dscl';
 sub _build_home_directory {
     my $self = shift;
     
-    return (getpwuid($self->uid))[7] // "/Users/${\$self->name}"; # / fake editor
+    return (getpwuid($self->uid))[7] // "/Users/${\$self->name}"; # /
 }
 
 sub create {

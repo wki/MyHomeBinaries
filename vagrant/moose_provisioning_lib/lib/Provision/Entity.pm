@@ -66,7 +66,7 @@ sub execute {
 sub system_command {
     my $self = shift;
 
-    $self->pipe_into_command('', @_);
+    return $self->pipe_into_command('', @_);
 }
 
 sub pipe_into_command {
@@ -86,10 +86,14 @@ sub pipe_into_command {
     
     my $status = $? >> 8;
     die "command '$system_args[0]' failed. status: $status" if $status;
+    
+    return $text;
 }
 
-### these are typically overloaded:
-sub must_be_executable {}
+#
+# these are typically overloaded:
+#
+sub must_be_executable {} # execption if not executable
 sub is_present { 0 }
 sub is_current { 1 }
 sub create {}

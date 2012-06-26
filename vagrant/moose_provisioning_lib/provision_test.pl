@@ -121,10 +121,17 @@ Catalyst 'www.mysite.de' => (
     perl      => Perlbrew('sites')->perl,
 );
 
+# finds the same
+Service '/Library/LaunchDaemons/org.macports.postgresql91-server.plist';
+Service 'org.macports.postgresql91-server';
+Service 'postgresql91-server';
+
 Service 'mysite_pdf_generator' => {
+    # user/group are optional
     user  => 'sites',
     group => 'sites',
     # more things needed
+    running => 1,  # default: 1
 };
 
 Exec 'deploy mysite' => (

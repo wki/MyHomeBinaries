@@ -6,11 +6,13 @@ has group => (
     is => 'ro',
     isa => 'GroupEntity',
     required => 1,
-    # coerce => 1,
+    coerce => 1,
     lazy_build => 1,
 );
 
 sub _build_group {
+    my $self = shift;
+
     if ($self->can('user')) {
         return $self->user->group;
     }
