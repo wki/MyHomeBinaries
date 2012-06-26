@@ -1,25 +1,19 @@
 package Provision::Entity::Tree;
 use Moose;
-use MooseX::Types::Path::Class 'Dir';
-use Path::Class;
-use namespace::autoclean;
+# use MooseX::Types::Path::Class 'Dir';
+# use Path::Class;
 use Provision::Types;
+use List::MoreUtils qw(all none);
+use namespace::autoclean;
 
 extends 'Provision::Entity';
-with 'Provision::Role::User';
-with 'Provision::Role::Group';
-with 'Provision::Role::Permission';
+with 'Provision::Role::User',
+     'Provision::Role::Group',
+     'Provision::Role::Permission',
+     'Provision::Role::FilePath',
+     'Provision::Role::PathOperation';
 
 sub _build_permission { '755' }
-
-has base_dir => (
-    is => 'ro',
-    isa => Dir,
-    required => 1,
-    lazy_build => 1,
-);
-
-sub _build_base_dir { dir('/') }
 
 has provide => (
     is => 'ro',
@@ -36,54 +30,22 @@ has remove => (
 sub is_present {
     my $self = shift;
     
-    return if !_path_is_ok($self->base_dir);
-           || grep { -d $_->{path} } @{$self->remove};
-           || grep { !$_->_path_is_ok($_) } @{$self->create};
-    
-    return 1;
-}
-
-sub _path_is_ok {
-    my ($self, $path_or_structure) = @_;
-    
-    ### FIXME: totally ugly.
-    
-    my ($uid, $gid, $permission, $path);
-    if (ref $path_or_structure eq 'HASH') {
-        $path = $path_or_structure->{path};
-        $uid  = $path_or_structure->{uid};
-        $gid  = $path_or_structure->{gid};
-    } else {
-        $path = $path_or_structure;
-    }
-    
-    $uid //= $self->user->uid;
-    $gid //= $self->group->gid;
-    $permission //= $self->permission;
-
-    my $path = ref $path_or_structure eq 'HASH'
-        ? $path_or_structure->{path}
-        : $path;
-    
-    
-    return if !-d $path;
-    return if !$self->_path_has_requested_permission($path_or_structure);
-    return if !$self->_path_has_requested_owner($path_or_structure);
-    
-}
-
-sub _path_has_requested_permission {
-    
-}
-
-sub _path_has_requested_owner {
-    
+    return -d $self->path
+        && $self->path_has_requested_permission
+        && $self->path_has_requested_owner
+        && (none { -d $_->{path} } @{$self->remove})
+        && (all { $self->path_has_requested_permission($_->{path}, $_->{permission})} 
+            @{$self->provide})
+        && (all { $self->path_has_requested_owner($_->{path}, $_->{user}, $_->{group})} 
+            @{$self->provide});
 }
 
 sub create {
     my $self = shift;
     
+    # remove all existing 'remove' entries
     
+    # create and fix all 'provide' entries
 }
 
 __PACKAGE__->meta->make_immutable;

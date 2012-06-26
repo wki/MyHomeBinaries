@@ -4,54 +4,44 @@ use namespace::autoclean;
 use Provision::Types;
 
 extends 'Provision::Entity';
-with 'Provision::Role::User';
-with 'Provision::Role::Group';
-with 'Provision::Role::Permission';
+with 'Provision::Role::User',
+     'Provision::Role::Group',
+     'Provision::Role::Permission',
+     'Provision::Role::FilePath',
+     'Provision::Role::PathOperation';
 
-sub _build_permission { '755' }
+sub _build_permission { '644' }
 
-has provide => (
-    is => 'rw',
-    isa => 'DirList',
-    default => sub { [] },
-);
-
-has remove => (
-    is => 'rw',
-    isa => 'DirList',
-    default => sub { [] },
+has content => (
+    is => 'ro',
+    isa => 'Str',
+    required => 1,
+    default => '',
 );
 
 sub is_present {
     my $self = shift;
     
-    return if grep { -d $_->{path} } @{$self->remove};
-    return if grep { !$_->_path_is_ok($_) } @{$self->create};
-    
-    return 1;
-}
-
-sub _path_is_ok {
-    my ($self, $path) = @_;
-    
-    return if !-d $path->{path};
-    return if !$self->_path_has_requested_permission($path->{path});
-    return if !$self->_path_has_requested_owner($path->{path});
-    
-}
-
-sub _path_has_requested_permission {
-    
-}
-
-sub _path_has_requested_owner {
-    
+    return -f $self->path
+           && $self->path_has_requested_permission
+           && $self->path_has_requested_owner
+           && scalar($self->path->slurp) eq $self->content;
 }
 
 sub create {
     my $self = shift;
     
+    ### FIXME: what happens if a dir with same name exists?
+    if (-d $self->path) {
+        die "should delete dir: '$self->path' before file creation";
+    }
     
+    my $fh = $self->path->openw;
+    print $fh $self->content;
+    close $fh;
+    
+    $self->set_path_permission;
+    $self->set_path_owner;
 }
 
 __PACKAGE__->meta->make_immutable;

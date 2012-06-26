@@ -8,7 +8,7 @@ our $START_GID = 1000;
 our $MAX_ID    = 2000;
 
 has gid => (
-    is => 'rw',
+    is => 'ro',
     isa => 'Int',
     required => 1,
     lazy_build => 1,
