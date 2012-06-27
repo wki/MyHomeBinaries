@@ -37,7 +37,8 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          Web::Simple \
          Mojolicious \
          Plack \
-         Dist::Zilla \
+         Dist::Zilla Dist::Zilla::Plugin::VersionFromModule Dist::Zilla::Plugin::Inject \
+         Dist::Zilla::Plugin::Git::Check \
          Test::More Test::Most Test::Exception Test::DBIx::Class \
          XML::LibXML \
          JONALLEN/pod2pdf-0.42.tar.gz \
