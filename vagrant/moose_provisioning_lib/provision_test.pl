@@ -32,9 +32,15 @@ __END__
 # changed Syntax examples
 # -----------------------
 
+# additional tests:
+  required => sub {}            # additional AND condition
+  sufficient => sub {}          # additional OR condition
+  
 # generic attributes:
-  on_create => sub {}
-  on_change => sub {}
+  before_create => sub {}
+  before_change => sub {}
+  after_create => sub {}
+  after_change => sub {}
 
 
 # creating a user:
@@ -123,8 +129,8 @@ Catalyst $SITE_APP => (
     perl      => Perlbrew('sites')->perl,
 
     # alternative actions after install/update:
-    on_change => Nginx->reload,
-    on_change => [
+    after_change => Nginx->reload,
+    after_change => [
         Service($SITE)->reload,
         Service('nginx')->reload,
     ],
@@ -143,10 +149,10 @@ Service 'mysite_pdf_generator' => (
 );
 
 Exec 'deploy mysite' => (
-    path => '/path/to/executable',
-    args => { '--foo' => 'bar' },
-    env  => { PERL5LIB => '/path/to/lib' },
-    only_if => 'whatever',
+    path    => '/path/to/executable',
+    args    => { '--foo' => 'bar' },
+    env     => { PERL5LIB => '/path/to/lib' },
+    only_if => sub {},
 );
 
 done;

@@ -18,7 +18,7 @@ sub _build_latest_version {
     return $latest_version;
 }
 
-sub must_be_executable {
+sub must_meet_requirements {
     die 'MacPorts not installed' if !-x $PORT;
 }
 

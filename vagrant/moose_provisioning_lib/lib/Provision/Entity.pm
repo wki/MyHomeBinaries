@@ -19,19 +19,24 @@ has app => (
                    log log_dryrun log_debug)],
 );
 
-has call_on_create => (
+foreach my $condition (qw(required sufficient))
+has $condition => (
     is => 'ro',
     isa => 'CodeRef',
-    init_arg => 'on_create',
-    predicate => 'has_create_callback',
+    predicate => "has_${condition}_callback",
 );
 
-has call_on_change => (
-    is => 'ro',
-    isa => 'CodeRef',
-    init_arg => 'on_change',
-    predicate => 'has_change_callback',
-);
+
+# (before | after) _ (create | change) handlers
+foreach my $event (map { my $time=$_; map { "${time}_$_" } qw(create change) }
+                   qw(before after)) {
+    has "call_$event" => (
+        is => 'ro',
+        isa => 'CodeRef',
+        init_arg => $event,
+        predicate => "has_${$event}_callback",
+    );
+}
 
 sub type {
     my $self = shift;
@@ -44,23 +49,40 @@ sub type {
 
 sub execute {
     my $self = shift;
-    
-    $self->must_be_executable;
 
-    if (!$self->is_present || !$self->is_current) {
-        my $was_present_before_create = $self->is_present;
+    $self->must_meet_requirements;
 
-        $self->log("create: ${\$self->type} '${\$self->name}'");
-
-        $self->create;
-        
-        $self->call_on_create->() if $self->has_create_callback && !$was_present_before_create;
-        $self->call_on_change->() if $self->has_change_callback;
+    if ($self->has_required_callback && !$self->required->()) {
+        $self->log_debug("not required to change: ${\$self->type} (${\$self->name})");
+    } elsif (!$self->is_present) {
+        $self->_execute_with_hooks('not present before');
+    } elsif (!$self->is_current) {
+        $self->_execute_with_hooks('not current');
+    } elsif ($self->has_sufficient_callback && !$self->sufficient->()) {
+        $self->_execute_with_hooks('not sufficient');
     } else {
-        $self->log_debug("is_present: ${\$self->type} (${\$self->name})");
+        $self->log_debug("no need to change: ${\$self->type} (${\$self->name})");
     }
+    
+    # TODO: post-check?
 
     return $self;
+}
+
+sub _execute {
+    my ($self, $triggered_by) = @_;
+
+    my $was_present_before_create = $self->is_present;
+
+    $self->log("create: ${\$self->type} '${\$self->name}' - trigger: $triggered_by");
+
+    $self->call_before_create->() if $self->has_before_create_callback && !$was_present_before_create;
+    $self->call_before_change->() if $self->has_before_change_callback;
+
+    $self->create;
+
+    $self->call_after_create->() if $self->has_after_create_callback && !$was_present_before_create;
+    $self->call_after_change->() if $self->has_after_change_callback;
 }
 
 sub system_command {
@@ -73,27 +95,27 @@ sub pipe_into_command {
     my $self = shift;
     my $input_text = shift;
     my @system_args = @_;
-    
+
     $self->log_dryrun('would execute:', @system_args) and return;
     $self->log_debug('execute:', @system_args);
-    
+
     my $pid = open3(my $in, my $out, my $err, @system_args);
     print $in $input_text // ();
     close $in;
 
     my $text = join '', <$out>;
     waitpid $pid, 0;
-    
+
     my $status = $? >> 8;
     die "command '$system_args[0]' failed. status: $status" if $status;
-    
+
     return $text;
 }
 
 #
 # these are typically overloaded:
 #
-sub must_be_executable {} # execption if not executable
+sub must_meet_requirements {} # execption if not executable
 sub is_present { 0 }
 sub is_current { 1 }
 sub create {}
