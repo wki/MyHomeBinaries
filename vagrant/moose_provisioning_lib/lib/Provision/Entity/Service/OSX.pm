@@ -6,19 +6,15 @@ use namespace::autoclean;
 
 extends 'Provision::Entity::Service';
 
-has plist => (
-    is => 'ro',
-    isa => 'File',
-    required => 1,
-    lazy_build => 1,
-    coerce => 1,
-);
-
-sub _build_plist {
+sub _build_path {
     my $self = shift;
     
+    # find an existing plist
+    # or use label in "copy" plist file
+    # or assume /Library/LaunchDaemons/<$self->name>
+
     ### FIXME: find plist file by label (=name)
-    foreach my $dir (map { dir($_) } $self->_plist_search_paths) {
+    foreach my $dir ($self->_plist_search_dirs) {
         my ($list_file, $more_things_found) =
             grep { m{\b \Q${\$self->name}\E \b}xms }
             $dir->children
@@ -35,12 +31,10 @@ sub _build_plist {
     die 'could not find requested plist';
 }
 
-sub _plist_search_paths {
+sub _plist_search_dirs {
     ### FIXME: if user is given: ~user/Library/LaunchAgents ?
-    return qw(
-        /Library/LaunchAgents
-        /Library/LaunchDaemons
-    );
+    return map { dir($_) } 
+           ( qw(/Library/LaunchAgents /Library/LaunchDaemons) );
 }
 
 sub is_present {
@@ -52,6 +46,7 @@ sub is_current {
 }
 
 sub create {
+    # !is_current? stop if_running, delete old file, copy 
     # running ? stop : start
 }
 

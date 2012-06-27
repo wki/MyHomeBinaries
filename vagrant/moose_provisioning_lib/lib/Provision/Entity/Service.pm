@@ -1,8 +1,10 @@
 package Provision::Entity::Service;
 use Moose;
 use namespace::autoclean;
+
 extends 'Provision::Entity';
-with 'Provision::Role::Copy';
+with 'Provision::Role::Copy',
+     'Provision::Role::FilePath';
 
 has running => (
     is => 'ro',

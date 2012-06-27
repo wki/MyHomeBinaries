@@ -3,7 +3,7 @@ use Moose::Role;
 use Provision::Types;
 
 has path => (
-    is => 'ro',
+    is => 'rw',  # eg Service::OSX must be able to change
     isa => 'File',
     required => 1,
     coerce => 1,
