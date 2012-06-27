@@ -146,6 +146,7 @@ Exec 'deploy mysite' => (
     path => '/path/to/executable',
     args => { '--foo' => 'bar' },
     env  => { PERL5LIB => '/path/to/lib' },
+    only_if => 'whatever',
 );
 
 done;
