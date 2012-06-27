@@ -5,6 +5,7 @@ use Provision;
 
 my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";
+my $SITE_APP = "$SITE_DIR/MySite",
 
 User sites => (
     uid => 513,
@@ -36,7 +37,7 @@ __END__
   on_change => sub {}
 
 
-# creating a user: 
+# creating a user:
 
 User 'sites';                   # uid read or guessed, group 'sites' [123]
 User sites => ( uid => 123 );   # group read or 'sites' [123]
@@ -77,7 +78,7 @@ Perlbrew sites => (
     switch_to_perl => '5.14.2',
 );
 
-Tree '/web/data/www.mysite.de' => (
+Tree $SITE_DIR => (
     user       => 'sites',
     group      => 'sites',
     permission => 0755,
@@ -85,9 +86,9 @@ Tree '/web/data/www.mysite.de' => (
     create     => [
         'logs',
         'htdocs:750',
-        { 
-            path => 'Mysite', 
-            permission => 0750, 
+        {
+            path => 'subdir/Mysite',
+            permission => 0750,
             user => '...',
             group => '...',
         },
@@ -111,14 +112,22 @@ File '/path/to/mysite_js' => (
 );
 
 # or a more generic name "WebApp" ???
-Catalyst 'www.mysite.de' => (
+Catalyst $SITE_APP => (
     user      => 'sites',
-    group     => 'sites',
-    # alternate directory specifications
-    directory => "$SITE_DIR/MySite",
-    directory => Tree($DOMAIN)->dir('MySite');
+    group     => 'sites', # default: user's default group
+    # alternate directory specifications (default: path taken from name)
+    # directory will be created if not exists and chowned to user/group
+    path      => "$SITE_DIR/MySite",
+    path      => Tree($DOMAIN)->dir('MySite');
     copy      => resource('/tmp/xxx'),
     perl      => Perlbrew('sites')->perl,
+
+    # alternative actions after install/update:
+    on_change => Nginx->reload,
+    on_change => [
+        Service($SITE)->reload,
+        Service('nginx')->reload,
+    ],
 );
 
 # label is the identification

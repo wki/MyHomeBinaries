@@ -8,7 +8,7 @@ has name => (
     is => 'ro',
     isa => 'Str',
     required => 1,
-    default => '',
+    default => '',   # allow empty names (eg Nginx)
 );
 
 has app => (

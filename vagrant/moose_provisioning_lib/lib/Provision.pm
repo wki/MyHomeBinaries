@@ -45,6 +45,7 @@ sub import {
         no warnings 'redefine';
         *{"${package}::${name}"} = sub {
             $required{$plugin_class}++ or eval "use $plugin_class";
+            ### FIXME: @_ could contain ($, %), ($, \%) or (\%)
             $plugin_class->new(app => $app, name => @_)->execute;
         };
     }
