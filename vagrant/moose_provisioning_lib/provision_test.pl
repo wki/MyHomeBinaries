@@ -29,6 +29,18 @@ done;
 
 __END__
 
+Kinds of entities:
+ - Dir, File, Tree
+    * config-file might trigger ???
+ - Execution of scripts triggered by a condition
+ - Installation/Setup
+    * Users, Groups
+    * Packages
+    * Download, compile things from source (*brew, cpan, C, ...)
+ - Services
+    * System Daemons
+    * User created daemons
+
 # changed Syntax examples
 # -----------------------
 
