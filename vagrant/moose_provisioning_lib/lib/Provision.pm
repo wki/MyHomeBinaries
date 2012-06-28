@@ -16,8 +16,9 @@ use Provision::Prepare;
 #
 use Path::Class;
 use Module::Pluggable search_path => 'Provision::Entity';
+use Module::Load;
 
-our @EXPORT = qw(done os resource);
+our @EXPORT = qw(Done done Os os Resource resource);
 
 sub import {
     my $package = caller;
@@ -31,7 +32,7 @@ sub import {
     my $app = $app_class->new_with_options;
     
     my %class_for;
-    my %required;
+    my %class_loaded;
     foreach my $plugin_class (__PACKAGE__->plugins) {
         my $name = $plugin_class;
         $name =~ s{\A Provision::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
@@ -44,9 +45,15 @@ sub import {
         no strict 'refs';
         no warnings 'redefine';
         *{"${package}::${name}"} = sub {
-            $required{$plugin_class}++ or eval "use $plugin_class";
+            $class_loaded{$plugin_class}++
+                or load $plugin_class;
             ### FIXME: @_ could contain ($, %), ($, \%) or (\%)
-            $plugin_class->new(app => $app, name => @_)->execute;
+            # $plugin_class->new(app => $app, name => @_)->execute;
+            
+            my %args;
+            $args{name} = shift @_ if !ref $_[0];
+            %args = (%args, ref $_[0] eq 'HASH' ? %$_[0] : @_);
+            $plugin_class->new(%args)->execute;
         };
     }
     
@@ -58,6 +65,7 @@ sub import {
     }
 }
 
+sub Os { goto &os }
 sub os {
     if ($^O eq 'darwin') {
         return 'OSX';
@@ -66,6 +74,7 @@ sub os {
     }
 }
 
+sub Resource { goto &resource }
 sub resource {
     my $path = shift;
     
@@ -78,6 +87,7 @@ sub resource {
         : $resource_dir->file($path);
 }
 
+sub Done { goto &done }
 sub done {
     say 'Done.';
     

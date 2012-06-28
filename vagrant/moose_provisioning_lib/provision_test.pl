@@ -44,14 +44,32 @@ Kinds of entities:
 # changed Syntax examples
 # -----------------------
 
-# additional tests:
-  required => sub {}            # additional AND condition
-  sufficient => sub {}          # additional OR condition
+# resources/templates
+  resource('path/to/file')
+  resource('path/to/dir')
+  template('path/to/file', { variable => 'value', ... })
+
+
+# create/remove
+  create => <any>               # type depends on entity
+  remove => <any>
   
-# generic attributes:
+  Single Entities: internal state: *=end-state
+    - missing, out-of-date, current*, removed*
+
+  Compound Entities: internal state:
+    - list of missing things   --> present after create
+    - list of present things   --> evtl to-change, to-remove
+    - list of to-change things --> present after change
+    - list of to-remove thing  --> removed after change
+    - list og removed things
+  
+# generic callback attributes
   before_create => sub {}
+  before_remove => sub {}
   before_change => sub {}
   after_create => sub {}
+  after_remove => sub {}
   after_change => sub {}
 
 
@@ -65,29 +83,18 @@ User sites => ( uid => 123, group => Group('xxx', gid => 111) );
 ### TODO: add "groups => [ ... ]"
 
 
+# service nginx, implicitly requires package nginx
 Nginx {
-    service => 'running',
-    runlevel => [1..5],
-    # site => (name => ..., ... ),
+    runlevel => [1..5],         # default: 2-3 ???
+
+    # sites
+    create => {
+        site_name => resource('site/site_name.conf'),
+    },
+    remove => [
+        'other_site_name',
+    ]
 };
-
-Nginx_Site 'www.mysite.de' => {
-    listen => 80,
-    root => "$SITE_DIR/htdocs",
-    on_change => Nginx('nginx')->reload, # or ->service->reload
-};
-
-### alternativ:
-
-Nginx('nginx',
-    service => 'running',
-    runlevel => [1..5],
-)->Site('www.mysite.de',
-    listen => 80,
-    root => "$SITE_DIR/htdocs",
-);
-
-Nginx->Site('www.xxx', ...);
 
 Perlbrew sites => (
     user           => 'sites', # guessed from name
@@ -117,8 +124,8 @@ Dir '/path/to/directory' => (
     user       => 'sites',
     group      => 'sites',
     permission => 0644,
-    create     => 1,    # is default
-  # remove     => 1,    # to remove
+    create     => 1,    # is default, 0 removes
+    content    => resource('path/to/website'),
 );
 
 File '/path/to/mysite_js' => (
@@ -126,7 +133,7 @@ File '/path/to/mysite_js' => (
     group      => 'sites',
     permission => 0644,
     content    => 'asdfsdf', # or resource('js/site.js'),
-  # remove     => 1,    # to remove
+    create     => 1, # is default, 0 removes
 );
 
 # or a more generic name "WebApp" ???
@@ -156,8 +163,8 @@ Service 'mysite_pdf_generator' => (
     user    => 'sites',
     group   => 'sites',
     # more things needed
-    running => 1,  # default: 1
-    copy    => resource('/plist/pdf.plist'),
+    create  => 1,  # default: 1, 0 removes
+    copy    => resource('/plist/pdf.plist'), # or a linux shell script
 );
 
 Exec 'deploy mysite' => (

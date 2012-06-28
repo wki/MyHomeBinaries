@@ -19,17 +19,8 @@ has app => (
                    log log_dryrun log_debug)],
 );
 
-foreach my $condition (qw(required sufficient))
-has $condition => (
-    is => 'ro',
-    isa => 'CodeRef',
-    predicate => "has_${condition}_callback",
-);
-
-
-# (before | after) _ (create | change) handlers
-foreach my $event (map { my $time=$_; map { "${time}_$_" } qw(create change) }
-                   qw(before after)) {
+foreach my $event (qw(before_create before_change before_remove
+                      after_create after_change after_remove)) {
     has "call_$event" => (
         is => 'ro',
         isa => 'CodeRef',
