@@ -1,0 +1,25 @@
+Simple Entity:
+  - name
+  - parent
+  - state
+  - ... whatever is needed
+  + is_ok($wanted)      # if state: 1, else 0
+  + process($wanted)    # switches to state
+  + create()            # for overloading
+  + change()            # for overloading
+  + remove()            # for overloading
+
+    state           $wanted=0   $wanted=1
+    -------------------------------------
+    missing         -           create()
+    outdated        remove()    change()
+    current         remove()    -
+    removed         -           create()    # should never happen!
+
+
+Simple entities:
+  - file + contents-generation (static, callback)
+  - dir existence
+  - path (file/dir) permission
+  - package installed
+  - service running
