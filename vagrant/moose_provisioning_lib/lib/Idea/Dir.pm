@@ -6,7 +6,8 @@ extends 'EntityBase';
 has path => (is => 'ro', isa => Dir, coerce => 1, lazy_build => 1);
 sub _build_path { $_[0]->name }
 
-sub _build_state { -d $_[0]->path ? 'current' : 'missing' }
+augment is_present => sub { -d $_[0]->path };
+augment is_current => sub { 1 };
 
 sub create {
     my $self = shift;
