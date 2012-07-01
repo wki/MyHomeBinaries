@@ -46,6 +46,17 @@ Execute '/path/to/script.sh' => (
     keep_if => TreeMatches(...),
 );
 
+sub Runs {
+    my @args = @_;
+    
+    # called from Entity like:
+    # if ($self->not_if->(entity => $self, app => $self->app)) { ... }
+    sub {
+        Provision::DSL::CheckIf::Runs->new(@_)->is_ok(@args);
+    }
+}
+
+
 
 
 Simple Entity:
