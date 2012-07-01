@@ -1,4 +1,4 @@
-package Provision::DSL::Entity::Group::OSX;
+package Provision::DSL::Entity::_OSX::Group;
 use Moose;
 use namespace::autoclean;
 extends 'Provision::DSL::Entity::Group';

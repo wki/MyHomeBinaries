@@ -1,4 +1,4 @@
-package Provision::DSL::Entity::Package::Ubuntu;
+package Provision::DSL::Entity::_Ubuntu::Package;
 use Moose;
 use namespace::autoclean;
 

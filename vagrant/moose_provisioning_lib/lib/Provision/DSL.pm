@@ -17,6 +17,7 @@ use Provision::DSL::Prepare;
 use Path::Class;
 use Module::Pluggable search_path => 'Provision::DSL::Entity';
 use Module::Load;
+use Moose::Util::TypeConstraints qw(find_type_constraint);
 
 our @EXPORT = qw(Done done Os os Resource resource);
 
@@ -28,40 +29,56 @@ sub import {
     
     my $os = os();
     my $app_class = "Provision::DSL::App::$os";
-    eval "use $app_class";
+    load $app_class;
     my $app = $app_class->new_with_options;
     
     ### FIXME: new order of execution:
     ###   1) collect class_for
+    ###      Entity::Xxx will result in Xxx keyword
+    ###      Entity::Xxx:::Yyy will result in Xxx keyword
+    ###      Entity::_<OS> -- same structure as Entity if wanted
     ###   2) create a 'class_type' for every Entity-Class
     ###   3) export a method for every Entity-Class
     ###   4) save class_for in app->_entity_class_for
     
     my %class_for;
-    my %class_loaded;
+    # my %class_loaded;
     foreach my $plugin_class (__PACKAGE__->plugins) {
-        my $name = $plugin_class;
-        $name =~ s{\A Provision::DSL::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
-        next if $2 && $2 ne $os;
-        next if exists $class_for{$name} 
-             && length $class_for{$name} > length $plugin_class;
         
-        $class_for{$name} = $plugin_class;
+        ### CHECK: can we load classes?
+        load $plugin_class;
+        
+        ### WRONG: fix to match 1) above!
+        my $plugin_name = $plugin_class;
+        $plugin_name =~ s{\A Provision::DSL::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
+        next if $2 && $2 ne $os;
+        next if exists $class_for{$plugin_name} 
+             && length $class_for{$plugin_name} > length $plugin_class;
+        
+        $class_for{$plugin_name} = $plugin_class;
+        
+        if (!find_type_constraint($plugin_name)) {
+            class_type $plugin_name,
+                { class => $plugin_class };
+            coerce $plugin_name,
+                from 'Str',
+                via { $plugin_class->new({app => $app, name => $_}) };
+        }
         
         no strict 'refs';
         no warnings 'redefine';
         *{"${package}::${name}"} = sub {
-            $class_loaded{$plugin_class}++
-                or load $plugin_class;
+            $plugin_object = $app->entity($plugin_name, @_);
             
-            my %args;
-            $args{name} = shift @_ if !ref $_[0];
-            %args = (%args, ref $_[0] eq 'HASH' ? %$_[0] : @_);
-            $plugin_class->new(%args)->execute;
+            if (defined wantarray) {
+                return $plugin_object
+            } else {
+                $plugin_object->execute;
+            }
         };
     }
     
-    $app->_entity_class_for( \%class_for );
+    $app->_entity_class_for(\%class_for);
     
     foreach my $symbol (@EXPORT) {
         no strict 'refs';
@@ -99,4 +116,5 @@ sub done {
     exit;
 }
 
+no Moose::Util::TypeConstraints;
 1;

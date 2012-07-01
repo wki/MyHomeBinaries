@@ -13,7 +13,8 @@ has app => (
     isa => 'Provision::App',
     required => 1,
     handles => [qw(verbose dryrun
-                   log log_dryrun log_debug)],
+                   log log_dryrun log_debug
+                   entity)],
 );
 
 has parent => (

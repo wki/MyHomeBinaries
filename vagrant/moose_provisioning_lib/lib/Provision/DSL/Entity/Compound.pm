@@ -9,12 +9,14 @@ has children => (
     is => 'rw', 
     isa => 'ArrayRef[Entity]', 
     required => 1,
-    default => sub { [] },
+    lazy_build => 1,
     handles => {
         all_children => 'elements',
         add_child    => 'push',
     },
 );
+
+sub _build_children { [] }
 
 sub create {
     my $self = shift;

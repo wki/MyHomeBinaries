@@ -1,9 +1,10 @@
 package Provision::DSL::Entity::Perlbrew;
 use Moose;
 use LWP::Simple;
+use Povision::DSL;
 use namespace::autoclean;
 
-extends 'Provision::DSL::Entity';
+extends 'Provision::DSL::Entity::Compound';
 # with 'Provision::Role::User';
 
 has install_cpanm => (
@@ -14,7 +15,7 @@ has install_cpanm => (
 
 has install_perl => (
     is => 'ro',
-    isa => 'Str | ArrayRef[Str]',
+    isa => 'Str', # maybe allow 'Str | ArrayRef[Str]'
     required => 1,
 );
 
@@ -27,60 +28,19 @@ sub _build_user {
     return $_[0]->name 
 }
 
-# alternativ -- extends 'Compound';
-sub BUILD {
+sub _build_children {
     my $self = shift;
-
-    $self->add_child(
-        $self->app->entity(PerlbrewInstall => $self->name, { }),
-    );
     
-    # besser -- nicht ganz sauber:
-    $self->add_entity('Perlbrew::Install', { only_if => '???' });
-    
-    
-    
-    # was ich eigentlich will:
-    $self->add_entity(Execute => Url('http://perlbrew.pl'),
-                      user    => $self->user,
-                      not_if  => FileExists($self->perlbrew));
-    
-    if ($self->install_cpanm) {
-        $self->add_entity(Execute => $self->perlbrew,
-                          args    => 'install-cpanm',
-                          not_if  => FileExists($self->cpanm))
-    }
-    
-    # install perls
-    
-    # switch
-
+    return [
+        $self->entity(Perlbrew_Install => {user => $self->user, parent => $self}),
+        $self->entity(Perlbrew_Cpanm =>   {user => $self->user, parent => $self}),
+        $self->entity(Perlbrew_Perl =>    {user => $self->user, parent => $self, install => $self->install_perl}),
+        $self->entity(Perlbrew_Switch =>  {user => $self->user, parent => $self, switch => $self->switch_to_perl}),
+    ];
 }
 
 
 
-
-around is_present => sub {
-    my ($orig, $self) = @_;
-    
-    return -f $self->user->home_directory->file('perl5/perlbrew/bin/perlbrew')
-         # && cpanm_install_status_is_ok
-         # && all_requested_perl_versions_installed
-         # && correct_perl_version_switched
-           && $self->$orig();
-};
-
-after ['create', 'change'] => sub {
-    
-    # install perlbrew if not yet there
-    # install cpanm if needed
-    # install missing perl versions
-    # switch to wanted perl version
-};
-
-after remove => sub {
-    # remove perlbrew directory
-};
 
 # sub create {
 #     my $self = shift;

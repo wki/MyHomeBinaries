@@ -34,12 +34,15 @@ has _entity_class_for => (
 sub entity {
     my $self   = shift;
     my $entity = shift;
-    my $name   = shift;
+    
+    my %args = (app => $app);
+    $args{name} = shift @_ if !ref $_[0];
+    %args = (%args, ref $_[0] eq 'HASH' ? %$_[0] : @_);
     
     my $class = $self->_resource_class_for->{$entity}
         or die "no class for entity '$entity' found";
     
-    return $class->new( { app => $self, name => $name, @_ } );
+    return $class->new(\%args);
 }
 
 sub log {
