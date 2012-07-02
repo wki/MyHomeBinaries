@@ -1,7 +1,6 @@
 package Provision::DSL::Source::Url;
 use Moose;
 use LWP::Simple;
-# use Provision::DSL::Types;
 use namespace::autoclean;
 
 extends 'Provision::DSL::Source';

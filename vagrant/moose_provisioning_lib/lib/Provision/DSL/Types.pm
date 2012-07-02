@@ -3,20 +3,6 @@ use Moose::Util::TypeConstraints;
 use Path::Class;
 
 
-# class_type 'UserEntity',
-#     { class => 'Provision::Entity::User' };
-# coerce 'UserEntity',
-#     from 'Str',
-#     via { User $_ };
-# 
-# 
-# class_type 'GroupEntity',
-#     { class => 'Provision::Entity::Group' };
-# coerce 'GroupEntity',
-#     from 'Str',
-#     via { Group $_ };
-
-
 subtype 'Permission',
     as 'Str',
     where { m{\A [0-7]{3} \z}xms },
@@ -50,7 +36,7 @@ subtype 'ExistingDir',
     message { "Directory $_ does not exist" };
 coerce 'ExistingDir',
     from 'Str',
-    via { Path::Class::Dir->new($_) };
+    via { Path::Class::Dir->new($_)->resolve->absolute };
 
 
 subtype 'DirList',

@@ -16,3 +16,19 @@ File '/path/to/file.ext' => (
     content => Url('http://domain.tld/path/to/file.ext'),
 );
 
+
+__END__
+
+# ----- general parameter syntax:
+
+Keyword;
+
+Keyword 'name';
+Keyword name => ( ... );   # maybe unclever
+Keyword name => { ... };
+Keyword { ... };
+
+Keyword();
+Keyword('name');
+Keyword(name => { ... });
+Keyword({ ... });

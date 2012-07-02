@@ -45,9 +45,9 @@ Kinds of entities:
 # -----------------------
 
 # resources/templates
-  resource('path/to/file')
-  resource('path/to/dir')
-  template('path/to/file', { variable => 'value', ... })
+  Resource('path/to/file')
+  Resource('path/to/dir')
+  Template('path/to/file', { vars => {...}, ... })
 
 
 # create/remove

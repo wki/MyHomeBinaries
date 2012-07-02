@@ -37,7 +37,7 @@ sub entity {
     my $entity = shift;
     
     my %args = (app => $self);
-    $args{name} = shift @_ if !ref $_[0];
+    $args{name} = shift if !ref $_[0];
     %args = (%args, ref $_[0] eq 'HASH' ? %{$_[0]} : @_);
     
     my $class = $self->_resource_class_for->{$entity}

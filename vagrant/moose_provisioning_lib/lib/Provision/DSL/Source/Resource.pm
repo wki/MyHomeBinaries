@@ -24,7 +24,12 @@ has path => (
     lazy_build => 1,
 );
 
-sub _build_path { $_[0]->name }
+sub _build_path { 
+    my $self = shift;
+    
+    # not correct, but ->file does not check...
+    return $self->root_dir->file($self->name)->cleanup->stringify;
+}
 
 sub _build_content {
     my $self = shift;

@@ -14,18 +14,17 @@ has content => (
     lazy_build => 1,
 );
 
-# builder must be created in child class
+# builder must be created in child class if content wanted
 
 around BUILDARGS => sub {
     my $orig = shift;
     my $class = shift;
     
-    ### FIXME: same logic as App::entity()
-    if (@_ == 1 && !ref $_[0]) {
-        return $class->$orig(name => $_[0]);
-    } else {
-        return $class->$orig(@_);
-    }
+    my %args = ();
+    $args{name} = shift if !ref $_[0];
+    %args = (%args, ref $_[0] eq 'HASH' ? %{$_[0]} : @_);
+    
+    return $class->$orig(%args);
 };
 
 __PACKAGE__->meta->make_immutable;

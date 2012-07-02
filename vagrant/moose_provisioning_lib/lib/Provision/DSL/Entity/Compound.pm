@@ -1,5 +1,6 @@
 package Provision::DSL::Entity::Compound;
 use Moose;
+use List::MoreUtils qw(any all none);
 use namespace::autoclean;
 
 extends 'Provision::DSL::Entity';
@@ -11,14 +12,26 @@ has children => (
     required => 1,
     lazy_build => 1,
     handles => {
-        all_children => 'elements',
-        add_child    => 'push',
+        all_children    => 'elements',
+        add_child       => 'push',
+        has_no_children => 'is_empty',
     },
 );
 
 sub _build_children { [] }
 
-### FIXME: create state somehow.
+override is_present => sub {
+    my $self = shift;
+    
+    return super() && ($self->has_no_children 
+                       || any { $_->is_present } $self->all_children);
+};
+
+override is_current => sub {
+    my $self = shift;
+    
+    return super() && all { $_->is_current } $self->all_children;
+};
 
 sub create {
     my $self = shift;
