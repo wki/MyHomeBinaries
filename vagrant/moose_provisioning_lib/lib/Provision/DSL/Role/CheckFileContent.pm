@@ -1,4 +1,4 @@
-package Provision::DSL::CheckFileContent;
+package Provision::DSL::Role::CheckFileContent;
 use Moose::Role;
 
 requires 'path', 'content', 'is_current', 'create', 'change';

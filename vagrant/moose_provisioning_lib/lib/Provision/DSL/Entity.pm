@@ -72,6 +72,12 @@ sub process {
     $self->clear_state;
 }
 
+sub execute {
+    my $self = shift;
+    
+    $self->process(1); ### really?
+}
+
 sub is_present {
     my $self = shift;
 

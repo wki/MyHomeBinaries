@@ -29,6 +29,7 @@ has dryrun => (
 has _entity_class_for => (
     is => 'rw',
     isa => 'HashRef',
+    default => sub { {} },
 );
 
 sub entity {

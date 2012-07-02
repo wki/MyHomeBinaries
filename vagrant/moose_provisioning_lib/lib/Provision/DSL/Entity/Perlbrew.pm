@@ -1,7 +1,6 @@
 package Provision::DSL::Entity::Perlbrew;
 use Moose;
 use LWP::Simple;
-use Povision::DSL;
 use namespace::autoclean;
 
 extends 'Provision::DSL::Entity::Compound';

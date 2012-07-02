@@ -9,7 +9,7 @@ use FindBin;
 # Provision::Prepare will ensure that everything requested to continue
 # is there or dies otherwise.
 #
-use Provision::DSL::Prepare;
+# use Provision::DSL::Prepare;
 
 #
 # starting here, we are in good shape and can use everything we need.
@@ -23,7 +23,7 @@ use Moose::Util::TypeConstraints qw(class_type coerce
                                     from via
                                     find_type_constraint);
 
-our @EXPORT = qw(Done done Os os Resource resource);
+our @EXPORT = qw(Done done OS Os os);
 
 sub import {
     my $package = caller;
@@ -32,7 +32,6 @@ sub import {
     strict->import();
 
     my $app = _instantiate_app_class();
-
     _create_and_export_entity_keywords($package, $app);
     _create_and_export_source_keywords($package, $app);
     _export_symbols($package);
@@ -48,33 +47,21 @@ sub _instantiate_app_class {
 
 sub _create_and_export_entity_keywords {
     my ($package, $app) = @_;
-    
-    ### FIXME: new order of execution:
-    ###   1) collect class_for
-    ###      Entity::Xxx will result in Xxx keyword
-    ###      Entity::Xxx:::Yyy will result in Xxx keyword
-    ###      Entity::_<OS> -- same structure as Entity if wanted
-    ###   2) create a 'class_type' for every Entity-Class
-    ###   3) export a method for every Entity-Class
-    ###   4) save class_for in app->_entity_class_for
 
-    
+    my $os = os();
     my %class_for;
-    # my %class_loaded;
     foreach my $entity_class (__PACKAGE__->entities) {
-
-        ### CHECK: can we load classes?
-        load $entity_class;
-
-        ### WRONG: fix to match 1) above!
         my $entity_name = $entity_class;
-        $entity_name =~ s{\A Provision::DSL::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
-        next if $2 && $2 ne $os;
+        $entity_name =~ s{\A Provision::DSL::Entity::(?:_(\w+)\::)?}{}xms;
+        next if $1 && $1 ne $os;
+
+        $entity_name =~ s{::}{_}xmsg;
+
         next if exists $class_for{$entity_name}
              && length $class_for{$entity_name} > length $entity_class;
-
         $class_for{$entity_name} = $entity_class;
-
+        
+        # create class-types and coercions before loading entity modules
         if (!find_type_constraint($entity_name)) {
             class_type $entity_name,
                 { class => $entity_class };
@@ -82,30 +69,43 @@ sub _create_and_export_entity_keywords {
                 from 'Str',
                 via { $entity_class->new({app => $app, name => $_}) };
         }
+    }
+    $app->_entity_class_for(\%class_for);
+
+    while (my ($entity_name, $entity_class) = each %class_for) {
+        load $entity_class;
 
         no strict 'refs';
         no warnings 'redefine';
-        *{"${package}::${plugin_name}"} = sub {
-            my $plugin_object = $app->entity($entity_name, @_);
+        *{"${package}::${entity_name}"} = sub {
+            my $entity = $app->entity($entity_name, @_);
 
             if (defined wantarray) {
-                return $plugin_object
+                return $entity
             } else {
-                $plugin_object->execute;
+                $entity->execute;
             }
         };
     }
-
-    $app->_entity_class_for(\%class_for);
 }
 
 sub _create_and_export_source_keywords {
     my ($package, $app) = @_;
+
+    foreach my $source_class (__PACKAGE__->sources) {
+        my $source_name = $source_class;
+        $source_name =~ s{\A Provision::DSL::Source::}{}xms;
+        
+        no strict 'refs';
+        no warnings 'redefine'; # occurs during test
+        *{"${package}::${source_name}"}   = sub { $source_class->new(@_) };
+        *{"${package}::\l${source_name}"} = *{"${package}::${source_name}"};
+    }
 }
 
 sub _export_symbols {
     my $package = shift;
-    
+
     foreach my $symbol (@EXPORT) {
         no strict 'refs';
         *{"${package}::${symbol}"} = *{"Provision::DSL::$symbol"};
@@ -122,18 +122,18 @@ sub os {
     }
 }
 
-sub Resource { goto &resource }
-sub resource {
-    my $path = shift;
-
-    my $resource_dir = dir("$FindBin::Bin/resources");
-    die 'resource dir not found' if !-d $resource_dir;
-
-    my $dir = $resource_dir->subdir($path);
-    return -d $dir
-        ? $dir
-        : $resource_dir->file($path);
-}
+# sub Resource { goto &resource }
+# sub resource {
+#     my $path = shift;
+# 
+#     my $resource_dir = dir("$FindBin::Bin/resources");
+#     die 'resource dir not found' if !-d $resource_dir;
+# 
+#     my $dir = $resource_dir->subdir($path);
+#     return -d $dir
+#         ? $dir
+#         : $resource_dir->file($path);
+# }
 
 sub Done { goto &done }
 sub done {

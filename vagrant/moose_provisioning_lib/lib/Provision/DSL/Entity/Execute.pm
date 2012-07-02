@@ -3,7 +3,7 @@ use Moose;
 use Provision::DSL::Types;
 
 extends 'Provision::DSL::Entity';
-with 'Provision::Role::ExecuteCommand';
+with 'Provision::DSL::Role::ExecuteCommand';
 
 sub _build_path { $_[0]->name }
 

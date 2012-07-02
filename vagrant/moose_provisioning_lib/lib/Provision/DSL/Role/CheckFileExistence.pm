@@ -1,7 +1,7 @@
 package Provision::DSL::Role::CheckFileExistence;
 use Moose::Role;
 
-requries 'path', 'is_present', 'remove';
+requires 'path', 'is_present', 'remove';
 
 around is_present => sub {
     my ($orig, $self) = @_;
