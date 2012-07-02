@@ -5,12 +5,12 @@ use namespace::autoclean;
 has name => (
     is => 'ro',
     isa => 'Str',
-    requried => 1,
+    required => 1,
 );
 
 has app => (
     is => 'ro',
-    isa => 'Provision::App',
+    isa => 'Provision::DSL::App',
     required => 1,
     handles => [qw(verbose dryrun
                    log log_dryrun log_debug
@@ -31,19 +31,19 @@ has state  => (
     clearer => 'clear_state',
 );
 
-# precedence over class-methods is_present, is_current
+# precedence over methods is_present, is_current
 # present: only_if, not_if, current: update_if, keep_if
-has only_if   => (is => 'rw', isa => 'CodeRef', predicate => 'has_only_if');
-has not_if    => (is => 'rw', isa => 'CodeRef', predicate => 'has_not_if');
-has update_if => (is => 'rw', isa => 'CodeRef', predicate => 'has_update_if');
-has keep_if   => (is => 'rw', isa => 'CodeRef', predicate => 'has_keep_if');
+has only_if   => (is => 'ro', isa => 'CodeRef', predicate => 'has_only_if');
+has not_if    => (is => 'ro', isa => 'CodeRef', predicate => 'has_not_if');
+has update_if => (is => 'ro', isa => 'CodeRef', predicate => 'has_update_if');
+has keep_if   => (is => 'ro', isa => 'CodeRef', predicate => 'has_keep_if');
 
 
 sub _build_state {
     my $self = shift;
 
     return 'missing'  if !$self->is_present;
-    return 'outdated' if !$sels->is_current;
+    return 'outdated' if !$self->is_current;
     return 'current';
 }
 

@@ -1,5 +1,6 @@
 package Provision::DSL::Entity::User;
 use Moose;
+use Provision::DSL::Types;
 use namespace::autoclean;
 
 extends 'Provision::DSL::Entity';
@@ -19,7 +20,7 @@ has uid => (
 
 has home_directory => (
     is => 'ro',
-    isa => Dir,
+    isa => 'PathClassDir',
     coerce => 1,
     required => 1,
     lazy_build => 1,

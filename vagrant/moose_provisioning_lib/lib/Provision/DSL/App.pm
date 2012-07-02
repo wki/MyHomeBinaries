@@ -35,9 +35,9 @@ sub entity {
     my $self   = shift;
     my $entity = shift;
     
-    my %args = (app => $app);
+    my %args = (app => $self);
     $args{name} = shift @_ if !ref $_[0];
-    %args = (%args, ref $_[0] eq 'HASH' ? %$_[0] : @_);
+    %args = (%args, ref $_[0] eq 'HASH' ? %{$_[0]} : @_);
     
     my $class = $self->_resource_class_for->{$entity}
         or die "no class for entity '$entity' found";

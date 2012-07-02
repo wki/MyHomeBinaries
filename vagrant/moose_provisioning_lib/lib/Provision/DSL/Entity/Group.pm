@@ -1,6 +1,6 @@
 package Provision::DSL::Entity::Group;
 use Moose;
-use Provision::DSL::Types;
+# use Provision::DSL::Types;
 
 extends 'Provision::DSL::Entity';
 

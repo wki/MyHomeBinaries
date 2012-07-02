@@ -25,7 +25,7 @@ subtype 'Permission',
 
 class_type 'PathClassEntity',
     { class => 'Path::Class::Entity' };
-coerce 'PathClass',
+coerce 'PathClassEntity',
     from 'Str',
     via { -d $_ ? Path::Class::Dir->new($_) : Path::Class::File->new($_) };
 
@@ -66,19 +66,6 @@ coerce 'DirList',
 
 class_type 'Entity',
     { class => 'Provision::DSL::Entity' };
-
-class_type 'User',
-    { class => 'Provision::DSL::Entity::User' };
-coerce 'User',
-    from 'Str',
-    via { Provision::DSL::Entity::User->new({name => $_}) }; ### FIXME: OS!
-
-
-class_type 'Group',
-    { class => 'Provision::DSL::Entity::Group' };
-coerce 'Group',
-    from 'Str',
-    via { Provision::DSL::Entity::Group->new({name => $_}) }; ### FIXME: OS!
 
 
 class_type 'Source',
