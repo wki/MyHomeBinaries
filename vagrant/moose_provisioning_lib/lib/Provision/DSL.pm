@@ -15,7 +15,8 @@ use Provision::DSL::Prepare;
 # starting here, we are in good shape and can use everything we need.
 #
 use Path::Class;
-use Module::Pluggable search_path => 'Provision::DSL::Entity';
+use Module::Pluggable search_path => 'Provision::DSL::Entity', sub_name => 'entities';
+use Module::Pluggable search_path => 'Provision::DSL::Source', sub_name => 'sources';
 use Module::Load;
 use Moose;
 use Moose::Util::TypeConstraints qw(class_type coerce
@@ -30,11 +31,24 @@ sub import {
     warnings->import();
     strict->import();
 
+    my $app = _instantiate_app_class();
+
+    _create_and_export_entity_keywords($package, $app);
+    _create_and_export_source_keywords($package, $app);
+    _export_symbols($package);
+}
+
+sub _instantiate_app_class {
     my $os = os();
     my $app_class = "Provision::DSL::App::$os";
     load $app_class;
-    my $app = $app_class->new_with_options;
 
+    return $app_class->new_with_options;
+}
+
+sub _create_and_export_entity_keywords {
+    my ($package, $app) = @_;
+    
     ### FIXME: new order of execution:
     ###   1) collect class_for
     ###      Entity::Xxx will result in Xxx keyword
@@ -44,34 +58,35 @@ sub import {
     ###   3) export a method for every Entity-Class
     ###   4) save class_for in app->_entity_class_for
 
+    
     my %class_for;
     # my %class_loaded;
-    foreach my $plugin_class (__PACKAGE__->plugins) {
+    foreach my $entity_class (__PACKAGE__->entities) {
 
         ### CHECK: can we load classes?
-        load $plugin_class;
+        load $entity_class;
 
         ### WRONG: fix to match 1) above!
-        my $plugin_name = $plugin_class;
-        $plugin_name =~ s{\A Provision::DSL::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
+        my $entity_name = $entity_class;
+        $entity_name =~ s{\A Provision::DSL::Entity:: ([^:]+?) (?: :: (\w+))? \z}{$1}xms;
         next if $2 && $2 ne $os;
-        next if exists $class_for{$plugin_name}
-             && length $class_for{$plugin_name} > length $plugin_class;
+        next if exists $class_for{$entity_name}
+             && length $class_for{$entity_name} > length $entity_class;
 
-        $class_for{$plugin_name} = $plugin_class;
+        $class_for{$entity_name} = $entity_class;
 
-        if (!find_type_constraint($plugin_name)) {
-            class_type $plugin_name,
-                { class => $plugin_class };
-            coerce $plugin_name,
+        if (!find_type_constraint($entity_name)) {
+            class_type $entity_name,
+                { class => $entity_class };
+            coerce $entity_name,
                 from 'Str',
-                via { $plugin_class->new({app => $app, name => $_}) };
+                via { $entity_class->new({app => $app, name => $_}) };
         }
 
         no strict 'refs';
         no warnings 'redefine';
         *{"${package}::${plugin_name}"} = sub {
-            my $plugin_object = $app->entity($plugin_name, @_);
+            my $plugin_object = $app->entity($entity_name, @_);
 
             if (defined wantarray) {
                 return $plugin_object
@@ -82,7 +97,15 @@ sub import {
     }
 
     $app->_entity_class_for(\%class_for);
+}
 
+sub _create_and_export_source_keywords {
+    my ($package, $app) = @_;
+}
+
+sub _export_symbols {
+    my $package = shift;
+    
     foreach my $symbol (@EXPORT) {
         no strict 'refs';
         *{"${package}::${symbol}"} = *{"Provision::DSL::$symbol"};

@@ -11,3 +11,8 @@ Perlbrew sites => (
     switch_perl  => '5.14.2',
 );
 
+File '/path/to/file.ext' => (
+    user => 'sites', # group implicitly 'sites'
+    content => Url('http://domain.tld/path/to/file.ext'),
+);
+
