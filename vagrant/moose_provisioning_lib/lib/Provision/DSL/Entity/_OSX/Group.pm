@@ -18,5 +18,17 @@ after create => sub {
                           PrimaryGroupID => $self->gid);
 };
 
+after remove => sub {
+    my $self = shift;
+    
+    my $members = (getgrgid($self->gid))[3];
+    die "Cannot remove group ${\$self->name}: in use by '$members'";
+    
+    $self->log_dryrun("would remove Group '${\$self->name}'")
+        and return;
+    
+    $self->system_command($DSCL, '.', -delete => "/Groups/${\$self->name}");
+};
+
 __PACKAGE__->meta->make_immutable;
 1;
