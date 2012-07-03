@@ -17,8 +17,8 @@ has gid => (
 sub _build_gid {
     my $self = shift;
     
-    my $gid = (getgrnam($self->name))[3];
-    return $gid if $gid;
+    my $gid = (getgrnam($self->name))[2];
+    return $gid if defined $gid;
     
     $gid = $START_GID;
     while (++$gid < $MAX_ID) {
@@ -34,7 +34,7 @@ sub _build_gid {
 around is_present => sub {
     my ($orig, $self) = @_;
     
-    return getgrnam($self->name) && $self->$orig();
+    return defined getgrnam($self->name) && $self->$orig();
 };
 
 __PACKAGE__->meta->make_immutable;

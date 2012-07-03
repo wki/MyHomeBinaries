@@ -21,19 +21,28 @@ after create => sub {
     my $user  = "/Users/${\$self->name}";
     my $group = "/Groups/${\$self->group->name}";
 
-    $self->system_command($DSCL, '.', -create => $group); 
-    $self->system_command($DSCL, '.', -append => $group,
-                          PrimaryGroupID => $self->gid);
+    $self->app->system_command($DSCL, '.', -create => $group); 
+    $self->app->system_command($DSCL, '.', -append => $group,
+                               PrimaryGroupID => $self->group->gid);
 
-    $self->system_command($DSCL, '.', -create => $user);
-    $self->system_command($DSCL, '.', -append => $user,
-                          PrimaryGroupID => $self->gid);
-    $self->system_command($DSCL, '.', -append => $user,
-                          UniqueID => $self->uid);
-    $self->system_command($DSCL, '.', -append => $user,
-                          NFSHomeDirectory => $self->home_directory);
-    $self->system_command($DSCL, '.', -append => $user,
-                          UserShell => '/bin/bash');
+    $self->app->system_command($DSCL, '.', -create => $user);
+    $self->app->system_command($DSCL, '.', -append => $user,
+                               PrimaryGroupID => $self->group->gid);
+    $self->app->system_command($DSCL, '.', -append => $user,
+                               UniqueID => $self->uid);
+    $self->app->system_command($DSCL, '.', -append => $user,
+                               NFSHomeDirectory => $self->home_directory);
+    $self->app->system_command($DSCL, '.', -append => $user,
+                               UserShell => '/bin/bash');
+};
+
+after remove => sub {
+    my $self = shift;
+    
+    $self->log_dryrun("would remove User '${\$self->name}'")
+        and return;
+    
+    $self->app->system_command($DSCL, '.', -delete => "/Users/${\$self->name}");
 };
 
 __PACKAGE__->meta->make_immutable;

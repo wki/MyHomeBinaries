@@ -56,7 +56,7 @@ sub _build_group {
     
     my $gid = (getpwnam($self->name))[3];
     if (defined $gid) {
-        return getgrgid($gid);
+        return scalar getgrgid($gid);
     } else {
         return $self->name;
     }
@@ -65,7 +65,7 @@ sub _build_group {
 around is_present => sub {
     my ($orig, $self) = @_;
     
-    return getpwnam($self->name) && $self->$orig();
+    return defined getpwnam($self->name) && $self->$orig();
 };
 
 before create => sub {
@@ -74,8 +74,8 @@ before create => sub {
     $self->log_dryrun("would create User home_directory '${\$self->home_directory}'")
         and return;
 
-    $self->home_directory->mkpath;
-    chown $self->uid, $self->group->gid, $self->home_directory;
+    # $self->home_directory->mkpath;
+    # chown $self->uid, $self->group->gid, $self->home_directory;
 };
 
 __PACKAGE__->meta->make_immutable;

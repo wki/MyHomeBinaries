@@ -1,5 +1,6 @@
 package Provision::DSL::App;
 use Moose;
+use IPC::Open3 'open3';
 use namespace::autoclean;
 with 'MooseX::Getopt::Strict';
 
@@ -68,6 +69,33 @@ sub _log_if {
     say STDERR join(' ', @_) if $condition;
 
     return $condition;
+}
+
+sub system_command {
+    my $self = shift;
+
+    return $self->pipe_into_command('', @_);
+}
+
+sub pipe_into_command {
+    my $self = shift;
+    my $input_text = shift;
+    my @system_args = @_;
+
+    $self->log_dryrun('would execute:', @system_args) and return;
+    $self->log_debug('execute:', @system_args);
+
+    my $pid = open3(my $in, my $out, my $err, @system_args);
+    print $in $input_text // ();
+    close $in;
+
+    my $text = join '', <$out>;
+    waitpid $pid, 0;
+
+    my $status = $? >> 8;
+    die "command '$system_args[0]' failed. status: $status" if $status;
+
+    return $text;
 }
 
 __PACKAGE__->meta->make_immutable;
