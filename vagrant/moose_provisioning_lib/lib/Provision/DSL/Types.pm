@@ -5,7 +5,7 @@ use Path::Class;
 
 subtype 'Permission',
     as 'Str',
-    where { m{\A [0-7]{3} \z}xms },
+    where { m{\A [0-7]{3,} \z}xms },
     message { 'a permission must be a 3-digit octal number' };
 
 

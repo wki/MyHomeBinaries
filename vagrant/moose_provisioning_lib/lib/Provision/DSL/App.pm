@@ -40,7 +40,7 @@ sub entity {
     $args{name} = shift if !ref $_[0];
     %args = (%args, ref $_[0] eq 'HASH' ? %{$_[0]} : @_);
     
-    my $class = $self->_resource_class_for->{$entity}
+    my $class = $self->_entity_class_for->{$entity}
         or die "no class for entity '$entity' found";
     
     return $class->new(\%args);

@@ -13,13 +13,13 @@ use ok 'Provision::DSL::Entity';
         isa => 'ArrayRef',
         default => sub { [] },
     );
-    
+
     sub is_ok0  { $_[0]->is_ok(0) }
     sub is_ok1  { $_[0]->is_ok(1) }
-    
+
     sub process0 { $_[0]->process(0) }
     sub process1 { $_[0]->process(1) }
-    
+
     sub create { push @{$_[0]->_diagnostics}, 'create' }
     sub change { push @{$_[0]->_diagnostics}, 'change' }
     sub remove { push @{$_[0]->_diagnostics}, 'remove' }
@@ -134,7 +134,7 @@ foreach my $testcase (@testcases) {
         name =>$testcase->{name},
         %{$testcase->{attributes}},
     );
-    
+
     if (exists $testcase->{execute}) {
         my $method = $testcase->{execute};
         $e->$method();

@@ -1,5 +1,6 @@
 package Provision::DSL::Entity::Compound;
 use Moose;
+use Provision::DSL::Types;
 use List::MoreUtils qw(any all none);
 use namespace::autoclean;
 
@@ -33,17 +34,9 @@ override is_current => sub {
     return super() && all { $_->is_current } $self->all_children;
 };
 
-sub create {
-    my $self = shift;
-    
-    $_->process(1) for $self->all_children;
-}
-
-sub remove {
-    my $self = shift;
-    
-    $_->process(0) for reverse $self->all_children;
-}
+sub create { $_->process(1) for $_[0]->all_children }
+sub change { $_->process(1) for $_[0]->all_children }
+sub remove { $_->process(0) for reverse $_[0]->all_children }
 
 __PACKAGE__->meta->make_immutable;
 1;

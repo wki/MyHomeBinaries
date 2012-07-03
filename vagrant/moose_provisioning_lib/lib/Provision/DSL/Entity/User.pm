@@ -38,7 +38,7 @@ sub _build_uid {
     my $self = shift;
     
     my $uid = (getpwnam($self->name))[2];
-    return $uid if $uid;
+    return $uid if defined $uid;
     
     $uid = $START_UID;
     while (++$uid < $MAX_ID) {
@@ -54,8 +54,12 @@ sub _build_uid {
 sub _build_group {
     my $self = shift;
     
-    # if user exists: look up his group
-    # assume group with same name
+    my $gid = (getpwnam($self->name))[3];
+    if (defined $gid) {
+        return getgrgid($gid);
+    } else {
+        return $self->name;
+    }
 }
 
 around is_present => sub {

@@ -1,5 +1,6 @@
 package Provision::DSL::Entity;
 use Moose;
+use Provision::DSL::Types;
 use namespace::autoclean;
 
 has name => (
@@ -19,7 +20,7 @@ has app => (
 
 has parent => (
     is => 'ro',
-    isa => 'Provision::DSL::Entity::Base',
+    isa => 'Entity',
     predicate => 'has_parent',
 );
 
@@ -96,7 +97,7 @@ sub is_current {
 
 # must be overloaded
 sub create {}
-sub change { goto &create }
+sub change {}
 sub remove {}
 
 __PACKAGE__->meta->make_immutable;

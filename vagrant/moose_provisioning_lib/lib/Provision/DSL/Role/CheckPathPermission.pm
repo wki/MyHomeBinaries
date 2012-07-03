@@ -6,13 +6,16 @@ requires 'path', 'permission', 'is_current', 'create', 'change';
 around is_current => sub {
     my ($orig, $self) = @_;
     
-    return ($self->stat->mode & 255) == $self->permission && $self->$orig();
+    return ($self->path->stat->mode & 255) == oct($self->permission) && $self->$orig();
 };
 
 after ['create', 'change'] => sub {
     my $self = shift;
     
-    chmod $self->permission, $self->path;
+    $self->log_dryrun("would chmod ${\oct($self->permission)}, ${\$self->path}")
+        and return;
+    
+    chmod oct($self->permission), $self->path;
 };
 
 no Moose::Role;
