@@ -37,14 +37,25 @@ ok !-f $f->path, 'a removed file does not exist';
 ok !$f->is_present, 'a removed file is not present';
 
 
-### TODO: create a file from a resource, change it and update again
+undef $f;
+lives_ok { $f = File("$FindBin::Bin/x/file.ext", {content => Resource('dirx/file.txt')}) }
+         'creating a file with a resource content lives';
+lives_ok { $f->process(1) } 'creating a file from a resource lives';
+is scalar $f->path->slurp, 'File Resource Content',
+   'file content matches resource file';
 
-# undef $f;
-# lives_ok { $f = File("$FindBin::Bin/x") }
-#          'creating a named and known file entity lives';
-# isa_ok $f, 'Provision::DSL::Entity::file';
-# ok -d $f->path, 'a known file exists';
-# ok $f->is_present, 'a known file is present';
+my $fh = scalar $f->path->openw;
+print $fh 'something different';
+close $fh;
+
+undef $f;
+lives_ok { $f = File("$FindBin::Bin/x/file.ext", {content => Resource('dirx/file.txt')}) }
+         'creating a file with a resource content lives again';
+ok scalar $f->path->slurp ne 'File Resource Content',
+   'file content is different from resource';
+lives_ok { $f->process(1) } 'updating a file from a resource lives';
+is scalar $f->path->slurp, 'File Resource Content',
+   'file content matches resource file';
 
 
 done_testing;

@@ -93,6 +93,8 @@ sub _create_and_export_source_keywords {
     my ($package, $app) = @_;
 
     foreach my $source_class (__PACKAGE__->sources) {
+        load $source_class;
+        
         my $source_name = $source_class;
         $source_name =~ s{\A Provision::DSL::Source::}{}xms;
         
@@ -121,19 +123,6 @@ sub os {
         return 'Ubuntu'; ### FIXME: maybe wrong!
     }
 }
-
-# sub Resource { goto &resource }
-# sub resource {
-#     my $path = shift;
-# 
-#     my $resource_dir = dir("$FindBin::Bin/resources");
-#     die 'resource dir not found' if !-d $resource_dir;
-# 
-#     my $dir = $resource_dir->subdir($path);
-#     return -d $dir
-#         ? $dir
-#         : $resource_dir->file($path);
-# }
 
 sub Done { goto &done }
 sub done {
