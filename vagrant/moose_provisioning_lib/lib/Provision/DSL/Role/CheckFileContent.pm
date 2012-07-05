@@ -1,5 +1,6 @@
 package Provision::DSL::Role::CheckFileContent;
 use Moose::Role;
+use autodie ':all';
 
 requires 'path', 'content', 'is_current', 'create', 'change';
 

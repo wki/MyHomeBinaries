@@ -50,7 +50,7 @@ Kinds of entities:
   Template('path/to/file', { vars => {...}, ... })
 
 
-# create/remove
+# create/remove -- ???
   create => <any>               # type depends on entity
   remove => <any>
   
@@ -64,7 +64,7 @@ Kinds of entities:
     - list of to-remove thing  --> removed after change
     - list og removed things
   
-# generic callback attributes
+# generic callback attributes -- TODO
   before_create => sub {}
   before_remove => sub {}
   before_change => sub {}

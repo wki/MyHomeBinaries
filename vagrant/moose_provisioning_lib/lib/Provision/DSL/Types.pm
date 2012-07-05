@@ -3,6 +3,22 @@ use Moose::Util::TypeConstraints;
 use Path::Class;
 
 
+class_type 'Entity',
+    { class => 'Provision::DSL::Entity' };
+
+class_type 'Source',
+    { class => 'Provision::DSL::Source' };
+
+class_type 'Resource',
+    { class => 'Provision::DSL::Resource' };
+
+subtype 'SourceContent',
+    as 'Str';
+coerce 'SourceContent',
+    from 'Source',
+        via { $_->content };
+
+
 subtype 'Permission',
     as 'Str',
     where { m{\A [0-7]{3,} \z}xms },
@@ -13,21 +29,31 @@ class_type 'PathClassEntity',
     { class => 'Path::Class::Entity' };
 coerce 'PathClassEntity',
     from 'Str',
-    via { -d $_ ? Path::Class::Dir->new($_) : Path::Class::File->new($_) };
+        via { -d $_ 
+                ? Path::Class::Dir->new($_) 
+                : Path::Class::File->new($_) 
+            },
+    from 'Resource',
+        via { -d $_->path 
+                ? Path::Class::Dir->new($_->path) 
+                : Path::Class::File->new($_->path) 
+            };
 
 
 class_type 'PathClassFile',
     { class => 'Path::Class::File' };
 coerce 'PathClassFile',
     from 'Str',
-    via { Path::Class::File->new($_) };
+        via { Path::Class::File->new($_) };
 
 
 class_type 'PathClassDir',
     { class => 'Path::Class::Dir' };
 coerce 'PathClassDir',
     from 'Str',
-    via { Path::Class::Dir->new($_) };
+        via { Path::Class::Dir->new($_) },
+    from 'Resource',
+        via { Path::Class::Dir->new($_->path) };
 
 
 subtype 'ExistingDir',
@@ -36,7 +62,9 @@ subtype 'ExistingDir',
     message { "Directory $_ does not exist" };
 coerce 'ExistingDir',
     from 'Str',
-    via { Path::Class::Dir->new($_)->resolve->absolute };
+        via { Path::Class::Dir->new($_)->resolve->absolute },
+    from 'Resource',
+        via { Path::Class::Dir->new($_->path) };
 
 
 subtype 'DirList',
@@ -50,19 +78,6 @@ coerce 'DirList',
         via { [ map { ref $_ ? $_ : { path => $_ } } @$_ ] };
 
 
-class_type 'Entity',
-    { class => 'Provision::DSL::Entity' };
-
-
-class_type 'Source',
-    { class => 'Provision::DSL::Source' };
-
-
-subtype 'SourceContent',
-    as 'Str';
-coerce 'SourceContent',
-    from 'Source',
-        via { $_->content };
 
 
 no Moose::Util::TypeConstraints;

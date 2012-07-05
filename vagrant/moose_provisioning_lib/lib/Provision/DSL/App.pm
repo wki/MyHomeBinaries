@@ -1,6 +1,7 @@
 package Provision::DSL::App;
 use Moose;
 use IPC::Open3 'open3';
+use Try::Tiny;
 use namespace::autoclean;
 with 'MooseX::Getopt::Strict';
 
@@ -69,6 +70,19 @@ sub _log_if {
     say STDERR join(' ', @_) if $condition;
 
     return $condition;
+}
+
+sub command_succeeds {
+    my $self = shift;
+    my @args = @_;
+    
+    my $result;
+    try {
+        $self->system_command(@args);
+        $result = 1;
+    };
+    
+    return $result;
 }
 
 sub system_command {

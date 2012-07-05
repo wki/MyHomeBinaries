@@ -27,8 +27,14 @@ has path => (
 sub _build_path { 
     my $self = shift;
     
-    # not correct, but ->file does not check...
-    return $self->root_dir->file($self->name)->cleanup->stringify;
+    my $thing = $self->root_dir->subdir($self->name)->cleanup;
+    if (!-d $thing) {
+        $thing = $self->root_dir->file($self->name)->cleanup;
+        die "Resource-path does not exist: '${\$self->name}'"
+            if !-f $thing;
+    }
+    
+    return $thing->resolve;
 }
 
 sub _build_content {

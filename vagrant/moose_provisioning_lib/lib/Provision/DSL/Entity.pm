@@ -15,7 +15,8 @@ has app => (
     required => 1,
     handles => [qw(verbose dryrun
                    log log_dryrun log_debug
-                   entity)],
+                   entity
+                   system_command pipe_into_command command_succeeds)],
 );
 
 has parent => (
@@ -48,6 +49,9 @@ sub _build_state {
     return 'current';
 }
 
+sub _build_user { scalar getpwuid $< }
+
+sub _build_group { scalar getgrgid $( }
 
 sub is_ok {
     my ($self, $wanted) = @_;

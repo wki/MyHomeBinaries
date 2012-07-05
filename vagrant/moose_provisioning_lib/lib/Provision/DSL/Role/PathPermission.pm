@@ -1,7 +1,15 @@
-package Provision::DSL::Role::CheckPathPermission;
+package Provision::DSL::Role::PathPermission;
 use Moose::Role;
+use Provision::DSL::Types;
 
-requires 'path', 'permission', 'is_current', 'create', 'change';
+requires 'path', 'is_current', 'create', 'change';
+
+has permission => (
+    is => 'ro', 
+    isa => 'Permission', 
+    required => 1, 
+    lazy_build => 1,
+);
 
 around is_current => sub {
     my ($orig, $self) = @_;

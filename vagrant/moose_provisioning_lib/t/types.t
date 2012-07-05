@@ -6,7 +6,7 @@ use Test::Exception;
     use Moose;
     use Provision::DSL::Types;
     
-    has p => (is => 'rw', isa => 'Permission', coerce => 1);
+    has p => (is => 'rw', isa => 'Permission');
 }
 
 my $c = C->new;

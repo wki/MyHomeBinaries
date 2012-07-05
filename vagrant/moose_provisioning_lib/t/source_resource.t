@@ -27,15 +27,11 @@ my $root_dir = "$FindBin::Bin/../resources";
     foreach my $file (qw(no_such_file.txt /no_such_file.txt no_such_file.txt/ /no_such_file.txt/
                          dir1/no_such_file.txt /dir1/no_such_file.txt
                          dir1/dir2/no_such_file.txt /dir1/dir2/no_such_file.txt)) {
-        my $r;
-        $r = Provision::DSL::Source::Resource->new(
-            {root_dir => $root_dir, name => $file}
-        );
-        isa_ok $r->path, 'Path::Class::File';
-        ok !-f $r->path, "File '$file' does not exist";
-        is $r->path->basename, 'no_such_file.txt', "File '$file' is no_such_file.txt";
-        dies_ok { $r->content }
-                "retrieving a missing file content from '$file' dies";
+        my $r = Provision::DSL::Source::Resource->new(
+                    {root_dir => $root_dir, name => $file}
+                );
+        dies_ok { my $dummy = $r->path }
+            "accessing path from not existing '$file' dies";
     }
 }
 
