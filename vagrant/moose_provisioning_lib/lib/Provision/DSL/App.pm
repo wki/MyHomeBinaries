@@ -88,7 +88,6 @@ sub command_succeeds {
 sub system_command {
     my $self = shift;
 
-    $self->log_dryrun('would execute:', @_) and return;
     return $self->pipe_into_command('', @_);
 }
 

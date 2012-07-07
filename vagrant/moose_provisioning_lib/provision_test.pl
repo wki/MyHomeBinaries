@@ -1,7 +1,17 @@
 #!/usr/bin/env perl
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use Provision;
+use Provision::DSL;
+
+my $r =
+Rsync "$FindBin::Bin/t/x" => {
+    content => Resource('dir1'),
+};
+
+say 'State: ', $r->state;
+
+
+__END__
 
 my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";

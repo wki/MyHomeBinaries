@@ -10,7 +10,7 @@ class_type 'Source',
     { class => 'Provision::DSL::Source' };
 
 class_type 'Resource',
-    { class => 'Provision::DSL::Resource' };
+    { class => 'Provision::DSL::Source::Resource' };
 
 subtype 'SourceContent',
     as 'Str';
@@ -61,6 +61,28 @@ subtype 'ExistingDir',
     where { -d $_ },
     message { "Directory $_ does not exist" };
 coerce 'ExistingDir',
+    from 'Str',
+        via { Path::Class::Dir->new($_)->resolve->absolute },
+    from 'Resource',
+        via { Path::Class::Dir->new($_->path) };
+
+
+subtype 'ExistingFile',
+    as 'PathClassFile',
+    where { -f $_ },
+    message { "File $_ does not exist" };
+coerce 'ExistingFile',
+    from 'Str',
+        via { Path::Class::Dir->new($_)->resolve->absolute },
+    from 'Resource',
+        via { Path::Class::Dir->new($_->path) };
+
+
+subtype 'ExecutableFile',
+    as 'ExistingFile',
+    where { -x $_ },
+    message { "File $_ is not executable" };
+coerce 'ExecutableFile',
     from 'Str',
         via { Path::Class::Dir->new($_)->resolve->absolute },
     from 'Resource',

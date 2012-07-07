@@ -2,7 +2,7 @@ package Provision::DSL::Entity::Dir;
 use Moose;
 use Provision::DSL::Types;
 
-extends 'Provision::DSL::Compound';
+extends 'Provision::DSL::Entity::Compound';
 sub path; # must forward-declare
 with 'Provision::DSL::Role::CheckDirExistence',
      'Provision::DSL::Role::PathPermission',
@@ -40,8 +40,11 @@ sub _build_children {
         $self->__as_entities($self->rmdir, 0),
         
         ($self->has_content
-            ? $self->entity(Dir_Rsync => {
+            ? $self->entity(Rsync => {
                     parent => $self,
+                    name   => $self->name,
+                    content => $self->content,
+                    exclude => $self->mkdir,
                 })
             : () ),
     ];

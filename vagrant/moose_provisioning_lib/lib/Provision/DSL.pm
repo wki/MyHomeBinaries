@@ -30,6 +30,7 @@ sub import {
 
     warnings->import();
     strict->import();
+    feature->import(':5.10');
 
     my $app = _instantiate_app_class();
     _create_and_export_entity_keywords($package, $app);
