@@ -1,9 +1,9 @@
 package Provision::DSL::Source::Template;
 use Moose;
-use Template
+use Template;
 use namespace::autoclean;
 
-extends 'Provision::DSL::Resource';
+extends 'Provision::DSL::Source::Resource';
 
 has vars => (
     is => 'ro',
@@ -20,12 +20,12 @@ sub _build_content {
     my $output = '';
     my $renderer = Template->new(
         INCLUDE_PATH => $self->path->dir,
-        INTERPOLATE => 0,
-        POST_CHOMP => 0,
-        EVAL_PERL => 1,
+        INTERPOLATE  => 0,
+        POST_CHOMP   => 0,
+        EVAL_PERL    => 1,
     );
     
-    $renderer->process($self->path, $self->vars, \$output)
+    $renderer->process($self->path->basename, $self->vars, \$output)
         or die "Error: ${\$renderer->error}";
 
     return $output;

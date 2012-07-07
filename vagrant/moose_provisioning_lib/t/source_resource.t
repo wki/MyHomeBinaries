@@ -4,7 +4,7 @@ use FindBin;
 
 use ok 'Provision::DSL::Source::Resource';
 
-my $root_dir = "$FindBin::Bin/../resources";
+my $root_dir = "$FindBin::Bin/resources";
 
 
 # existing dir

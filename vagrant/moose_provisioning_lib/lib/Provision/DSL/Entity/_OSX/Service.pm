@@ -7,6 +7,8 @@ extends 'Provision::DSL::Entity::Service';
 my $LAUNCHCTL = '/bin/launchctl';
 
 sub _build_path {
+    my $self = shift;
+    
     warn "OVERLOADED build Path (Service)";
     
     ### TODO: non-root users have different paths!

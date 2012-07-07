@@ -7,9 +7,9 @@ use namespace::autoclean;
 extends 'Provision::DSL::Entity';
 
 has children => (
-    traits => ['Array'], 
-    is => 'rw', 
-    isa => 'ArrayRef[Entity]', 
+    traits => ['Array'],
+    is => 'rw',
+    isa => 'ArrayRef[Entity]',
     required => 1,
     lazy_build => 1,
     handles => {
@@ -23,20 +23,20 @@ sub _build_children { [] }
 
 override is_present => sub {
     my $self = shift;
-    
-    return super() && ($self->has_no_children 
+
+    return super() && ($self->has_no_children
                        || any { $_->is_present } $self->all_children);
 };
 
 override is_current => sub {
     my $self = shift;
-    
+
     return super() && all { $_->is_current } $self->all_children;
 };
 
-sub create { $_->process(1) for $_[0]->all_children }
-sub change { $_->process(1) for $_[0]->all_children }
-sub remove { $_->process(0) for reverse $_[0]->all_children }
+after 'create' => sub { $_->process(1) for $_[0]->all_children };
+after 'change' => sub { $_->process(1) for $_[0]->all_children };
+after 'remove' => sub { $_->process(0) for reverse $_[0]->all_children };
 
 __PACKAGE__->meta->make_immutable;
 1;

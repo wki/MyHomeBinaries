@@ -33,8 +33,15 @@ has state  => (
     clearer => 'clear_state',
 );
 
-# precedence over methods is_present, is_current
-# present: only_if, not_if, current: update_if, keep_if
+has wanted => (
+    is => 'ro',
+    default => 1
+);
+
+# these conditions have precedence over methods is_present, is_current
+# testing order is as follows:
+# for is_present: only_if, not_if, 
+# for is_current: update_if, keep_if
 has only_if   => (is => 'ro', isa => 'CodeRef', predicate => 'has_only_if');
 has not_if    => (is => 'ro', isa => 'CodeRef', predicate => 'has_not_if');
 has update_if => (is => 'ro', isa => 'CodeRef', predicate => 'has_update_if');
@@ -80,7 +87,7 @@ sub process {
 sub execute {
     my $self = shift;
     
-    $self->process(1); ### really?
+    $self->process($self->wanted);
 }
 
 sub is_present {
@@ -99,7 +106,12 @@ sub is_current {
          : 1;
 }
 
-# must be overloaded
+#
+# may be overloaded in first level child class
+# should not get overloaded any further, 
+#    instead 'before' and 'after' modifiers should get used. 
+#    see t/0-calling_order.t to understand why
+#
 sub create {}
 sub change {}
 sub remove {}

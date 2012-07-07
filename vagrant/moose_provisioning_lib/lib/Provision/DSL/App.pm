@@ -78,7 +78,7 @@ sub command_succeeds {
     
     my $result;
     try {
-        $self->system_command(@args);
+        $self->pipe_into_command('', @args);
         $result = 1;
     };
     
@@ -88,6 +88,7 @@ sub command_succeeds {
 sub system_command {
     my $self = shift;
 
+    $self->log_dryrun('would execute:', @_) and return;
     return $self->pipe_into_command('', @_);
 }
 
@@ -96,7 +97,6 @@ sub pipe_into_command {
     my $input_text = shift;
     my @system_args = @_;
 
-    $self->log_dryrun('would execute:', @system_args) and return;
     $self->log_debug('execute:', @system_args);
 
     my $pid = open3(my $in, my $out, my $err, @system_args);

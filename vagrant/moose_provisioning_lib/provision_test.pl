@@ -7,23 +7,56 @@ my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";
 my $SITE_APP = "$SITE_DIR/MySite",
 
-User sites => (
+### TODO: define a 'root' entity with lots of attributes which
+###       act as a default value
+#
+# Defaults {
+#     user => 'sites',
+# };
+
+
+User sites => {
     uid => 513,
     # on_create => sub { },
     # on_change => sub { },
-);
+};
 
-User 'wolfgang';
+# User 'wolfgang';
 
 Package 'automake';
 Package 'wget';
 
-Perlbrew sites => (
+Perlbrew sites => {
     # user => User('sites'),
     install_cpanm  => 1,
     install_perl   => '5.14.2', # or an array
     switch_to_perl => '5.14.2',
-);
+};
+
+# the main site dir
+Dir $STE_DIR => {
+    user => 'sites',
+    mkdir => [
+        'logs',
+    ],
+};
+
+# the catalyst application rsynced from website/ dir in resources
+# all created subdirs are automatically excluded from rsync
+Dir $SITE_APP => {
+    user => 'sites',
+    mkdir => [
+        'local',
+        'root/_css',
+        'root/_js',
+        'root/cache',
+        'root/files',
+        'root/jobs',
+        'root/jobs/zip_download',
+        'root/jobs/zip_download/new',
+    ],
+    content => Resource('website'),
+};
 
 done;
 
@@ -54,15 +87,10 @@ Kinds of entities:
   create => <any>               # type depends on entity
   remove => <any>
   
-  Single Entities: internal state: *=end-state
+  Single Entities: internal state: (*=end-state)
     - missing, out-of-date, current*, removed*
 
-  Compound Entities: internal state:
-    - list of missing things   --> present after create
-    - list of present things   --> evtl to-change, to-remove
-    - list of to-change things --> present after change
-    - list of to-remove thing  --> removed after change
-    - list og removed things
+  Compound Entities: state calculated by traversing
   
 # generic callback attributes -- TODO
   before_create => sub {}
