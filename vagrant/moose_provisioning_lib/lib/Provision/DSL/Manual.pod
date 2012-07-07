@@ -1,0 +1,56 @@
+package Provision::DSL::Manual;
+
+=head1 NAME
+
+Provision::DSL::Manual - How to use Provision::DSL
+
+=head1 SYNOPSIS
+
+    use Provision::DSL;
+    
+    my $SITE_DIR = '/path/to/site';
+    
+    # install packages unless present
+    Package 'build-essential';
+    
+    # ensures that a user is present with requested attributes
+    User sites => {
+        uid => 1200,
+    };
+    
+    # get perlbrew running for user 'sites'
+    Perlbrew sites => {
+        install_cpanm  => 1,
+        install_perl   => '5.14.2',
+        switch_to_perl => '5.14.2',
+    };
+    
+    # ensures a directory tree for your site is created and filled
+    Dir $SITE_DIR => {
+        user => 'sites',
+        mkdir => [ qw(logs pid) ],
+        contents => Resource('website'),
+    };
+    
+    # create a customized config file for whatever daemon
+    File '/etc/whatever.conf' => {
+        user => 'root',
+        contents => Template('etc/whatever.tt', { vars => { ... } }),
+    };
+
+=head1 DESCRIPTION
+
+=cut
+
+=head1 AUTHOR
+
+Wolfgang Kinkeldei
+
+=head1 LICENSE
+
+This library is free software. You can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+1;

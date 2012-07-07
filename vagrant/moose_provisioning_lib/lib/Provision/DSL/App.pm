@@ -106,7 +106,7 @@ sub pipe_into_command {
     waitpid $pid, 0;
 
     my $status = $? >> 8;
-    die "command '$system_args[0]' failed. status: $status" if $status;
+    die "command '@system_args' failed. status: $status" if $status;
 
     return $text;
 }

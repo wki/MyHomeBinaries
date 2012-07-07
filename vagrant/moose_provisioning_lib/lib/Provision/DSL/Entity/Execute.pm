@@ -23,7 +23,7 @@ has arguments => (
 after create => sub { 
     my $self = shift;
     
-    $self->->system_command($self->path, @{$self->arguments}),
+    $self->system_command($self->path, @{$self->arguments}),
 };
 
 __PACKAGE__->meta->make_immutable;

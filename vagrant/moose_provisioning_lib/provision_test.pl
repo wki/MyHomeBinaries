@@ -3,16 +3,6 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use Provision::DSL;
 
-my $r =
-Rsync "$FindBin::Bin/t/x" => {
-    content => Resource('dir1'),
-};
-
-say 'State: ', $r->state;
-
-
-__END__
-
 my $DOMAIN   = "www.mysite.de";
 my $SITE_DIR = "/web/data/$DOMAIN";
 my $SITE_APP = "$SITE_DIR/MySite",
@@ -73,7 +63,7 @@ done;
 __END__
 
 Kinds of entities:
- - Dir, File, Tree
+ - Dir, File
     * config-file might trigger ???
  - Execution of scripts triggered by a condition
  - Installation/Setup
@@ -186,11 +176,11 @@ Catalyst $SITE_APP => (
     perl      => Perlbrew('sites')->perl,
 
     # alternative actions after install/update:
-    after_change => Nginx->reload,
-    after_change => [
-        Service($SITE)->reload,
-        Service('nginx')->reload,
-    ],
+    tell => Nginx,
+    tell => [ Nginx, Service('foo') ],
+    
+    # reload if someone else did
+    listen => Dir('foo'),
 );
 
 # label is the identification

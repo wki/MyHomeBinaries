@@ -106,6 +106,22 @@ sub is_current {
          : 1;
 }
 
+# returns a coderef which when called forces change
+sub reload {
+    my $self = shift;
+    
+    return sub {
+        $self->state('outdated');
+        $self->execute;
+    };
+}
+
+### TODO: tell/listen (Kanäle)
+#
+# tell   => 'site_changed',    # eg in Dir/Rsync
+# listen => 'site_changed',    # eg in Service('plack')
+#
+
 #
 # may be overloaded in first level child class
 # should not get overloaded any further, 

@@ -31,8 +31,8 @@ has exclude => (
 sub is_current {
     $_[0]->_rsync_command(
         '--dry-run',
-        '--out-format' => '>>> %n',
-    ) !~ m{^>>>}xms;
+        '--out-format' => 'copying %n',
+    ) !~ m{^(?:deleting|copying)\s}xms;
 }
 
 sub _rsync_command {
@@ -44,7 +44,7 @@ sub _rsync_command {
         '--recursive',
         '--delete',
         @_,
-        ( map { $_->{path} } @{$self->exclude} ),
+        ( map { ('--exclude' => $_->{path}) } @{$self->exclude} ),
 
         "${\$self->content}/" => "${\$self->path}",
     );
