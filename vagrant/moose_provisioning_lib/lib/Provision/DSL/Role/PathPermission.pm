@@ -14,7 +14,8 @@ has permission => (
 around is_current => sub {
     my ($orig, $self) = @_;
     
-    return ($self->path->stat->mode & 255) == oct($self->permission) && $self->$orig();
+    return ($self->path->stat->mode & 511) == (oct($self->permission) & 511) 
+        && $self->$orig();
 };
 
 after ['create', 'change'] => sub {

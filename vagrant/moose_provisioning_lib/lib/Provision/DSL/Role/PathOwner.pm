@@ -21,7 +21,8 @@ has group => (
 around is_current => sub {
     my ($orig, $self) = @_;
     
-    return ($self->path->stat->uid == $self->user->uid)
+    return -e $self->path 
+        && ($self->path->stat->uid == $self->user->uid)
         && ($self->path->stat->gid == $self->group->gid)
         && $self->$orig();
 };

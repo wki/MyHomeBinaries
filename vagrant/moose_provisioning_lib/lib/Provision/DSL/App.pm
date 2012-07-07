@@ -96,6 +96,7 @@ sub pipe_into_command {
     my $input_text = shift;
     my @system_args = @_;
 
+    # warn 'execute:', join(' ', @system_args);
     $self->log_debug('execute:', @system_args);
 
     my $pid = open3(my $in, my $out, my $err, @system_args);

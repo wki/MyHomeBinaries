@@ -7,9 +7,7 @@ Provision::DSL::Manual - How to use Provision::DSL
 =head1 SYNOPSIS
 
     use Provision::DSL;
-    
-    my $SITE_DIR = '/path/to/site';
-    
+        
     # install packages unless present
     Package 'build-essential';
     
@@ -26,7 +24,7 @@ Provision::DSL::Manual - How to use Provision::DSL
     };
     
     # ensures a directory tree for your site is created and filled
-    Dir $SITE_DIR => {
+    Dir '/path/to/site' => {
         user => 'sites',
         mkdir => [ qw(logs pid) ],
         contents => Resource('website'),

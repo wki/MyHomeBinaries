@@ -54,14 +54,14 @@ sub __as_entities {
     my ($self, $directories, $wanted) = @_;
 
     map {
-        $self->entity(
-            Dir => {
+        $self->entity(Dir => {
                 parent => $self,
                 name   => $_,
                 path   => $self->path->subdir($_),
                 wanted => $wanted,
-            })
+        })
     }
+    map { $_->{path} }
     @$directories
 }
 

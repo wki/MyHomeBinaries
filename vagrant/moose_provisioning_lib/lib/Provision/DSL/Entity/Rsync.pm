@@ -44,12 +44,29 @@ sub _rsync_command {
         '--recursive',
         '--delete',
         @_,
-        ( map { ('--exclude' => $_->{path}) } @{$self->exclude} ),
-
+        $self->_exclude_list,
         "${\$self->content}/" => "${\$self->path}",
     );
 
     return $self->system_command('/usr/bin/rsync', @args);
+}
+
+# rsync reports to delete a directory if its subdirectory is in exclusion
+# thus, we have to resolve every path to every of its parents
+sub _exclude_list {
+    my $self = shift;
+
+    my @exclude_list;
+    foreach my $exclude (@{$self->exclude}) {
+        my $path = $exclude->{path};
+        $path =~ s{\A / | / \z}{}xmsg;
+
+        my @parts = split '/', $path;
+        push @exclude_list, '--exclude', join('/', @parts[0..$_])
+            for (0..$#parts);
+    }
+
+    return @exclude_list;
 }
 
 after change => sub { $_[0]->_rsync_command };
