@@ -154,7 +154,7 @@ sub add_file_to_pdf {
 
     my $nr_pages = $self->pdf->pages;
 
-    $self->parser->parse_from_file($file->stringify);
+    $self->parser->parse_from_filehandle($file->open('<:utf8'));
     $self->parser->formfeed;
 
     my $structure = $self->module_structure;
