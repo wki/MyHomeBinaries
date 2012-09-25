@@ -21,6 +21,7 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          MooseX::Getopt MooseX::SimpleConfig \
          MooseX::Types::Path::Class MooseX::Types::Stringlike \
          MooseX::Types::Path::Class::MoreCoercions \
+         Moo \
          Catalyst::Runtime Catalyst::Devel \
          Catalyst::Plugin::ConfigLoader \
          Catalyst::Plugin::Unicode Catalyst::Plugin::I18N \
