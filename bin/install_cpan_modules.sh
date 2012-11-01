@@ -21,7 +21,7 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          MooseX::Getopt MooseX::SimpleConfig \
          MooseX::Types::Path::Class MooseX::Types::Stringlike \
          MooseX::Types::Path::Class::MoreCoercions \
-         Moo \
+         Moo Role::Tiny \
          Catalyst::Runtime Catalyst::Devel \
          Catalyst::Plugin::ConfigLoader \
          Catalyst::Plugin::Unicode Catalyst::Plugin::I18N \
@@ -35,7 +35,8 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          Catalyst::Controller::REST \
          HTML::FormFu HTML::FormFu::Model::DBIC Catalyst::Controller::HTML::FormFu \
          Dancer \
-         Web::Simple \
+         Web::Simple HTTP::Tiny IO::Socket::SSL\
+         Template::Simple \
          Mojolicious \
          Plack \
          Dist::Zilla Dist::Zilla::Plugin::VersionFromModule Dist::Zilla::Plugin::Inject \
@@ -43,7 +44,9 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          Test::More Test::Most Test::Exception Test::DBIx::Class \
          XML::LibXML \
          JONALLEN/pod2pdf-0.42.tar.gz \
-         IPC::System::Simple \
+         IPC::System::Simple IPC::Run3 \
+         Hash::Merge \
+         Try::Tiny \
          App::Ack
 do
     cpanm --mirror ~/minicpan --mirror-only $m $*
