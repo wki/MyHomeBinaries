@@ -29,6 +29,7 @@ for m in Bundle::CPAN CPAN::Mini Carton \
          Catalyst::Authentication::Credential::HTTP Catalyst::Plugin::Authentication::Credential::HTTP \
          Catalyst::Plugin::Session \
          Catalyst::Plugin::Static::Simple \
+         Catalyst::Plugin::StatusMessage \
          Catalyst::View::ByCode Catalyst::View::Email Catalyst::View::JSON \
          Catalyst::Model::DBIC::Schema Catalyst::Model::Adaptor \
          Catalyst::Controller::Combine Catalyst::Controller::Imager Catalyst::View::ByCode \
