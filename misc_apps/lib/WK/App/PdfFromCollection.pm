@@ -353,7 +353,7 @@ sub __info {
         },
 
         dbic => {
-            filter => [qw(DBIx::Class SQL Test::DBIx)],
+            filter => [qw(DBIx::Class DBIx::SchemaChecksum SQL Test::DBIx)],
             modules => [qw(DBIx::Class
                            DBIx::Class::Candy
                            DBIx::Class::Cursor::Cached
@@ -361,7 +361,10 @@ sub __info {
                            DBIx::Class::DynamicDefault
                            DBIx::Class::Fixtures
                            DBIx::Class::Helpers
+                           DBIx::Class::InflateColumn::Serializer::CompressJSON
                            DBIx::Class::IntrospectableM2M
+                           DBIx::Class::LookupColumn
+                           DBIx::Class::MaterializedPath
                            DBIx::Class::Migration
                            DBIx::Class::PassphraseColumn
                            DBIx::Class::ResultSet::HashRef
@@ -370,8 +373,11 @@ sub __info {
                            DBIx::Class::Schema::PopulateMore
                            DBIx::Class::TimeStamp
                            DBIx::Class::Tree
+                           DBIx::Class::UnicornLogger
                            DBIx::Class::UUIDColumns
+                           DBIx::SchemaChecksum
                            SQL::Abstract
+                           SQL::Abstract::More
                            SQL::Translator
 
                            Test::DBIx::Class)]
