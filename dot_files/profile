@@ -65,6 +65,13 @@ done
 # alias psql='PGHOST=/var/pgsql_socket/ psql91 -U postgres'
 
 #
+# use MacPorts git if possible
+#
+if [ -e /opt/local/bin/git ]; then
+    alias git=/opt/local/bin/git
+fi
+
+#
 # Project Settings
 #
 export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
