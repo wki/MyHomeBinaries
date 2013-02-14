@@ -77,6 +77,11 @@ fi
 export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
 
 #
+# never get localized messages
+#
+export LC_ALL=C
+
+#
 # initiate perlbrew
 #
 . ~/perl5/perlbrew/etc/bashrc
