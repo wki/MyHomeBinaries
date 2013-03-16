@@ -14,3 +14,9 @@ independently. `dzil install` is your friend :-)
 
 
 more things will get added from time to time.
+
+TODO: find a way to add these lines to "/opt/local/etc/macports/variants.conf"
+    +no_x11
+    -x11
+    +quartz
+
