@@ -19,3 +19,5 @@ sudo port install texlive-latex
 sudo port install texlive-latex-extra
 sudo port install texlive-latex-recommended
 sudo port install texlive-lang-german
+
+sudo port install gnupg2

@@ -82,6 +82,12 @@ export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
 export LC_ALL=C
 
 #
+# make vim the standard editor
+#
+export EDITOR=vim
+export VISUAL=vim
+
+#
 # initiate perlbrew
 #
 . ~/perl5/perlbrew/etc/bashrc
