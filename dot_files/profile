@@ -88,6 +88,11 @@ export EDITOR=vim
 export VISUAL=vim
 
 #
+# point to pinto repository (demo purposes only)
+#
+export PINTO_REPOSITORY_ROOT=http://user:secret@localhost:5001
+
+#
 # initiate perlbrew
 #
 . ~/perl5/perlbrew/etc/bashrc
