@@ -126,10 +126,10 @@ for f in .rvm/scripts/rvm perl5/perlbrew/etc/bashrc; do
     fi
 done
 
-if [ -d ~/.rbenv ]; then
+if [ -d ~/.rbenv ] && which rbenv > /dev/null; then
     eval "$(rbenv init -)"
 fi
 
-if which plenv > /dev/null; then 
+if [ -d ~/.rbenv ] && which plenv > /dev/null; then 
     eval "$(plenv init -)"
 fi
