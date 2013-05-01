@@ -130,6 +130,6 @@ if [ -d ~/.rbenv ] && which rbenv > /dev/null; then
     eval "$(rbenv init -)"
 fi
 
-if [ -d ~/.rbenv ] && which plenv > /dev/null; then 
+if [ -d ~/.plenv ] && which plenv > /dev/null; then 
     eval "$(plenv init -)"
 fi
