@@ -52,3 +52,6 @@ for m in Bundle::CPAN CPAN::Mini Carton \
 do
     cpanm --mirror ~/minicpan --mirror-only $m $*
 done
+
+# install plenv if wanted
+# git clone git://github.com/tokuhirom/plenv.git ~/.plenv

@@ -2,8 +2,8 @@
 # a simple .profile file
 #
 current_perl_version () {
-    version=`perl -e 'print $^V'`
     path=`which perl`
+    version=`$path -e 'print \$^V'`
     abbr='?'
     
     case $path in
@@ -21,25 +21,49 @@ current_perl_version () {
         
         (*/perlbrew/*)
             abbr='brew'
-            version=`perlbrew list | grep '*' | sed -e 's/^.*perl-//'`
+            ;;
+
+        (*/.plenv/*)
+            abbr='plenv'
             ;;
     esac
     
     echo "$abbr ${version/v/}"
 }
 
-p () {
-    perl=''
-    for i in `perlbrew list| grep perl- | cut -b 3-`; do
-        case $i in (perl-$1*) perl=$i ;; esac
-    done
+current_ruby_version () {
+    path=`which ruby`
+    version=`$path -e 'puts RUBY_VERSION'`
+    abbr='?'
     
-    perlbrew use $perl
+    case $path in
+        (/usr/bin/*)
+            abbr='sys'
+            ;;
+        
+        (/usr/local/bin/*)
+            abbr='local'
+            ;;
+        
+        (/opt/local/bin/*)
+            abbr='port'
+            ;;
+        
+        (*/.rvm/*)
+            abbr='rvm'
+            ;;
+
+        (*/.rbenv/*)
+            abbr='rbenv'
+            ;;
+    esac
+    
+    echo "$abbr $version"
 }
 
 # Setting the path for MacPorts.
 export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
-export PS1='[`current_perl_version 2>/dev/null || echo 'unknown'`] \h:\W \u\$ '
+export PS1='[`current_perl_version 2>/dev/null || echo '?perl?'`/`current_ruby_version 2>/dev/null || echo '?ruby?'`] \h:\W \u\$ '
 
 #
 # Aliases
@@ -65,11 +89,47 @@ done
 # alias psql='PGHOST=/var/pgsql_socket/ psql91 -U postgres'
 
 #
+# use MacPorts git if possible
+#
+if [ -e /opt/local/bin/git ]; then
+    alias git=/opt/local/bin/git
+fi
+
+#
 # Project Settings
 #
 export CATALYST_CONFIG_LOCAL_SUFFIX=wolfgang
 
 #
-# initiate perlbrew
+# never get localized messages
 #
-. ~/perl5/perlbrew/etc/bashrc
+export LC_ALL=C
+
+#
+# make vim the standard editor
+#
+export EDITOR=vim
+export VISUAL=vim
+
+#
+# point to pinto repository (demo purposes only)
+#
+export PINTO_REPOSITORY_ROOT=http://user:secret@localhost:5001
+
+#
+# initiate rvm, perlbrew, rbenv and plenv.
+# Keep in mind that rvm <-> rbenv, perlbrew <-> plenv are alternatives
+#
+for f in .rvm/scripts/rvm perl5/perlbrew/etc/bashrc; do
+    if [ -f ~/$f ]; then
+        source ~/$f
+    fi
+done
+
+if [ -d ~/.rbenv ] && which rbenv > /dev/null; then
+    eval "$(rbenv init -)"
+fi
+
+if [ -d ~/.plenv ] && which plenv > /dev/null; then 
+    eval "$(plenv init -)"
+fi
