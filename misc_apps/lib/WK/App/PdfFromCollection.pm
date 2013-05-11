@@ -364,6 +364,7 @@ sub __info {
                            DBIx::Class::InflateColumn::Serializer::CompressJSON
                            DBIx::Class::IntrospectableM2M
                            DBIx::Class::LookupColumn
+                           DBIx::Class::Manual::SQLHackers
                            DBIx::Class::MaterializedPath
                            DBIx::Class::Migration
                            DBIx::Class::PassphraseColumn
