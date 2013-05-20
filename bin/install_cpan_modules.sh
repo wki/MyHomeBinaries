@@ -49,7 +49,7 @@ echo    Bundle::CPAN CPAN::Mini Carton \
         Hash::Merge \
         Try::Tiny \
         App::Ack \
-    | cpanm --mirror ~/minicpan --mirror-only $m $*
+    | cpanm --mirror ~/minicpan --mirror-only $*
 
 # install plenv if wanted
 # git clone git://github.com/tokuhirom/plenv.git ~/.plenv
