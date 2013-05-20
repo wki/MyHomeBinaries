@@ -44,7 +44,7 @@ echo    Bundle::CPAN CPAN::Mini Carton \
         Dist::Zilla::Plugin::Git::Check \
         Test::More Test::Most Test::Exception Test::DBIx::Class \
         XML::LibXML \
-        JONALLEN/pod2pdf-0.42.tar.gz \
+        App::pod2pdf \
         IPC::System::Simple IPC::Run3 \
         Hash::Merge \
         Try::Tiny \
