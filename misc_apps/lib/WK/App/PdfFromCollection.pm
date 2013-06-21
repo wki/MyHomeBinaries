@@ -337,14 +337,85 @@ sub __info {
                            Catalyst::View::Thumbnail::Simple
                            Catalyst::View::TT
                            Catalyst::View::Wkhtmltopdf
+                           CatalystX::AppBuilder
+                           CatalystX::AuthenCookie
+                           CatalystX::CMS
+                           CatalystX::CRUD
+                           CatalystX::CRUD::Controller::REST
+                           CatalystX::CRUD::Controller::RHTMLO
+                           CatalystX::CRUD::Model::RDBO
+                           CatalystX::CRUD::ModelAdapter::DBIC
+                           CatalystX::CRUD::View::Excel
+                           CatalystX::CRUD::YUI
                            CatalystX::Component::Traits
+                           CatalystX::ComponentsFromConfig
+                           CatalystX::ConsumesJMS
+                           CatalystX::Controller::Auth
+                           CatalystX::Controller::ExtJS::REST::SimpleExcel
+                           CatalystX::Controller::Verifier
+                           CatalystX::Crudite
+                           CatalystX::Debug::RequestHeaders
+                           CatalystX::Debug::ResponseHeaders
+                           CatalystX::DebugFilter
+                           CatalystX::Declare
+                           CatalystX::Dispatcher::AsGraph
+                           CatalystX::Example::YUIUploader
+                           CatalystX::ExtJS
+                           CatalystX::ExtJS::Direct
+                           CatalystX::ExtJS::REST
+                           CatalystX::FacebookURI
+                           CatalystX::Features
+                           CatalystX::FeedbackMessages
+                           CatalystX::I18N
+                           CatalystX::Imports
+                           CatalystX::Imports
+                           CatalystX::InjectComponent
+                           CatalystX::LeakChecker
+                           CatalystX::ListFramework
+                           CatalystX::Menu::Suckerfish
+                           CatalystX::Menu::Tree
+                           CatalystX::Menu::mcDropdown
+                           CatalystX::MooseComponent
+                           CatalystX::OAuth2
+                           CatalystX::OAuth2::Provider
+                           CatalystX::PSGIApp
+                           CatalystX::PathContext
+                           CatalystX::Plugin::Blurb
+                           CatalystX::Plugin::Engine::FastCGI::Lighttpd
+                           CatalystX::Profile
                            CatalystX::REPL
+                           CatalystX::RequestRole::StrictParams
+                           CatalystX::Resource
+                           CatalystX::Restarter::GTK
+                           CatalystX::RoleApplicator
+                           CatalystX::RoseIntegrator
+                           CatalystX::Routes
+                           CatalystX::Routes
+                           CatalystX::Script::FCGI::Engine
+                           CatalystX::Script::Server::Starman
+                           CatalystX::SimpleAPI
+                           CatalystX::SimpleLogin
+                           CatalystX::Starter
+                           CatalystX::Syntax::Action
+                           CatalystX::Test::MockContext
+                           CatalystX::Test::Most
+                           CatalystX::Test::Recorder
+                           CatalystX::TraitFor::Dispatcher::ExactMatch
+                           CatalystX::UriForStatic
+                           CatalystX::VCS::Lookup
+                           CatalystX::VirtualComponents
+                           CatalystX::Widget::Paginator
 
                            Test::WWW::Mechanize
                            Test::WWW::Mechanize::Catalyst
 
                            HTML::FormFu
-                           HTML::FormFu::Model::DBIC)],
+                           HTML::FormFu::Model::DBIC
+                           
+                           HTML::FormHandler
+                           HTML::FormHandler::Model::DBIC
+                           HTML::FormHandler::Render::Hash
+                           )],
         },
 
         dancer => {
