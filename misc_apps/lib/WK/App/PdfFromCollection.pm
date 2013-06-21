@@ -215,34 +215,67 @@ sub __info {
             filter => [qw(Catalyst CatalystX
                           Test::WWW
                           HTML::FormFu)],
-            modules => [qw(Catalyst::Action::REST
+            modules => [qw(Catalyst::Action::FromPSGI
+                           Catalyst::Action::REST
                            Catalyst::Action::RenderView
                            Catalyst::Action::RenderView::ErrorHandler
+                           Catalyst::Action::RenderView::ErrorHandler::Action::Email
+                           Catalyst::ActionRole::CheckTrailingSlash
                            Catalyst::ActionRole::DetachOnDie
+                           Catalyst::ActionRole::ExpiresHeader
+                           Catalyst::ActionRole::MatchHost
+                           Catalyst::ActionRole::MatchRequestMethod
+                           Catalyst::ActionRole::MatchRequestAccepts
+                           Catalyst::ActionRole::NotCacheableHeaders
+                           Catalyst::ActionRole::PseudoCache
+                           Catalyst::ActionRole::QueryParameter
+                           Catalyst::ActionRole::RequireSSL
+                           Catalyst::ActionRole::Tabs
                            Catalyst::Authentication::Credential::HTTP
+                           Catalyst::Authentication::Realm::Adaptor
                            Catalyst::Component::ACCEPT_CONTEXT
                            Catalyst::Component::InstancePerContext
+                           Catalyst::Controller::Accessors
                            Catalyst::Controller::ActionRole
                            Catalyst::Controller::Combine
+                           Catalyst::Controller::DBIC::API
+                           Catalyst::Controller::DBIC::Transaction
                            Catalyst::Controller::HTML::FormFu
                            Catalyst::Controller::FormBuilder
                            Catalyst::Controller::Imager
                            Catalyst::Controller::POD
                            Catalyst::Devel
+                           Catalyst::DispatchType::Regex
+                           Catalyst::Helper::AuthDBIC
+                           Catalyst::Helper::DBIC::DeploymentHandler
+                           Catalyst::Helper::HTML::FormHandler::Scripts
+                           Catalyst::Helper::View::Bootstrap
                            Catalyst::Manual
                            Catalyst::Model::Adaptor
                            Catalyst::Model::DBIC::Schema
                            Catalyst::Model::File
+                           Catalyst::Model::Memcached
+                           Catalyst::Model::MultiAdaptor
+                           Catalyst::Model::Proxy
                            Catalyst::Model::REST
                            Catalyst::Model::Redis
+                           Catalyst::Model::Riak
+                           Catalyst::Plugin::Alarm
                            Catalyst::Plugin::Authentication
                            Catalyst::Plugin::Authentication::Credential::HTTP
                            Catalyst::Plugin::Authorization::Roles
                            Catalyst::Plugin::AutoCRUD
+                           Catalyst::Plugin::Bread::Board
                            Catalyst::Plugin::Cache
+                           Catalyst::Plugin::Cache::FastMmap
+                           Catalyst::Plugin::Cache::HTTP
+                           Catalyst::Plugin::Cache::Memcached
+                           Catalyst::Plugin::Cache::Store::FastMmap
                            Catalyst::Plugin::ConfigLoader
-                           Catalyst::Plugin::DefaultEnd
+                           Catalyst::Plugin::EnableMiddleware
+                           Catalyst::Plugin::ErrorCatcher
                            Catalyst::Plugin::I18N
+                           Catalyst::Plugin::Log::Dispatch
                            Catalyst::Plugin::Session
                            Catalyst::Plugin::Session::State::Cookie
                            Catalyst::Plugin::Session::Store::File
@@ -250,16 +283,60 @@ sub __info {
                            Catalyst::Plugin::Session::Store::FastMmap
                            Catalyst::Plugin::Session::Store::Redis
                            Catalyst::Plugin::Session::Store::Memcached
+                           Catalyst::Plugin::Session::PSGI
                            Catalyst::Plugin::Static::Simple
+                           Catalyst::Plugin::Static::Simple::ByClass
+                           Catalyst::Plugin::StatusMessage
                            Catalyst::Plugin::Unicode
                            Catalyst::Plugin::UploadProgress
                            Catalyst::Plugin::XSendFile
                            Catalyst::Runtime
+                           Catalyst::TraitFor::Context::PSGI::FindEnv
+                           Catalyst::TraitFor::Controller::Breadcrumb::Followed
+                           Catalyst::TraitFor::Controller::DBIC::DoesPaging
+                           Catalyst::TraitFor::Controller::DoesExtPaging
+                           Catalyst::TraitFor::Controller::LocaleSelect
+                           Catalyst::TraitFor::Controller::PermissionCheck
+                           Catalyst::TraitFor::Controller::Ping
+                           Catalyst::TraitFor::Controller::RenderView
+                           Catalyst::TraitFor::Log::Audio
+                           Catalyst::TraitFor::Model::DBIC::Schema::QueryLog
+                           Catalyst::TraitFor::Model::DBIC::Schema::QueryLog::AdoptPlack
+                           Catalyst::TraitFor::Model::DBIC::Schema::RequestConnectionPool
+                           Catalyst::TraitFor::Model::DBIC::Schema::ResultRoles
+                           Catalyst::TraitFor::Model::DBIC::Schema::WithCurrentUser
+                           Catalyst::TraitFor::Request::BrowserDetect
+                           Catalyst::TraitFor::Request::DecodedParams
+                           Catalyst::TraitFor::Request::GeoIP
+                           Catalyst::TraitFor::Request::Params::Hashed
+                           Catalyst::TraitFor::Request::PerLanguageDomains
+                           Catalyst::TraitFor::Request::Plack::Session
+                           Catalyst::TraitFor::Request::ProxyBase
+                           Catalyst::TraitFor::Request::REST::ForBrowsers::AndPJAX
+                           Catalyst::TraitFor::Request::XMLHttpRequest
+                           Catalyst::TraitFor::View::MarkupValidation
                            Catalyst::View::ByCode
+                           Catalyst::View::CSS::Minifier::XS
+                           Catalyst::View::CSV
                            Catalyst::View::Download
                            Catalyst::View::Email
+                           Catalyst::View::GD
+                           Catalyst::View::GD::Thumbnail
+                           Catalyst::View::GD::Barcode
+                           Catalyst::View::GD::Barcode::QRcode
+                           Catalyst::View::Haml
+                           Catalyst::View::JavaScript::Minifier::XS
                            Catalyst::View::JSON
+                           Catalyst::View::Markdown
+                           Catalyst::View::PDF::API2
+                           Catalyst::View::PDF::Reuse
+                           Catalyst::View::PDFBoxer
+                           Catalyst::View::PNGTTGraph
+                           Catalyst::View::RRDGraph
+                           Catalyst::View::SVG::TT::Graph
+                           Catalyst::View::Thumbnail::Simple
                            Catalyst::View::TT
+                           Catalyst::View::Wkhtmltopdf
                            CatalystX::Component::Traits
                            CatalystX::REPL
 
