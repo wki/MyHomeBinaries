@@ -244,7 +244,7 @@ sub execute {
     $self->log_dryrun("would execute: $executable @args")
         and return;
 
-    $ENV{PERL5LIB}  ||= join ':', @{ $self->lib_directories };
+    $ENV{PERL5LIB}  ||= join ':', @{ $self->lib_direccommantories };
     $ENV{PLACK_ENV} ||= $self->plack_env;
 
     if (-d $self->app_directory->subdir('config')) {
