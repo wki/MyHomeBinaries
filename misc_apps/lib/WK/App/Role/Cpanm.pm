@@ -40,7 +40,7 @@ has cpanm_options => (
                      'Uses a minicpan mirror dir at $HOME/minicpan if present',
 );
 
-# ensure we demolish early to allow testing
+# ensure we demolish early to allow testing dir removal.
 before DEMOLISH => sub {
     File::Temp::cleanup();
 };

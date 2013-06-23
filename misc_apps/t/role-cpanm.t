@@ -21,6 +21,6 @@ my $temp_dir;
 }
 
 ok !-d $temp_dir, 'install_base dir removed after destruction';
-warn "TEMP: $temp_dir";
+# note "TEMP: $temp_dir";
 
 done_testing;
