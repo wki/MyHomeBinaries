@@ -1,8 +1,6 @@
 package WK::App;
 use Modern::Perl;
 use Moose;
-use FindBin;
-use Path::Class ();
 with 'MooseX::Getopt';
 
 =head1 NAME

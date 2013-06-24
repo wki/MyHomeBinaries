@@ -56,14 +56,13 @@ has app_directory => (
     documentation => 'root directory of the application',
 );
 
-has lib_directory => (
+has lib_directories => (
     traits        => ['Getopt'],
     is            => 'rw',
-    isa           => Dir,
-    coerce        => 1,
+    isa           => 'ArrayRef',
     lazy_build    => 1,
-    cmd_aliases   => 'l',
-    documentation => 'directory where additional libs reside [local|perl5lib]',
+    cmd_aliases   => 'I',
+    documentation => 'optional directories to search libs in [local|perl5lib]',
 );
 
 has config_suffix => (
@@ -121,15 +120,13 @@ sub _build_app_directory {
     die 'no Makefile.PL found, cannot guess app_directory';
 }
 
-sub _build_lib_directory {
+sub _build_lib_directories {
     my $self = shift;
 
-    my ($dir) = grep { -d }
-                map { $self->app_directory->subdir($_) }
-                qw(local perl5lib)
-        or die 'neither "local" nor "perl5lib" dir found in app_directory';
-    
-    return $dir;
+    return
+        grep { -d }
+        map { $self->app_directory->subdir($_)->stringify }
+        qw(local perl5lib)
 }
 
 sub _check_app_name {
@@ -247,7 +244,7 @@ sub execute {
     $self->log_dryrun("would execute: $executable @args")
         and return;
 
-    $ENV{PERL5LIB}  ||= $self->lib_directory->subdir('lib/perl5')->stringify;
+    $ENV{PERL5LIB}  ||= join ':', @{ $self->lib_direccommantories };
     $ENV{PLACK_ENV} ||= $self->plack_env;
 
     if (-d $self->app_directory->subdir('config')) {
@@ -278,7 +275,7 @@ sub search_dirs {
     return
         grep { -d }
             @app_binary_dirs,
-            $self->lib_directory->subdir('bin'),
+            # $self->lib_directory->subdir('bin'),
             $self->app_directory,
             @search_path_dirs;
 }
