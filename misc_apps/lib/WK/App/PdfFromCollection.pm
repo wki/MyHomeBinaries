@@ -214,8 +214,7 @@ sub __info {
         catalyst => {
             filter => [qw(Catalyst CatalystX
                           Test::WWW
-                          HTML::FormFu
-                          HTML::FormHandler)],
+                          HTML::Form)],
             modules => [qw(Catalyst::Action::FromPSGI
                            Catalyst::Action::REST
                            Catalyst::Action::RenderView

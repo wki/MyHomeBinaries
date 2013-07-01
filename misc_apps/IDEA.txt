@@ -1,5 +1,8 @@
 --------[ Ideas for expanding easy
 
+- if ENV{COLUMNS},{AUTHOR} is set, forward them to catalyst app,
+  maybe others also...
+
 - easy sync [-n] [-v] [--git-status]
     * find "sync.ext" config file in config-dir or app-dir
     * check sync status between this app's repository and all others
