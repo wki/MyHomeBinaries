@@ -72,6 +72,10 @@ alias ls='ls -F'
 alias ll='ls -lF'
 alias la='ls -alF'
 
+# git log graphic view
+alias gl="git log --graph --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %C(white bold)%s%Creset %C(white dim)(by %an %ar)%Creset' --all"
+
+# use local cpan mirror
 alias minicpanm='cpanm --mirror ~/minicpan --mirror-only'
 
 # allow easy DBIC-Traces
