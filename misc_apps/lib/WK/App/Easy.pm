@@ -123,10 +123,13 @@ sub _build_app_directory {
 sub _build_lib_directories {
     my $self = shift;
 
-    return
-        grep { -d }
-        map { $self->app_directory->subdir($_)->stringify }
+    $self->log_debug('build lib directories...');
+    
+    return [
+        grep -d
+        map { $self->app_directory->subdir($_) }
         qw(local perl5lib)
+    ];
 }
 
 sub _check_app_name {
@@ -244,7 +247,7 @@ sub execute {
     $self->log_dryrun("would execute: $executable @args")
         and return;
 
-    $ENV{PERL5LIB}  ||= join ':', @{ $self->lib_direccommantories };
+    $ENV{PERL5LIB}  ||= join ':', @{ $self->lib_directories };
     $ENV{PLACK_ENV} ||= $self->plack_env;
 
     if (-d $self->app_directory->subdir('config')) {
