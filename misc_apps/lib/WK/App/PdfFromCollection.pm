@@ -617,7 +617,33 @@ sub __info {
                            Starlet
                            Server::Starter
             )]
-        }
+        },
+        
+        nureg => {
+            filter => [qw(NUREG)],
+            modules => [qw(
+                NUREG::AdobeApp
+                NUREG::App
+                NUREG::App::DBMigrate
+                NUREG::AppLister
+                NUREG::Automation
+                NUREG::Catalyst::Base
+                NUREG::CheckMount
+                NUREG::Documentation
+                NUREG::Encryption
+                NUREG::ExcelExport
+                NUREG::ExifTool
+                NUREG::FileStorage
+                NUREG::JobStorage
+                NUREG::RemoteFileSystem
+                NUREG::Selenium
+                NUREG::SendMail
+                NUREG::SendMeasure
+                NUREG::Thumbnail
+                NUREG::Types
+                NUREG::WatchFolder
+            )]
+        },
     }
 }
 

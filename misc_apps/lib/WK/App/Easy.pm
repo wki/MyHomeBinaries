@@ -126,7 +126,7 @@ sub _build_lib_directories {
     $self->log_debug('build lib directories...');
     
     return [
-        grep -d
+        grep -d,
         map { $self->app_directory->subdir($_) }
         qw(local perl5lib)
     ];
