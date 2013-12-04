@@ -121,6 +121,11 @@ export VISUAL=vim
 export PINTO_REPOSITORY_ROOT=http://user:secret@localhost:5001
 
 #
+# add auto completion for grunt if existing
+#
+which grunt >/dev/null && eval "$(grunt --completion=bash)"
+
+#
 # initiate rvm, perlbrew, rbenv and plenv.
 # Keep in mind that rvm <-> rbenv, perlbrew <-> plenv are alternatives
 #
