@@ -20,3 +20,18 @@ TODO: find a way to add these lines to "/opt/local/etc/macports/variants.conf"
     -x11
     +quartz
 
+
+Homebrew install
+
+https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/Installation.md#installation
+$ mkdir homebrew && curl -L https://github.com/Homebrew/homebrew/tarball/master | tar xz --strip 1 -C homebrew
+
+
+Install aspnet
+
+https://github.com/aspnet/home#os-x
+
+brew tap aspnet/dnx
+brew update
+brew install dnvm
+

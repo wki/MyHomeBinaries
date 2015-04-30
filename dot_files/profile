@@ -5,20 +5,20 @@ current_perl_version () {
     path=`which perl`
     version=`$path -e 'print \$^V'`
     abbr='?'
-    
+
     case $path in
         (/usr/bin/*)
             abbr='sys'
             ;;
-        
+
         (/usr/local/bin/*)
             abbr='local'
             ;;
-        
+
         (/opt/local/bin/*)
             abbr='port'
             ;;
-        
+
         (*/perlbrew/*)
             abbr='brew'
             ;;
@@ -27,7 +27,7 @@ current_perl_version () {
             abbr='plenv'
             ;;
     esac
-    
+
     echo "$abbr ${version/v/}"
 }
 
@@ -35,20 +35,20 @@ current_ruby_version () {
     path=`which ruby`
     version=`$path -e 'puts RUBY_VERSION'`
     abbr='?'
-    
+
     case $path in
         (/usr/bin/*)
             abbr='sys'
             ;;
-        
+
         (/usr/local/bin/*)
             abbr='local'
             ;;
-        
+
         (/opt/local/bin/*)
             abbr='port'
             ;;
-        
+
         (*/.rvm/*)
             abbr='rvm'
             ;;
@@ -57,13 +57,33 @@ current_ruby_version () {
             abbr='rbenv'
             ;;
     esac
-    
+
     echo "$abbr $version"
+}
+
+code () {
+    if [[ $# = 0 ]]
+    then
+        open -a "Visual Studio Code"
+    else
+        [[ $1 = /* ]] && F="$1" || F="$PWD/${1#./}"
+        open -a "Visual Studio Code" --args "$F"
+    fi
 }
 
 # Setting the path for MacPorts.
 export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
 export PS1='[`current_perl_version 2>/dev/null || echo '?perl?'`/`current_ruby_version 2>/dev/null || echo '?ruby?'`] \h:\W \u\$ '
+
+# Setting the path for homebrew
+if [ -d ~/homebrew/bin ]; then
+    export PATH="$PATH:~/homebrew/bin"
+fi
+
+# initialize dnvm
+if [ -f ~/homebrew/Cellar/dnvm/1.0.0-dev/bin/dnvm.sh ]; then
+    . ~/homebrew/Cellar/dnvm/1.0.0-dev/bin/dnvm.sh
+fi
 
 #
 # Aliases
@@ -116,9 +136,10 @@ export EDITOR=vim
 export VISUAL=vim
 
 #
-# point to pinto repository (demo purposes only)
+# point to pinto repository (company purposes only)
 #
-export PINTO_REPOSITORY_ROOT=http://user:secret@localhost:5001
+export PINTO_REPOSITORY_ROOT=http://pinto.nureg.de:8080
+export PINTO_USERNAME=nureg
 
 #
 # add auto completion for grunt if existing
@@ -139,6 +160,6 @@ if [ -d ~/.rbenv ] && which rbenv > /dev/null; then
     eval "$(rbenv init -)"
 fi
 
-if [ -d ~/.plenv ] && which plenv > /dev/null; then 
+if [ -d ~/.plenv ] && which plenv > /dev/null; then
     eval "$(plenv init -)"
 fi
