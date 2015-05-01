@@ -35,3 +35,17 @@ brew tap aspnet/dnx
 brew update
 brew install dnvm
 
+dnvm upgrade
+
+
+.NET Projekte erzeugen
+
+$ yo aspnet
+
+
+Pakete restaurieren, bauen, starten:
+
+$ dnu restore
+$ dnu build
+$ dnx . run for console projects
+$ dnx . kestrel or dnx . web for web projects
