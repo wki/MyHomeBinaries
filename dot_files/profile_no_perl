@@ -1,0 +1,60 @@
+#!/bin/bash
+
+code () {
+    if [[ $# = 0 ]]
+    then
+        open -a "Visual Studio Code"
+    else
+        [[ $1 = /* ]] && F="$1" || F="$PWD/${1#./}"
+        open -a "Visual Studio Code" --args "$F"
+    fi
+}
+
+# Setting the path for MacPorts.
+export PATH="$PATH:/opt/local/bin:/opt/local/sbin:~/bin"
+export PS1='\h:\W \u\$ '
+
+# Setting the path for homebrew
+if [ -d ~/homebrew/bin ]; then
+    export PATH="$PATH:~/homebrew/bin"
+fi
+
+# initialize dnvm
+if [ -f ~/homebrew/Cellar/dnvm/1.0.0-dev/bin/dnvm.sh ]; then
+    . ~/homebrew/Cellar/dnvm/1.0.0-dev/bin/dnvm.sh
+fi
+
+#
+# Aliases
+#
+alias ls='ls -F'
+alias ll='ls -lF'
+alias la='ls -alF'
+
+# git log graphic view
+alias gl="git log --graph --pretty=format:'%C(yellow)%h%Creset%C(blue)%d%Creset %C(white bold)%s%Creset %C(white dim)(by %an %ar)%Creset' --all"
+
+# postgres made easy -- pgsql_socket and binary dir
+if [ -e /tmp/.s.PGSQL.5432 ]; then
+    export PGHOST=/tmp
+fi
+
+for p in /opt/local/lib/postgresql*; do
+    export POSTGRES_HOME=$p
+done
+
+#
+# never get localized messages
+#
+export LC_ALL=C
+
+#
+# make vim the standard editor
+#
+export EDITOR=vim
+export VISUAL=vim
+
+#
+# add auto completion for grunt if existing
+#
+which grunt >/dev/null && eval "$(grunt --completion=bash)"
