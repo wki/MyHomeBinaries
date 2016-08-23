@@ -43,6 +43,11 @@ for p in /opt/local/lib/postgresql*; do
     export POSTGRES_HOME=$p
 done
 
+# globally installed node modules
+export NPM_CONFIG_PREFIX=$HOME/.npm-packages
+mkdir -p $NPM_CONFIG_PREFIX
+export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+
 #
 # never get localized messages
 #
